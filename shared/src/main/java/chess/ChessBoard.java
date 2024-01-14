@@ -7,7 +7,7 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    ChessPiece[][] chessBoardArray = new ChessPiece[8][8];
+    ChessPiece[][] chessBoardArray = new ChessPiece[9][9];
     //Black Pieces
     ChessPiece blackPawn1 = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
     ChessPiece blackPawn2 = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
@@ -61,7 +61,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        chessBoardArray[position.getRow()][position.getColumn()] = piece;
+        chessBoardArray[position.getRow()-1][position.getColumn()-1] = piece;
         //throw new RuntimeException("Not implemented");
     }
 
@@ -74,8 +74,8 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
         //Might need to use if(obj instanceof class)
-        if(chessBoardArray[position.getRow()][position.getColumn()] == null){
-            return chessBoardArray[position.getRow()][position.getColumn()];
+        if(chessBoardArray[position.getRow()-1][position.getColumn()-1] != null){
+            return chessBoardArray[position.getRow()-1][position.getColumn()-1];
         }
         else return null;
         //throw new RuntimeException("Not implemented");
