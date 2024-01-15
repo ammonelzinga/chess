@@ -91,6 +91,77 @@ public class ChessPiece {
             //Four different routes
             int tryRookRow = currentRow;
             int tryRookCol = currentColumn;
+            //Same Row, up column
+            while (tryRookCol < 8){
+                tempPosition.updateRow(tryRookRow);
+                tempPosition.updateCol(tryRookCol+1);
+                if(board.getPiece(tempPosition) == null){
+                    potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryRookRow, tryRookCol+1), pieceType));
+                    tryRookCol++;}
+                else{
+                    if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor){
+                        potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryRookRow, tryRookCol+1), pieceType));
+                        break;
+                    }
+                    else{
+                        break;}
+                }
+            }
+            //Same Row, down column
+            tryRookRow = currentRow;
+            tryRookCol = currentColumn;
+            while (tryRookCol > 1){
+                tempPosition.updateRow(tryRookRow);
+                tempPosition.updateCol(tryRookCol-1);
+                if(board.getPiece(tempPosition) == null){
+                    potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryRookRow, tryRookCol-1), pieceType));
+                    tryRookCol--;}
+                else{
+                    if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor){
+                        potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryRookRow, tryRookCol-1), pieceType));
+                        break;
+                    }
+                    else{
+                        break;}
+                }
+            }
+            //Up Row, Same Col
+            tryRookRow = currentRow;
+            tryRookCol = currentColumn;
+            while (tryRookRow < 8){
+                tempPosition.updateRow(tryRookRow+1);
+                tempPosition.updateCol(tryRookCol);
+                if(board.getPiece(tempPosition) == null){
+                    potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryRookRow+1, tryRookCol), pieceType));
+                    tryRookRow++;}
+                else{
+                    if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor){
+                        potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryRookRow+1, tryRookCol), pieceType));
+                        break;
+                    }
+                    else{
+                        break;}
+                }
+            }
+            //Down Row, Same col
+            tryRookRow = currentRow;
+            tryRookCol = currentColumn;
+            while (tryRookRow > 1){
+                tempPosition.updateRow(tryRookRow-1);
+                tempPosition.updateCol(tryRookCol);
+                if(board.getPiece(tempPosition) == null){
+                    potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryRookRow-1, tryRookCol), pieceType));
+                    tryRookRow--;}
+                else{
+                    if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor){
+                        potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryRookRow-1, tryRookCol), pieceType));
+                        break;
+                    }
+                    else{
+                        break;}
+                }
+            }
+
         }
         // KNIGHT KNIGHT KNIGHT KNIGHT KNIGHT KNIGHT KNIGHT KNIGHT KNIGHT KNIGHT
         if (pieceType == PieceType.KNIGHT){
