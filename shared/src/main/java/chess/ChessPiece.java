@@ -73,13 +73,10 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        //ArrayList<Set<Integer>> potentialMoves = new ArrayList<Set<Integer>>();
-        //System.out.print(thisPieceColor);
         Collection<ChessMove> potentialMoves = new HashSet<ChessMove>();
         int currentRow = myPosition.Row;
         int currentColumn = myPosition.Col;
         ChessMove potentialMove;
-        //ChessMove potentialMove = new ChessMove(myPosition, myPosition, pieceType);
         ChessPosition tempPosition = new ChessPosition(currentRow, currentColumn);
         if (PieceType.PAWN == pieceType){
             //Inital Movement, ++ col for White, -- Col for Black
@@ -389,36 +386,18 @@ public class ChessPiece {
                 tempPosition.updateRow(tryBishopRow+1);
                 tempPosition.updateCol(tryBishopCol+1);
                 if(board.getPiece(tempPosition) == null){
-                    potentialMove = new ChessMove(myPosition, tempPosition, pieceType);
-                    /*System.out.print("(");
-                    System.out.print(tempPosition.Row);
-                    System.out.print(", ");
-                    System.out.print(tempPosition.Col);
-                    System.out.print(")");*/
+
                     potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryBishopRow+1, tryBishopCol+1), pieceType));
                     tryBishopRow ++;
                     tryBishopCol++;}
                 else{
                     if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor){
-                        potentialMove = new ChessMove(myPosition, tempPosition, pieceType);
-                        /*System.out.print("(");
-                        System.out.print(tempPosition.Row);
-                        System.out.print(", ");
-                        System.out.print(tempPosition.Col);
-                        System.out.print(")");*/
+
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryBishopRow+1, tryBishopCol+1), pieceType));
                         break;
                     }
                     else{
-                        /*System.out.print("nopeeeee");
-                        System.out.print("\n");
-                        System.out.print("(");
-                        System.out.print(tempPosition.Row);
-                        System.out.print(", ");
-                        System.out.print(tempPosition.Col);
-                        System.out.print(")");
-                        System.out.print(board.getPiece(tempPosition).getTeamColor());
-                        System.out.print("\n");*/
+
                         break;}
                 }
             }
@@ -430,36 +409,19 @@ public class ChessPiece {
                 tempPosition.updateRow(tryBishopRow-1);
                 tempPosition.updateCol(tryBishopCol+1);
                 if(board.getPiece(tempPosition) == null){
-                    potentialMove = new ChessMove(myPosition, tempPosition, pieceType);
+
                     potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryBishopRow-1, tryBishopCol+1), pieceType));
-                    /*System.out.print("(");
-                    System.out.print(tempPosition.Row);
-                    System.out.print(", ");
-                    System.out.print(tempPosition.Col);
-                    System.out.print(")");*/
+
                     tryBishopRow --;
                     tryBishopCol++;}
                 else{
                     if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor){
-                        potentialMove = new ChessMove(myPosition, tempPosition, pieceType);
-                        /*System.out.print("(");
-                        System.out.print(tempPosition.Row);
-                        System.out.print(", ");
-                        System.out.print(tempPosition.Col);
-                        System.out.print(")");*/
+
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryBishopRow-1, tryBishopCol+1), pieceType));
                         break;
                     }
                     else{
-                        /*System.out.print("nopeeeee");
-                        System.out.print("\n");
-                        System.out.print("(");
-                        System.out.print(tempPosition.Row);
-                        System.out.print(", ");
-                        System.out.print(tempPosition.Col);
-                        System.out.print(")");
-                        System.out.print(board.getPiece(tempPosition).getTeamColor());
-                        System.out.print("\n");*/
+
                         break;
                     }
                     }}
@@ -470,36 +432,19 @@ public class ChessPiece {
                 tempPosition.updateRow(tryBishopRow-1);
                 tempPosition.updateCol(tryBishopCol-1);
                 if(board.getPiece(tempPosition) == null){
-                    potentialMove = new ChessMove(myPosition, tempPosition, pieceType);
+
                     potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryBishopRow-1, tryBishopCol-1), pieceType));
-                    /*System.out.print("(");
-                    System.out.print(tempPosition.Row);
-                    System.out.print(", ");
-                    System.out.print(tempPosition.Col);
-                    System.out.print(")");*/
+
                     tryBishopRow --;
                     tryBishopCol --;}
                 else{
                     if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor){
-                        potentialMove = new ChessMove(myPosition, tempPosition, pieceType);
-                        /*System.out.print("(");
-                        System.out.print(tempPosition.Row);
-                        System.out.print(", ");
-                        System.out.print(tempPosition.Col);
-                        System.out.print(")");*/
+
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryBishopRow-1, tryBishopCol-1), pieceType));
                         break;
                     }
                     else{
-                        /*System.out.print("nopeeeee");
-                        System.out.print("\n");
-                        System.out.print("(");
-                        System.out.print(tempPosition.Row);
-                        System.out.print(", ");
-                        System.out.print(tempPosition.Col);
-                        System.out.print(")");
-                        System.out.print(board.getPiece(tempPosition).getTeamColor());
-                        System.out.print("\n");*/
+
                         break;
                     }
                     }}
@@ -510,36 +455,19 @@ public class ChessPiece {
                 tempPosition.updateRow(tryBishopRow+1);
                 tempPosition.updateCol(tryBishopCol-1);
                 if(board.getPiece(tempPosition) == null){
-                    potentialMove = new ChessMove(myPosition, tempPosition, pieceType);
+
                     potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryBishopRow+1, tryBishopCol-1), pieceType));
-                    /*System.out.print("(");
-                    System.out.print(tempPosition.Row);
-                    System.out.print(", ");
-                    System.out.print(tempPosition.Col);
-                    System.out.print(")");*/
+
                     tryBishopRow ++;
                     tryBishopCol--;}
                 else{
                     if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor){
-                        potentialMove = new ChessMove(myPosition, tempPosition, pieceType);
-                        /*System.out.print("(");
-                        System.out.print(tempPosition.Row);
-                        System.out.print(", ");
-                        System.out.print(tempPosition.Col);
-                        System.out.print(")");*/
+
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryBishopRow+1, tryBishopCol-1), pieceType));
                         break;
                     }
                     else{
-                        /*System.out.print("nopeeeee");
-                        System.out.print("\n");
-                        System.out.print("(");
-                        System.out.print(tempPosition.Row);
-                        System.out.print(", ");
-                        System.out.print(tempPosition.Col);
-                        System.out.print(")");
-                        System.out.print(board.getPiece(tempPosition).getTeamColor());
-                        System.out.print("\n");*/
+
                         break;
                     }
                     }}
