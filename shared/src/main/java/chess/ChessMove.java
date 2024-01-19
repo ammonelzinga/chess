@@ -11,10 +11,13 @@ import java.util.Objects;
 public class ChessMove {
     ChessPosition startPos;
     ChessPosition endPos;
+
+    ChessPiece.PieceType promotion;
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         startPos = startPosition;
         endPos = endPosition;
+        promotion = promotionPiece;
     }
 
     /**
@@ -30,20 +33,12 @@ public class ChessMove {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessMove chessMove=(ChessMove) o;
-        return startPos.equals(chessMove.startPos) && endPos.equals(chessMove.endPos);
+        return startPos.equals(chessMove.startPos) && endPos.equals(chessMove.endPos) && chessMove.promotion==promotion;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(startPos, endPos);
-    }
-
-    @Override
-    public String toString() {
-        return "ChessMove{" +
-                "startPos=" + startPos +
-                ", endPos=" + endPos +
-                '}';
+        return Objects.hash(startPos, endPos, promotion);
     }
 
     /**
@@ -54,6 +49,15 @@ public class ChessMove {
         //throw new RuntimeException("Not implemented");
     }
 
+    @Override
+    public String toString() {
+        return "ChessMove{" +
+                "startPos=" + startPos +
+                ", endPos=" + endPos +
+                ", promotion=" + promotion +
+                '}';
+    }
+
     /**
      * Gets the type of piece to promote a pawn to if pawn promotion is part of this
      * chess move
@@ -61,6 +65,7 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        throw new RuntimeException("Not implemented");
+        return promotion;
+        //throw new RuntimeException("Not implemented");
     }
 }

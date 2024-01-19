@@ -9,16 +9,25 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-
+    TeamColor playerTurn;
+    ChessPosition whiteKingPosition;
+    ChessPosition blackKingPosition;
+    int numWhitePieces;
+    int numBlackPieces;
     public ChessGame() {
-
+        playerTurn = TeamColor.WHITE;
+        whiteKingPosition = new ChessPosition(1, 5);
+        blackKingPosition = new ChessPosition(8, 5);
+        numBlackPieces = 16;
+        numWhitePieces = 16;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return playerTurn;
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -27,7 +36,9 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+
+        playerTurn = team;
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -46,6 +57,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+
         throw new RuntimeException("Not implemented");
     }
 
@@ -66,6 +78,17 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        int numPiecesCheck = 16;
+        if(teamColor == TeamColor.WHITE){
+            numPiecesCheck = numBlackPieces;
+        }
+        else{
+            numPiecesCheck = numBlackPieces;
+        }
+        for(int i = 0; i < numPiecesCheck; i++){
+
+        }
+
         throw new RuntimeException("Not implemented");
     }
 
