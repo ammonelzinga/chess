@@ -87,7 +87,7 @@ public class ChessBoard {
     @Override
     public String toString() {
         return "ChessBoard{" +
-                "chessBoardArray=" + Arrays.toString(chessBoardArray) +
+                "chessBoardArray=" + Arrays.deepToString(chessBoardArray) +
                 '}';
     }
 
@@ -101,7 +101,7 @@ public class ChessBoard {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(chessBoardArray);
+        return Arrays.deepHashCode(chessBoardArray);
     }
 
     /**
