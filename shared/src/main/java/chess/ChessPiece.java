@@ -37,6 +37,15 @@ public class ChessPiece {
         //throw new RuntimeException("Not implemented");
     }
 
+    public PieceType promotePiece(PieceType type){
+        if(type != null){
+        pieceType = type;
+        return pieceType;}
+        else{
+            return null;
+        }
+    }
+
     /**
      * @return which type of chess piece this piece is
      */
@@ -92,6 +101,7 @@ public class ChessPiece {
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(4, currentColumn), null));
                     }
                 }
+                if(currentRow < 8){
                 tempPosition.updateRow(currentRow+1);
                 tempPosition.updateCol(currentColumn);
 
@@ -105,7 +115,8 @@ public class ChessPiece {
                     }
                     else{
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1, currentColumn), null));
-                    }}
+                    }}}
+                if(currentRow < 8 && currentColumn > 1){
                 tempPosition.updateRow(currentRow +1);
                 tempPosition.updateCol(currentColumn -1);
                 if(board.getPiece(tempPosition) != null){
@@ -118,7 +129,8 @@ public class ChessPiece {
                         }
                         else{
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1, currentColumn-1), null));}
-                    }}
+                    }}}
+                if(currentRow < 8 && currentColumn < 8){
                 tempPosition.updateRow(currentRow +1);
                 tempPosition.updateCol(currentColumn +1);
                 if(board.getPiece(tempPosition) != null){
@@ -131,7 +143,7 @@ public class ChessPiece {
                         }
                         else{
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow+1, currentColumn+1), null));}
-                    }}
+                    }}}
             }
             else{
                 //initial movement
@@ -142,6 +154,7 @@ public class ChessPiece {
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(5, currentColumn), null));
                     }
                 }
+                if(currentRow > 1){
                 tempPosition.updateRow(currentRow-1);
                 tempPosition.updateCol(currentColumn);
                 if(board.getPiece(tempPosition) == null){
@@ -154,7 +167,8 @@ public class ChessPiece {
                     }
                     else{
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1, currentColumn), null));
-                    }}
+                    }}}
+                if(currentRow > 1 && currentColumn > 1){
                 tempPosition.updateRow(currentRow -1);
                 tempPosition.updateCol(currentColumn -1);
                 if(board.getPiece(tempPosition) != null){
@@ -167,7 +181,8 @@ public class ChessPiece {
                         }
                         else{
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1, currentColumn-1), null));}
-                    }}
+                    }}}
+                if(currentRow > 1 && currentColumn < 8){
                 tempPosition.updateRow(currentRow -1);
                 tempPosition.updateCol(currentColumn +1);
                 if(board.getPiece(tempPosition) != null){
@@ -180,7 +195,7 @@ public class ChessPiece {
                         }
                         else{
                         potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow-1, currentColumn+1), null));}
-                    }}
+                    }}}
 
             }
         }

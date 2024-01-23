@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -70,7 +71,59 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        boolean hasEndPiece = false;
+        if(gameBoard.getPiece(move.getStartPosition()) != null){
+        ChessPiece currentPiece = gameBoard.getPiece(move.getStartPosition());
+        if (playerTurn == currentPiece.thisPieceColor){
+        Collection<ChessMove> potentialMoves = currentPiece.pieceMoves(gameBoard, move.getStartPosition());
+        if(potentialMoves.contains(move.getEndPosition())){
+            int startRow = move.getStartPosition().Row;
+            int startCol = move.getEndPosition().Col;
+            int endRow = move.getEndPosition().Row;
+            int endCol = move.getEndPosition().Col;
+            ChessPiece endPiece = gameBoard.getPiece(move.getStartPosition());
+            if(gameBoard.getPiece((move.getEndPosition()))!=null){
+                endPiece = gameBoard.getPiece((move.getEndPosition()));
+                hasEndPiece = true;
+            }
+            gameBoard.chessBoardArray[startRow-1][startCol-1] = null;
+            gameBoard.chessBoardArray[endRow-1][endCol-1] = null;
+            gameBoard.addPiece(move.getEndPosition(), gameBoard.getPiece(move.getStartPosition()));
+            if(this.isInCheck(playerTurn)){
+                gameBoard.addPiece(move.getStartPosition(), currentPiece);
+                gameBoard.chessBoardArray[endRow-1][endCol-1] = null;
+                if(hasEndPiece == true){
+                    gameBoard.addPiece(move.getEndPosition(), endPiece);
+                }
+                InvalidMoveException exception = new InvalidMoveException("Your king is in check");
+                throw exception;
+            }
+            else{
+                if(move.getPromotionPiece() != null){
+                    gameBoard.getPiece(move.getEndPosition()).promotePiece(move.getPromotionPiece());}
+                if(playerTurn == TeamColor.WHITE){
+                    playerTurn = TeamColor.BLACK;
+                }
+                else{
+                    playerTurn = TeamColor.WHITE;
+                }
+            }
+        }
+        else{
+            InvalidMoveException exception = new InvalidMoveException("Invalid move!");
+            throw exception;
+        }}
+        else{
+            InvalidMoveException exception = new InvalidMoveException("It is not this player's turn");
+            throw exception;
+        }}
+        else{
+            InvalidMoveException exception = new InvalidMoveException("No piece there to move");
+            throw exception;
+        }
+
+
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
