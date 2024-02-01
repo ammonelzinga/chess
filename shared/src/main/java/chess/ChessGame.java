@@ -25,38 +25,6 @@ public class ChessGame {
         playerTurn = TeamColor.WHITE;
         whiteKingPosition = new ChessPosition(1, 5);
         blackKingPosition = new ChessPosition(8, 5);
-        /*int rowChecker= 1;
-        int colChecker = 1;
-        boolean whiteKingFound = false;
-        boolean blackKingFound = false;
-        for(rowChecker=1; rowChecker< 9; rowChecker++){
-            if(whiteKingFound && blackKingFound){
-                break;}
-            for(colChecker=1; colChecker< 9; colChecker++){
-                if(whiteKingFound && blackKingFound){
-                    break;}
-                if(gameBoard.getPiece(new ChessPosition(rowChecker, colChecker))!= null){
-                    if(gameBoard.getPiece(new ChessPosition(rowChecker, colChecker)).pieceType == ChessPiece.PieceType.KING){
-                        if(gameBoard.getPiece(new ChessPosition(rowChecker, colChecker)).thisPieceColor == TeamColor.WHITE){
-                            whiteKingPosition.Row = rowChecker;
-                            whiteKingPosition.Col = colChecker;
-                            whiteKingFound = true;
-                        }
-                        else{
-                            blackKingPosition.Row = rowChecker;
-                            blackKingPosition.Col = colChecker;
-                            blackKingFound = true;
-                        }
-                    }
-                }
-            }
-            if(blackKingFound == false){
-                blackKingPosition = null;
-            }
-            if(whiteKingFound == false){
-                whiteKingPosition = null;
-            }
-        }*/
         numBlackPieces = 16;
         numWhitePieces = 16;
     }
