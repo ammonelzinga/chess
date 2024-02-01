@@ -176,9 +176,6 @@ public class ChessGame {
         ChessPiece currentPiece = new ChessPiece(gameBoard.getPiece(move.getStartPosition()).thisPieceColor, gameBoard.getPiece(move.getStartPosition()).pieceType);
         if (playerTurn == currentPiece.thisPieceColor){
         Collection<ChessMove> potentialMoves = currentPiece.pieceMoves(gameBoard, move.getStartPosition());
-        //System.out.print("TO::::");
-        //System.out.print(potentialMoves);
-        //System.out.print("STRing");
         if(potentialMoves.contains(move)){
             int startRow = move.getStartPosition().Row;
             int startCol = move.getStartPosition().Col;
@@ -190,7 +187,6 @@ public class ChessGame {
                 hasEndPiece = true;
             }
             gameBoard.chessBoardArray[startRow-1][startCol-1] = null;
-            //gameBoard.toString();
             gameBoard.chessBoardArray[endRow-1][endCol-1] = null;
             gameBoard.addPiece(move.getEndPosition(), currentPiece);
             if(currentPiece.pieceType == ChessPiece.PieceType.KING){
@@ -212,7 +208,6 @@ public class ChessGame {
                         blackKingPosition.Col = startCol;
                     }}
                 gameBoard.chessBoardArray[endRow-1][endCol-1] = null;
-                //System.out.print("in check");
                 if(hasEndPiece == true){
                     gameBoard.addPiece(move.getEndPosition(), endPiece);
                 }
@@ -220,7 +215,6 @@ public class ChessGame {
                 throw exception;
             }
             else{
-                //System.out.print("not in check");
                 if(move.getPromotionPiece() != null){
                     gameBoard.getPiece(move.getEndPosition()).promotePiece(move.getPromotionPiece());}
                 if(playerTurn == TeamColor.WHITE){
@@ -232,7 +226,6 @@ public class ChessGame {
             }
         }
         else{
-            System.out.print("not in potential moves");
             InvalidMoveException exception = new InvalidMoveException("Invalid move!");
             throw exception;
         }}
@@ -244,9 +237,6 @@ public class ChessGame {
             InvalidMoveException exception = new InvalidMoveException("No piece there to move");
             throw exception;
         }}
-
-
-        //throw new RuntimeException("Not implemented");
     }
 
     /**
