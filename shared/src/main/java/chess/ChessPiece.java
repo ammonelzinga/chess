@@ -408,7 +408,7 @@ public class ChessPiece {
             if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor){
                 potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryKingRow-1, tryKingCol+1), null));
             }}}
-
+            if(tryKingRow > 1){
             tempPosition.updateRow(tryKingRow-1);
             tempPosition.updateCol(tryKingCol);
             if(board.getPiece(tempPosition) == null){
@@ -418,8 +418,8 @@ public class ChessPiece {
             else{
             if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor && tempPosition.Row >0 && tempPosition.Col < 9){
                 potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryKingRow-1, tryKingCol), null));
-            }}
-
+            }}}
+            if(tryKingRow > 1 && tryKingCol > 1){
             tempPosition.updateRow(tryKingRow-1);
             tempPosition.updateCol(tryKingCol-1);
             if(board.getPiece(tempPosition) == null){
@@ -429,7 +429,7 @@ public class ChessPiece {
             else{
             if(board.getPiece(tempPosition).getTeamColor() != thisPieceColor && tempPosition.Row >0 && tempPosition.Col > 0){
                 potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tryKingRow-1, tryKingCol-1), null));
-            }}
+            }}}
             return potentialMoves;
         }
         //BISHOP BISHOP BISHOP BISHOP BISHOP BISHOP BISHOP BISHOP BISHOP BISHOP BISHOP
