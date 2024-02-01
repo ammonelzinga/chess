@@ -387,8 +387,6 @@ public class ChessGame {
             // row--, col -- diagonal queen/bishop
             tempRow = KingPosition.Row-1;
             tempCol = KingPosition.Col-1;
-            System.out.print(tempRow);
-            System.out.print(tempCol);
             if(i==3){
                 firstDiagonal = true;
                 while (tempRow > 0 && tempCol >0 ){
@@ -396,9 +394,6 @@ public class ChessGame {
                         tempRow --;
                         tempCol --;
                         firstDiagonal = false;
-                        System.out.print(tempRow);
-                        System.out.print(tempCol);
-                        System.out.print("\n");
                     }
 
                     else{
@@ -546,15 +541,12 @@ public class ChessGame {
                     if(gameBoard.getPiece((new ChessPosition(i,j))) != null){
                         if(gameBoard.getPiece(new ChessPosition(i, j)).thisPieceColor == TeamColor.WHITE){
                             if(validMoves(new ChessPosition(i, j)).isEmpty() == false){
-                                System.out.print(validMoves(new ChessPosition(i, j)));
-                                System.out.print("ewor moves lo");
                                 return false;
                             }
                         }}
                 }
             }
             if(isInCheck(TeamColor.WHITE)){
-                System.out.print("in check matey");
                 return false;
             }
             else{
@@ -567,7 +559,6 @@ public class ChessGame {
                     if(gameBoard.getPiece((new ChessPosition(i,j))) != null){
                         if(gameBoard.getPiece(new ChessPosition(i, j)).thisPieceColor == TeamColor.BLACK){
                             if(validMoves(new ChessPosition(i, j)).isEmpty() == false){
-                                System.out.print("Ewor moves lo");
                                 return false;}}}}}
             if(isInCheck(TeamColor.BLACK)){
                 return false;
