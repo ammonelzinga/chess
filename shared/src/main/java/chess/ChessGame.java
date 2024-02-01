@@ -380,11 +380,21 @@ public class ChessGame {
             }
             if(tempPosition.Row < 9 && tempPosition.Row > 0 && tempPosition.Col < 9 && tempPosition.Col > 0){
                 if(gameBoard.getPiece(tempPosition) == null ){
-                    break;
+                    System.out.print("no knight hereeeeeeeee");
+                    System.out.print(spotChecker);
+                    System.out.print("  ");
+                    System.out.print(currentRow);
+                    System.out.print(currentColumn);
+                    System.out.print("\n");
+                    //break;
                 }
                 else{
                     if(gameBoard.getPiece(tempPosition).getTeamColor() != teamColor &&
                             gameBoard.getPiece(tempPosition).pieceType == ChessPiece.PieceType.KNIGHT){
+                        System.out.print("Th3eres a kniight atttttttt");
+                        System.out.print(tempPosition.Row);
+                        System.out.print(tempPosition.Col);
+                        System.out.print("\n");
                         return true;}}}
         }
 
@@ -582,8 +592,28 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-
-        throw new RuntimeException("Not implemented");
+        if(teamColor == TeamColor.WHITE){
+            for(int i = 1; i < 9; i ++){
+                for(int j = 1; j < 9; j ++){
+                    if(gameBoard.getPiece((new ChessPosition(i,j))) != null){
+                    if(gameBoard.getPiece(new ChessPosition(i, j)).thisPieceColor == TeamColor.WHITE){
+                        if(validMoves(new ChessPosition(i, j)).isEmpty() == false){
+                            return false;
+                        }
+                    }}
+                }
+            }
+            return isInCheck(TeamColor.WHITE);
+        }
+        else{
+            for(int i = 1; i < 9; i ++){
+                for(int j = 1; j < 9; j ++){
+                    if(gameBoard.getPiece((new ChessPosition(i,j))) != null){
+                    if(gameBoard.getPiece(new ChessPosition(i, j)).thisPieceColor == TeamColor.BLACK){
+                        if(validMoves(new ChessPosition(i, j)).isEmpty() == false){
+                            return false;}}}}}
+            return isInCheck(TeamColor.BLACK);
+        }
     }
 
     /**
@@ -594,7 +624,43 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if(teamColor == TeamColor.WHITE){
+            for(int i = 1; i < 9; i ++){
+                for(int j = 1; j < 9; j ++){
+                    if(gameBoard.getPiece((new ChessPosition(i,j))) != null){
+                        if(gameBoard.getPiece(new ChessPosition(i, j)).thisPieceColor == TeamColor.WHITE){
+                            if(validMoves(new ChessPosition(i, j)).isEmpty() == false){
+                                System.out.print(validMoves(new ChessPosition(i, j)));
+                                System.out.print("ewor moves lo");
+                                return false;
+                            }
+                        }}
+                }
+            }
+            if(isInCheck(TeamColor.WHITE)){
+                System.out.print("in check matey");
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        else{
+            for(int i = 1; i < 9; i ++){
+                for(int j = 1; j < 9; j ++){
+                    if(gameBoard.getPiece((new ChessPosition(i,j))) != null){
+                        if(gameBoard.getPiece(new ChessPosition(i, j)).thisPieceColor == TeamColor.BLACK){
+                            if(validMoves(new ChessPosition(i, j)).isEmpty() == false){
+                                System.out.print("Ewor moves lo");
+                                return false;}}}}}
+            if(isInCheck(TeamColor.BLACK)){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
