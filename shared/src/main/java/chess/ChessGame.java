@@ -70,17 +70,14 @@ public class ChessGame {
         else{
 
         Collection<ChessMove> potentialMoves = gameBoard.getPiece(startPosition).pieceMoves(gameBoard, startPosition);
-        System.out.print(potentialMoves);
         Collection<ChessMove> validMoves = new HashSet<ChessMove>();
         Iterator<ChessMove> iteratePotentialMoves = potentialMoves.iterator();
         while (iteratePotentialMoves.hasNext()){
             ChessMove tempMove = iteratePotentialMoves.next();
-            System.out.print("hasnet");
             if(validMove(tempMove)==true){
                 validMoves.add(tempMove);
             }
             else{
-                System.out.print("invalid move");
             }
         }
         return validMoves;}
@@ -131,7 +128,6 @@ public class ChessGame {
                             if(hasEndPiece == true){
                                 gameBoard.addPiece(move.getEndPosition(), endPiece);
                             }
-                            System.out.print("in check");
                             return false;
                         }
                         else{
@@ -397,8 +393,6 @@ public class ChessGame {
                     }
 
                     else{
-                        System.out.print(gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor());
-                        System.out.print(teamColor);
                         if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
                                 && ((gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
                                 gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.BISHOP)|| (firstDiagonal == true &&
