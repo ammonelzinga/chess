@@ -246,8 +246,6 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        System.out.print("checker\n");
-        System.out.print(teamColor);
         ChessPosition KingPosition = new ChessPosition(1, 1);
         if(teamColor == TeamColor.WHITE){
             if(whiteKingFound == false){
@@ -266,10 +264,6 @@ public class ChessGame {
                 KingPosition.updateCol(this.blackKingPosition.Col);
             }
         }
-        //System.out.print(gameBoard);
-        //System.out.print("\n");
-        //System.out.print(gameBoard.getPiece(new ChessPosition(3, 1)));
-        int numPiecesCheck = 16;
         boolean inCheck = false;
         //first check potential check from knights
         for(int spotChecker = 0; spotChecker < 8; spotChecker++){
@@ -313,21 +307,10 @@ public class ChessGame {
             }
             if(tempPosition.Row < 9 && tempPosition.Row > 0 && tempPosition.Col < 9 && tempPosition.Col > 0){
                 if(gameBoard.getPiece(tempPosition) == null ){
-                    System.out.print("no knight hereeeeeeeee");
-                    System.out.print(spotChecker);
-                    System.out.print("  ");
-                    System.out.print(currentRow);
-                    System.out.print(currentColumn);
-                    System.out.print("\n");
-                    //break;
                 }
                 else{
                     if(gameBoard.getPiece(tempPosition).getTeamColor() != teamColor &&
                             gameBoard.getPiece(tempPosition).pieceType == ChessPiece.PieceType.KNIGHT){
-                        System.out.print("Th3eres a kniight atttttttt");
-                        System.out.print(tempPosition.Row);
-                        System.out.print(tempPosition.Col);
-                        System.out.print("\n");
                         return true;}}}
         }
 
