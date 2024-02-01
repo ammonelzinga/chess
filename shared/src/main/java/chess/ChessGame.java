@@ -68,10 +68,7 @@ public class ChessGame {
             return null;
         }
         else{
-            System.out.print(startPosition.Row);
-            System.out.print(startPosition.Col);
-            System.out.print(gameBoard.getPiece((startPosition)).pieceType);
-            System.out.print(gameBoard.getPiece((startPosition)).thisPieceColor);
+
         Collection<ChessMove> potentialMoves = gameBoard.getPiece(startPosition).pieceMoves(gameBoard, startPosition);
         System.out.print(potentialMoves);
         Collection<ChessMove> validMoves = new HashSet<ChessMove>();
@@ -79,37 +76,27 @@ public class ChessGame {
         while (iteratePotentialMoves.hasNext()){
             ChessMove tempMove = iteratePotentialMoves.next();
             System.out.print("hasnet");
-            /*System.out.print("\n");
-            System.out.print(tempMove);
-            System.out.print(tempMove);
-            System.out.print("next");*/
             if(validMove(tempMove)==true){
                 validMoves.add(tempMove);
-                /*System.out.print("Valid Moves so far");
-                System.out.print(validMoves);
-                System.out.print("\n");*/
             }
             else{
                 System.out.print("invalid move");
             }
         }
-        return validMoves;}//throw new RuntimeException("Not implemented");
+        return validMoves;}
     }
     public boolean validMove(ChessMove move){
         if(move.getStartPosition().Row < 1 || move.getStartPosition().Row > 8 ||
                 move.getEndPosition().Row < 1 || move.getEndPosition().Row > 8
                 || move.getStartPosition().Col < 1 || move.getStartPosition().Col > 8 ||
                 move.getEndPosition().Col < 1 || move.getEndPosition().Col > 8) {
-            System.out.print("out of range");
             return false;
         }
         else{
             boolean hasEndPiece = false;
             if(gameBoard.getPiece(move.getStartPosition()) != null){
                 ChessPiece currentPiece = new ChessPiece(gameBoard.getPiece(move.getStartPosition()).thisPieceColor, gameBoard.getPiece(move.getStartPosition()).pieceType);
-                //if (playerTurn == currentPiece.thisPieceColor){
-                    //Collection<ChessMove> potentialMoves = currentPiece.pieceMoves(gameBoard, move.getStartPosition());
-                    //if(potentialMoves.contains(move.getEndPosition())){
+
                         int startRow = move.getStartPosition().Row;
                         int startCol = move.getStartPosition().Col;
                         int endRow = move.getEndPosition().Row;
@@ -120,18 +107,13 @@ public class ChessGame {
                             hasEndPiece = true;
                         }
                         gameBoard.chessBoardArray[startRow-1][startCol-1] = null;
-                        //gameBoard.toString();
                         gameBoard.chessBoardArray[endRow-1][endCol-1] = null;
                         gameBoard.addPiece(move.getEndPosition(), currentPiece);
                         if(currentPiece.pieceType == ChessPiece.PieceType.KING){
                             if(currentPiece.thisPieceColor==TeamColor.WHITE){
-                                System.out.print("\n");
-                                System.out.print("white king");
                                 whiteKingPosition.Row = endRow;
                                 whiteKingPosition.Col = endCol;}
                             else{
-                                System.out.print("\n");
-                                System.out.print("black king");
                                 blackKingPosition.Row = endRow;
                                 blackKingPosition.Col = endCol;
                             }}
@@ -146,7 +128,6 @@ public class ChessGame {
                                     blackKingPosition.Col = startCol;
                                 }}
                             gameBoard.chessBoardArray[endRow-1][endCol-1] = null;
-                            //System.out.print("in check");
                             if(hasEndPiece == true){
                                 gameBoard.addPiece(move.getEndPosition(), endPiece);
                             }
@@ -164,19 +145,13 @@ public class ChessGame {
                                     blackKingPosition.Col = startCol;
                                 }}
                             gameBoard.chessBoardArray[endRow-1][endCol-1] = null;
-                            //System.out.print("in check");
                             if(hasEndPiece == true){
                                 gameBoard.addPiece(move.getEndPosition(), endPiece);
                             }
                             return true;
                         }
                     }
-                    /*else{
-                        System.out.print("not a potential move");
-                        return false;
-                    }}*/
             else{
-                System.out.print("no piece here");
                 return false;
             }}
     }
