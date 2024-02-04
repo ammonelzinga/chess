@@ -69,17 +69,11 @@ public class ChessGame {
     }
 
     public boolean canCastle (TeamColor color, boolean queenSide){
-        System.out.print("\n");
-        System.out.print("STarting canCastle");
-        System.out.print(gameBoard.chessBoardArray[0][4]);
-        System.out.print(gameBoard.chessBoardArray[7][4]);
         boolean canCastle = false;
         if(color == TeamColor.BLACK){
             if(queenSide){
-                System.out.print("queenSide");
                 if(blackKingMoved == false && blackRookMoved == false){
                     //now check if ending spots are available
-                    System.out.print("pieces haven't moved so might be okay");
                     if((gameBoard.getPiece(new ChessPosition(8, 1)) != null && gameBoard.getPiece(new ChessPosition(8, 5)) != null)){
                     if(gameBoard.getPiece(new ChessPosition(8, 1)).pieceType == ChessPiece.PieceType.ROOK &&
                             gameBoard.getPiece(new ChessPosition(8, 1)).thisPieceColor == TeamColor.BLACK &&
@@ -87,8 +81,6 @@ public class ChessGame {
                             gameBoard.getPiece(new ChessPosition(8, 5)).thisPieceColor == TeamColor.BLACK
                         && gameBoard.getPiece(new ChessPosition(8, 4)) == null && gameBoard.getPiece(new ChessPosition(8, 3)) == null &&
                     gameBoard.getPiece(new ChessPosition(8, 2)) == null){
-                        System.out.print("\n");
-                        System.out.print("row is clear");
                         gameBoard.chessBoardArray[7][4] = null;
                         gameBoard.addPiece(new ChessPosition(8, 4 ), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.KING));
                         blackKingPosition.Col = 4;
@@ -97,28 +89,17 @@ public class ChessGame {
                             gameBoard.addPiece(new ChessPosition(8, 3), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.KING));
                             blackKingPosition.Col = 3;
                             if(isInCheck(TeamColor.BLACK) == false){
-                                System.out.print("moved King twice");
                                 canCastle = true;}
                         else{
-                            System.out.print("In Check 2nd move");
                             }}
                         else{
-                            System.out.print("In Check 1st move");
                         }
                             gameBoard.addPiece(new ChessPosition(8, 5),new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.KING));
                             gameBoard.chessBoardArray[7][3] = null;
                             gameBoard.chessBoardArray[7][2] = null;
                             blackKingPosition.Col = 5;}
-                        System.out.print("\n");
-                        System.out.print("Black QueenSide");
-                        System.out.print(gameBoard.chessBoardArray[0][4]);
-                        System.out.print(gameBoard.chessBoardArray[7][4]);
                     }}}
             else{
-                System.out.print("black King MOved = ");
-                System.out.print(blackKingMoved);
-                System.out.print("black rook8moved = ");
-                System.out.print(blackRook8Moved);
                 if(blackKingMoved == false && blackRook8Moved == false){
                     //now check if ending spots are available
                     if((gameBoard.getPiece(new ChessPosition(8, 8)) != null && gameBoard.getPiece(new ChessPosition(8, 5)) != null)){
@@ -127,26 +108,19 @@ public class ChessGame {
                             gameBoard.getPiece(new ChessPosition(8, 5)).pieceType == ChessPiece.PieceType.KING &&
                             gameBoard.getPiece(new ChessPosition(8, 5)).thisPieceColor == TeamColor.BLACK
                             && gameBoard.getPiece(new ChessPosition(8, 6)) == null && gameBoard.getPiece(new ChessPosition(8, 7)) == null){
-                        System.out.print("rows are clear for black king side");
                         gameBoard.chessBoardArray[7][4] = null;
                         gameBoard.addPiece(new ChessPosition(8, 6 ), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.KING));
                         blackKingPosition.Col = 6;
                         if(isInCheck(TeamColor.BLACK) == false){
-                            System.out.print("not in check after first black king move");
                             gameBoard.chessBoardArray[7][5] = null;
                             gameBoard.addPiece(new ChessPosition(8, 7), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.KING));
                             blackKingPosition.Col = 7;
                             if(isInCheck(TeamColor.BLACK) == false){
-                                System.out.print("moved King twice");
                                 canCastle = true;}}
                         gameBoard.addPiece(new ChessPosition(8, 5),new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.KING));
                         gameBoard.chessBoardArray[7][5] = null;
                         gameBoard.chessBoardArray[7][6] = null;
                         blackKingPosition.Col = 5;
-                        System.out.print("\n");
-                        System.out.print("Black King Side");
-                        System.out.print(gameBoard.chessBoardArray[0][4]);
-                        System.out.print(gameBoard.chessBoardArray[7][4]);
                     }
                     }}}
         }
@@ -169,16 +143,11 @@ public class ChessGame {
                             gameBoard.addPiece(new ChessPosition(1, 3), new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.KING));
                             whiteKingPosition.Col = 3;
                             if(isInCheck(TeamColor.WHITE) == false){
-                                System.out.print("moved King twice");
                                 canCastle = true;}}
                         gameBoard.addPiece(new ChessPosition(1, 5),new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.KING));
                         gameBoard.chessBoardArray[0][3] = null;
                         gameBoard.chessBoardArray[0][2] = null;
                         whiteKingPosition.Col = 5;
-                        System.out.print("\n");
-                        System.out.print("White QueenSide");
-                        System.out.print(gameBoard.chessBoardArray[0][4]);
-                        System.out.print(gameBoard.chessBoardArray[7][4]);
                     }}}}
             else{
                 if(whiteKingMoved == false && whiteRook8Moved == false){
@@ -189,8 +158,6 @@ public class ChessGame {
                             gameBoard.getPiece(new ChessPosition(1, 5)).pieceType == ChessPiece.PieceType.KING &&
                             gameBoard.getPiece(new ChessPosition(1, 5)).thisPieceColor == TeamColor.WHITE
                             && gameBoard.getPiece(new ChessPosition(1, 6)) == null && gameBoard.getPiece(new ChessPosition(1, 7)) == null){
-                        System.out.print("\n");
-                        System.out.print("in the clear for white king castle");
                         gameBoard.chessBoardArray[0][4] = null;
                         gameBoard.addPiece(new ChessPosition(1, 6 ), new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.KING));
                         whiteKingPosition.Col = 6;
@@ -199,16 +166,11 @@ public class ChessGame {
                             gameBoard.addPiece(new ChessPosition(1, 7), new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.KING));
                             whiteKingPosition.Col = 7;
                             if(isInCheck(TeamColor.WHITE) == false){
-                                System.out.print("moved King twice");
                                 canCastle = true;}}
                         gameBoard.addPiece(new ChessPosition(1, 5),new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.KING));
                         gameBoard.chessBoardArray[0][6] = null;
                         gameBoard.chessBoardArray[0][5] = null;
                         whiteKingPosition.Col = 5;
-                        System.out.print("\n");
-                        System.out.print("White kingSide");
-                        System.out.print(gameBoard.chessBoardArray[0][4]);
-                        System.out.print(gameBoard.chessBoardArray[7][4]);
                     }}}}
         }
         return canCastle;
@@ -224,48 +186,27 @@ public class ChessGame {
 
 
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        System.out.print("Player turn:");
-        System.out.print(playerTurn);
-        System.out.print(startPosition);
-        System.out.print("\n");
-        System.out.print("validMOVESS");
-        //System.out.print(startPosition);
         if(gameBoard.getPiece(startPosition) == null){
             return null;
         }
 
         else{
-            System.out.print(gameBoard.getPiece(startPosition).pieceType);
-            System.out.print(gameBoard.getPiece(startPosition).thisPieceColor);
             Collection<ChessMove> validMoves = new HashSet<ChessMove>();
             //CASTLING
             if(gameBoard.getPiece(startPosition).pieceType == ChessPiece.PieceType.KING) {
                     if(gameBoard.getPiece(startPosition).thisPieceColor == TeamColor.BLACK) {
                         if(startPosition.Row == 8 && startPosition.Col == 5){
-                        System.out.print("\n");
-                        System.out.print("going to check black  castle");
                         if (validMove((new ChessMove(startPosition, new ChessPosition(8, 7), null)))) {
-                            System.out.print("\n");
-                            System.out.print("Can Black King Side Castleeeeeeeeeeeeeeeeeeeeeeeeee");
                             validMoves.add(new ChessMove(startPosition, new ChessPosition(8, 7), null));}
                         if (validMove(new ChessMove(startPosition, new ChessPosition(8, 3), null))) {
-                            System.out.print("\n");
-                            System.out.print("Can black queen Side Castleeeeeeeeeeeeeeeeeeeeeeeeeee");
                             validMoves.add(new ChessMove(startPosition, new ChessPosition(8, 3), null));}}}
                     else{
                         if(startPosition.Row == 1 && startPosition.Col == 5){
-                        System.out.print("\n");
-                        System.out.print("going to check white castle");
                         if (validMove(new ChessMove(startPosition, new ChessPosition(1, 7), null))) {
-                            System.out.print("\n");
-                            System.out.print("Can white king Side Castleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
                             validMoves.add(new ChessMove(startPosition, new ChessPosition(1, 7), null));}
                         if (validMove(new ChessMove(startPosition, new ChessPosition(1, 3), null))) {
-                            System.out.print("\n");
-                            System.out.print("Can white queen Side Castleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
                             validMoves.add(new ChessMove(startPosition, new ChessPosition(1, 3), null));}}
                 }}
-            //System.out.print(startPosition);
         Collection<ChessMove> potentialMoves = gameBoard.getPiece(startPosition).pieceMoves(gameBoard, startPosition);
 
         Iterator<ChessMove> iteratePotentialMoves = potentialMoves.iterator();
@@ -277,15 +218,9 @@ public class ChessGame {
             else{
             }
         }
-        System.out.print(validMoves);
         return validMoves;}
     }
     public boolean validMove(ChessMove move){
-
-        System.out.print("\n");
-        System.out.print("doin validMove");
-        System.out.print("Player turn:");
-        System.out.print(playerTurn);
 
         if(move.getStartPosition().Row < 1 || move.getStartPosition().Row > 8 ||
                 move.getEndPosition().Row < 1 || move.getEndPosition().Row > 8
@@ -300,42 +235,29 @@ public class ChessGame {
                 if(gameBoard.getPiece(move.getStartPosition()).pieceType == ChessPiece.PieceType.KING) {
                     if (move.getEndPosition().Col - move.getStartPosition().Col == 2) {
                         if(gameBoard.getPiece(move.getStartPosition()).thisPieceColor == TeamColor.BLACK) {
-                            System.out.print("\n");
-                            System.out.print("going to check black king side castle");
                             if (canCastle(TeamColor.BLACK, false)) {
-                                System.out.print("valid move says can castle");
                                 return true;
                             }else{
-                                System.out.print("valid move says cant castle");
                                 return false;}
                         }
                         else{
-                            System.out.print("\n");
-                            System.out.print("going to check WHITE KING side castle");
                             if (canCastle(TeamColor.WHITE, false)) {
-                                System.out.print("valid move says can castle");
                                 return true;}
                             else{
-                                System.out.print("valid move says cant castle");
                                 return false;}
                         }
                         }
                         else if (move.getEndPosition().Col - move.getStartPosition().Col == -2) {
                         if(gameBoard.getPiece(move.getStartPosition()).thisPieceColor == TeamColor.BLACK) {
                             if (canCastle(TeamColor.BLACK, true)) {
-                                System.out.print("valid move says can castle");
                                 return true;
                             }else{
-                                System.out.print("valid move says cant castle");
                                 return false;}
                         }
                         else{
-                            System.out.print("try white queen side caslte");
                             if (canCastle(TeamColor.WHITE, true)) {
-                                System.out.print("valid move says can castle");
                                 return true;}
                             else{
-                                System.out.print("valid move says cant castle");
                                 return false;}
                         }}}
 
@@ -362,8 +284,6 @@ public class ChessGame {
                                 blackKingPosition.Col = endCol;
                             }}
                         if(this.isInCheck(gameBoard.getPiece(move.getEndPosition()).thisPieceColor)){
-                            System.out.print("\n");
-                            System.out.print("will be in check lo");
                             gameBoard.addPiece(move.getStartPosition(), currentPiece);
                             if(currentPiece.pieceType == ChessPiece.PieceType.KING){
                                 if(currentPiece.thisPieceColor==TeamColor.WHITE){
@@ -380,8 +300,6 @@ public class ChessGame {
                             return false;
                         }
                         else{
-                            System.out.print("\n");
-                            System.out.print("yep can move there");
                             gameBoard.addPiece(move.getStartPosition(), currentPiece);
                             if(currentPiece.pieceType == ChessPiece.PieceType.KING){
                                 if(currentPiece.thisPieceColor==TeamColor.WHITE){
@@ -410,10 +328,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        System.out.print("\n");
-        System.out.print("makeMoveeee");
-        System.out.print("Player turn:");
-        System.out.print(playerTurn);
+
 
         if(move.getStartPosition().Row < 1 || move.getStartPosition().Row > 8 ||
                 move.getEndPosition().Row < 1 || move.getEndPosition().Row > 8
@@ -423,19 +338,14 @@ public class ChessGame {
             throw exception;
         }
         else{
-            System.out.print("okay make movee");
+
         //boolean hasEndPiece = false;
         if(gameBoard.getPiece(move.getStartPosition()) != null){
-            System.out.print("okay make movee 449");
+
         ChessPiece currentPiece = new ChessPiece(gameBoard.getPiece(move.getStartPosition()).thisPieceColor, gameBoard.getPiece(move.getStartPosition()).pieceType);
         if (playerTurn == currentPiece.thisPieceColor){
         //Collection<ChessMove> potentialMoves = currentPiece.pieceMoves(gameBoard, move.getStartPosition());
-            System.out.print("checking for valid moves");
             Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
-            System.out.print("\n");
-            System.out.print("now have validMoves collectionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
-            System.out.print("\n");
-            System.out.print(validMoves);
         if(validMoves.contains(move)){
             int startRow = move.getStartPosition().Row;
             int startCol = move.getStartPosition().Col;
@@ -455,7 +365,6 @@ public class ChessGame {
                     whiteKingPosition.Row = endRow;
                     whiteKingPosition.Col = endCol;}
                 else{
-                    System.out.print("MOving Black King so now you can't castle black king no more");
                     blackKingMoved = true;
                     blackKingPosition.Row = endRow;
                     blackKingPosition.Col = endCol;
@@ -480,8 +389,6 @@ public class ChessGame {
             //else{
                 if(currentPiece.pieceType == ChessPiece.PieceType.KING){
                 if(move.getEndPosition().Col-move.getStartPosition().Col == 2){
-                    System.out.print("\n");
-                    System.out.print("makeMove for kingside castling");
                     gameBoard.addPiece(new ChessPosition(startRow, endCol -1), new ChessPiece(currentPiece.thisPieceColor, ChessPiece.PieceType.ROOK));
                     if(currentPiece.thisPieceColor == TeamColor.BLACK){
                         gameBoard.chessBoardArray[7][7] = null;
@@ -494,8 +401,6 @@ public class ChessGame {
 
 
                 } else if (move.getEndPosition().Col-move.getStartPosition().Col == -2) {
-                    System.out.print("\n");
-                    System.out.print("makeMove for queenside castling");
                     gameBoard.addPiece(new ChessPosition(startRow, endCol +1), new ChessPiece(currentPiece.thisPieceColor, ChessPiece.PieceType.ROOK));
                     if(currentPiece.thisPieceColor == TeamColor.BLACK){
                         gameBoard.chessBoardArray[7][0] = null;
@@ -539,7 +444,6 @@ public class ChessGame {
             throw exception;
         }}
         else{
-            System.out.print("not this players turn");
             InvalidMoveException exception = new InvalidMoveException("It is not this player's turn");
             throw exception;
         }}
