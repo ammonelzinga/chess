@@ -24,6 +24,9 @@ public class ChessGame {
     int numWhitePieces;
     int numBlackPieces;
 
+    ChessPosition whitePawnAdvance2Now;
+    ChessPosition blackPawnAdvance2Now;
+
     boolean whiteKingFound;
     boolean blackKingFound;
     public ChessGame() {
@@ -39,6 +42,8 @@ public class ChessGame {
         blackRookMoved = false;
         whiteRook8Moved = false;
         whiteRookMoved = false;
+        whitePawnAdvance2Now = null;
+        blackPawnAdvance2Now = null;
     }
 
     /**
@@ -176,6 +181,56 @@ public class ChessGame {
         return canCastle;
     }
 
+    public boolean canEnPass(ChessMove move, TeamColor color){
+        //check white first
+        boolean canEnPass = false;
+        int startRow = move.getStartPosition().Row;
+        int startCol = move.getStartPosition().Col;
+        int endRow = move.getEndPosition().Row;
+        int endCol = move.getEndPosition().Col;
+        //for black
+        if(color == TeamColor.BLACK){
+            if(whitePawnAdvance2Now != null){
+            if(whitePawnAdvance2Now.Row == 4 && startRow == 4 && ((startCol - whitePawnAdvance2Now.Col == 1) ||
+                    startCol - whitePawnAdvance2Now.Col == -1)){
+                System.out.print("initals spacing check good");
+                if(endCol == whitePawnAdvance2Now.Col && endRow == 3){
+
+                System.out.print("okay spacing's good for black to en passant");
+                gameBoard.chessBoardArray[startRow -1][startCol -1] = null;
+                gameBoard.chessBoardArray[whitePawnAdvance2Now.Row -1][whitePawnAdvance2Now.Col -1] = null;
+                gameBoard.addPiece(new ChessPosition(endRow, endCol), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+                if(isInCheck(TeamColor.BLACK)==false){
+                    canEnPass = true;
+                }
+                gameBoard.chessBoardArray[endRow-1][endCol-1] = null;
+                gameBoard.addPiece(new ChessPosition(startRow, startCol), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+                gameBoard.addPiece(new ChessPosition(whitePawnAdvance2Now.Row, whitePawnAdvance2Now.Col), new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+
+            }}
+        }}
+        else{
+            if(blackPawnAdvance2Now != null){
+                if(blackPawnAdvance2Now.Row == 5 && startRow == 5 && ((startCol - blackPawnAdvance2Now.Col == 1) ||
+                        startCol - blackPawnAdvance2Now.Col == -1) && endCol == blackPawnAdvance2Now.Col && endRow == 6){
+                    gameBoard.chessBoardArray[startRow -1][startCol -1] = null;
+                    gameBoard.chessBoardArray[blackPawnAdvance2Now.Row -1][blackPawnAdvance2Now.Col -1] = null;
+                    gameBoard.addPiece(new ChessPosition(endRow, endCol), new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+                    if(isInCheck(TeamColor.WHITE)==false){
+                        canEnPass = true;
+                    }
+                    gameBoard.chessBoardArray[endRow-1][endCol-1] = null;
+                    gameBoard.addPiece(new ChessPosition(startRow, startCol), new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+                    gameBoard.addPiece(new ChessPosition(blackPawnAdvance2Now.Row, blackPawnAdvance2Now.Col), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+
+                }
+            }
+
+        }
+
+    return canEnPass;
+    }
+
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -207,6 +262,26 @@ public class ChessGame {
                         if (validMove(new ChessMove(startPosition, new ChessPosition(1, 3), null))) {
                             validMoves.add(new ChessMove(startPosition, new ChessPosition(1, 3), null));}}
                 }}
+
+            if(gameBoard.getPiece(startPosition).pieceType == ChessPiece.PieceType.PAWN){
+                if(gameBoard.getPiece(startPosition).thisPieceColor == TeamColor.BLACK) {
+                    if(startPosition.Row == 4 && whitePawnAdvance2Now != null){
+                        if(canEnPass(new ChessMove(startPosition, new ChessPosition(whitePawnAdvance2Now.Row-1, whitePawnAdvance2Now.Col), null), TeamColor.BLACK)){
+                            System.out.print("black can en pass");
+                            validMoves.add(new ChessMove(startPosition, new ChessPosition(whitePawnAdvance2Now.Row-1, whitePawnAdvance2Now.Col), null));
+                        }
+                    }
+                }
+                else{
+                    if(startPosition.Row == 5 && blackPawnAdvance2Now != null){
+                        if(canEnPass(new ChessMove(startPosition, new ChessPosition(blackPawnAdvance2Now.Row+1, blackPawnAdvance2Now.Col), null), TeamColor.WHITE)){
+                            System.out.print("white can en pass");
+                            validMoves.add(new ChessMove(startPosition, new ChessPosition(blackPawnAdvance2Now.Row+1, blackPawnAdvance2Now.Col), null));
+                        }
+                    }
+                }
+
+            }
         Collection<ChessMove> potentialMoves = gameBoard.getPiece(startPosition).pieceMoves(gameBoard, startPosition);
 
         Iterator<ChessMove> iteratePotentialMoves = potentialMoves.iterator();
@@ -328,6 +403,8 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        System.out.print("\n player turn");
+        System.out.print(playerTurn);
 
 
         if(move.getStartPosition().Row < 1 || move.getStartPosition().Row > 8 ||
@@ -343,6 +420,8 @@ public class ChessGame {
         if(gameBoard.getPiece(move.getStartPosition()) != null){
 
         ChessPiece currentPiece = new ChessPiece(gameBoard.getPiece(move.getStartPosition()).thisPieceColor, gameBoard.getPiece(move.getStartPosition()).pieceType);
+        System.out.print("\n current piece");
+        System.out.print(currentPiece);
         if (playerTurn == currentPiece.thisPieceColor){
         //Collection<ChessMove> potentialMoves = currentPiece.pieceMoves(gameBoard, move.getStartPosition());
             Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
@@ -369,23 +448,6 @@ public class ChessGame {
                     blackKingPosition.Row = endRow;
                     blackKingPosition.Col = endCol;
                 }}
-            /*if(this.isInCheck(playerTurn)){
-                gameBoard.addPiece(move.getStartPosition(), currentPiece);
-                if(currentPiece.pieceType == ChessPiece.PieceType.KING){
-                    if(currentPiece.thisPieceColor==TeamColor.WHITE){
-                        whiteKingPosition.Row = startRow;
-                        whiteKingPosition.Col = startCol;}
-                    else{
-                        blackKingPosition.Row = startRow;
-                        blackKingPosition.Col = startCol;
-                    }}
-                gameBoard.chessBoardArray[endRow-1][endCol-1] = null;
-                if(hasEndPiece == true){
-                    gameBoard.addPiece(move.getEndPosition(), endPiece);
-                }
-                InvalidMoveException exception = new InvalidMoveException("Your king is in check");
-                throw exception;
-            }*/
             //else{
                 if(currentPiece.pieceType == ChessPiece.PieceType.KING){
                 if(move.getEndPosition().Col-move.getStartPosition().Col == 2){
@@ -399,7 +461,6 @@ public class ChessGame {
                         whiteRook8Moved = true;
                     }
 
-
                 } else if (move.getEndPosition().Col-move.getStartPosition().Col == -2) {
                     gameBoard.addPiece(new ChessPosition(startRow, endCol +1), new ChessPiece(currentPiece.thisPieceColor, ChessPiece.PieceType.ROOK));
                     if(currentPiece.thisPieceColor == TeamColor.BLACK){
@@ -411,6 +472,26 @@ public class ChessGame {
                         whiteRookMoved = true;
                     }
                 }}
+            if(currentPiece.pieceType == ChessPiece.PieceType.PAWN){
+                if(currentPiece.thisPieceColor == TeamColor.BLACK){
+                    if(whitePawnAdvance2Now != null){
+                        if(whitePawnAdvance2Now.Row == 4 && startRow == 4 && ((startCol - whitePawnAdvance2Now.Col == 1) ||
+                                startCol - whitePawnAdvance2Now.Col == -1)){
+                            System.out.print("initals spacing check good");
+                            if(endCol == whitePawnAdvance2Now.Col && endRow == 3){
+
+                                System.out.print("okay spacing's good for black to en passant");
+                                gameBoard.chessBoardArray[startRow -1][startCol -1] = null;
+                                gameBoard.chessBoardArray[whitePawnAdvance2Now.Row -1][whitePawnAdvance2Now.Col -1] = null;
+                                gameBoard.addPiece(new ChessPosition(endRow, endCol), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.PAWN));}}}}
+                else{
+            if(blackPawnAdvance2Now != null){
+                if(blackPawnAdvance2Now.Row == 5 && startRow == 5 && ((startCol - blackPawnAdvance2Now.Col == 1) ||
+                        startCol - blackPawnAdvance2Now.Col == -1) && endCol == blackPawnAdvance2Now.Col && endRow == 6){
+                    gameBoard.chessBoardArray[startRow -1][startCol -1] = null;
+                    gameBoard.chessBoardArray[blackPawnAdvance2Now.Row -1][blackPawnAdvance2Now.Col -1] = null;
+                    gameBoard.addPiece(new ChessPosition(endRow, endCol), new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.PAWN));}}}}
+
                 if(startRow == 1 && startCol == 1 && currentPiece.pieceType == ChessPiece.PieceType.ROOK){
                     whiteRookMoved = true;
                 }
@@ -427,19 +508,24 @@ public class ChessGame {
             if(move.getPromotionPiece() != null){
                     gameBoard.getPiece(move.getEndPosition()).promotePiece(move.getPromotionPiece());}
                 if(playerTurn == TeamColor.WHITE){
+                    whitePawnAdvance2Now = null;
                     playerTurn = TeamColor.BLACK;
+                    if(currentPiece.pieceType == ChessPiece.PieceType.PAWN){
+                        if(endRow - startRow == 2){
+                            System.out.print("white pawn advance 2 = true");
+                            whitePawnAdvance2Now = new ChessPosition(endRow, endCol);}}
                 }
                 else{
                     playerTurn = TeamColor.WHITE;
+                    blackPawnAdvance2Now = null;
+                    if(currentPiece.pieceType == ChessPiece.PieceType.PAWN){
+                        if(endRow - startRow == -2){
+                            System.out.print("black pawn advance 2 = true");
+                            blackPawnAdvance2Now = new ChessPosition(endRow, endCol);}}
                 }
            // }
         }
         else{
-            if(gameBoard.getPiece(move.getStartPosition()).pieceType == ChessPiece.PieceType.KING) {
-                {
-
-                }
-            }
             InvalidMoveException exception = new InvalidMoveException("Invalid move!");
             throw exception;
         }}
@@ -788,6 +874,8 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
+        whitePawnAdvance2Now = null;
+        blackPawnAdvance2Now = null;
         numBlackPieces = 16;
         numWhitePieces = 16;
         blackKingMoved = false;
