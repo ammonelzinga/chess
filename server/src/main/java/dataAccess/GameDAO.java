@@ -3,7 +3,7 @@ import model.GameData;
 
 import java.util.ArrayList;
 public interface GameDAO {
-  public void createGame(model.GameData game) throws DataAccessException;
+  public void createGame(model.GameData game);
   public model.GameData getGame(int gameID) throws DataAccessException;
   public ArrayList<model.GameData> listGames();
   public void updateGame(int gameID, GameData updatedGame) throws DataAccessException;

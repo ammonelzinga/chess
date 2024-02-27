@@ -30,7 +30,8 @@ public class MemoryUserDAO implements UserDAO{
       return userMap.get(username);
     }
     else{
-      DataAccessException exception = new DataAccessException("username doesn't exist");
+      DataAccessException exception = new DataAccessException("Error: unauthorized");
+      exception.addStatusCode(401);
       throw exception;
     }
   }

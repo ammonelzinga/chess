@@ -5,19 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
-
   HashMap<Integer, GameData> mapGames = new HashMap<>();
   ArrayList<GameData> arrayGames = new ArrayList<>();
   @Override
-  public void createGame(model.GameData game) throws DataAccessException{
-      if(mapGames.containsKey(game.gameID())){
-        DataAccessException exception = new DataAccessException("Game already exists");
-        throw exception;
-      }
-      else{
+  public void createGame(model.GameData game){
         mapGames.put(game.gameID(), game);
         arrayGames.add(game);
-      }
   }
 
   @Override

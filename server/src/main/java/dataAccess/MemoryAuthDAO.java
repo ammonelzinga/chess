@@ -30,6 +30,14 @@ public class MemoryAuthDAO implements AuthDAO{
   }
 
   @Override
+  public boolean checkAuth(String authToken) {
+    if(authMap.containsKey(authToken)){
+      return true;}
+    else{
+      return false;
+    }
+  }
+  @Override
   public void deleteAuth(String authToken) throws DataAccessException {
         if(authMap.containsKey(authToken)){
     authMap.remove(authToken);}

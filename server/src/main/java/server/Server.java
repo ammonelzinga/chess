@@ -17,6 +17,7 @@ public class Server {
     GeneralService generalService = new GeneralService(userDAO, authDAO, gameDAO);
     GameService gameService = new GameService(userDAO, authDAO, gameDAO);
     UserHandler userHandler = new UserHandler(userDAO, authDAO, gameDAO, userService, generalService, gameService);
+    GameHandler gameHandler = new GameHandler(userDAO, authDAO, gameDAO, userService, generalService, gameService);
 
     public int run(int desiredPort) {
         System.out.print("running server");
@@ -30,6 +31,7 @@ public class Server {
         Spark.delete("/db", (req, res) -> userHandler.clearAll(req, res));
         Spark.post("/session", (req, res) -> userHandler.login(req, res));
         Spark.delete("/session", (req, res) -> userHandler.logout(req, res));
+        Spark.post("/game", (req, res) -> gameHandler.createGame(req, res));
 
         Spark.awaitInitialization();
         return Spark.port();

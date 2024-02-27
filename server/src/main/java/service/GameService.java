@@ -13,6 +13,7 @@ public class GameService extends GeneralService{
   AuthDAO authDAO;
   GameDAO gameDAO;
   Random randInt = new Random();
+  private int nextGameID = 0;
 
   public GameService(UserDAO userD, AuthDAO authD, GameDAO gameD){
     userDAO = userD;
@@ -24,24 +25,18 @@ public class GameService extends GeneralService{
     return gameDAO.listGames();
   }
 
-  public boolean createGame(String gameName){
-    int gameID=0;
-    boolean uniqueID = false;
-    while(uniqueID == false){
-      gameID = randInt.nextInt(1000000);
-      if(gameDAO.uniqueGameID(gameID)==true){
-        uniqueID = true;
-      }
+  public GameData createGame(String gameName) throws DataAccessException{
+    if(gameName == null){
+      DataAccessException exception = new DataAccessException("Error: bad request");
+      exception.addStatusCode(400);
+      throw exception;
     }
+    else{
     ChessGame newGame = new ChessGame();
-    GameData newGameData = new GameData(gameID, null, null, gameName, newGame);
-    try{
+    nextGameID++;
+    GameData newGameData = new GameData(nextGameID, null, null, gameName, newGame);
       gameDAO.createGame(newGameData);
-      return true;
-    }
-    catch(Exception e){
-      return false;
-    }
+      return newGameData;}
   }
 
   public boolean joinGame(String authToken, String playerColor, int gameID){

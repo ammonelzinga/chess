@@ -27,6 +27,16 @@ public class GeneralService {
     return authData;
   }
 
+  public boolean checkAuth(String authToken) throws DataAccessException{
+    if(authDAO.checkAuth(authToken)){
+      return true;
+    }
+    else{
+      DataAccessException exception = new DataAccessException("Error: unauthorized");
+      exception.addStatusCode(401);
+      throw exception;
+    }
+  }
   public void deleteAllData(){
     userDAO.clearAllUserData();
     authDAO.deleteAll();
