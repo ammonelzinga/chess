@@ -11,16 +11,19 @@ public class UserService extends GeneralService{
     userDAO = userD;
     authDAO = authD;
   }
-  public AuthData register(UserData user) {
+  public AuthData register(UserData user) throws DataAccessException, alreadyTakenException{
       AuthData authData = null;
       try{
          userDAO.createUser(user);
          authData = createAuthModel(user);
          authDAO.createAuth(authData);
       }
-      catch(Exception e){
-          return null;
+      catch(DataAccessException exception){
+          throw exception;
       }
+      catch(alreadyTakenException exception){
+          throw exception;
+    }
       return authData;
   }
   public AuthData login(UserData user) {
