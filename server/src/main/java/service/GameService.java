@@ -6,6 +6,7 @@ import model.GameData;
 import model.UserData;
 import dataAccess.AuthDAO;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 
 public class GameService extends GeneralService{
@@ -21,7 +22,7 @@ public class GameService extends GeneralService{
     gameDAO = gameD;
   }
 
-  public ArrayList<GameData> listGames(){
+  public Collection<GameData> listGames(){
     return gameDAO.listGames();
   }
 

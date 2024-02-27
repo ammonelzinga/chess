@@ -2,6 +2,7 @@ package dataAccess;
 import model.GameData;
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
@@ -34,13 +35,14 @@ public class MemoryGameDAO implements GameDAO{
   }
 
   @Override
-  public ArrayList<GameData> listGames() {
-    if(mapGames.isEmpty()){
+  public Collection<GameData> listGames() {
+    /*if(mapGames.isEmpty()){
       return null;
-    }
-    else {
-      return new ArrayList<GameData>(mapGames.values());
-    }
+    }*/
+    //else {
+      //return new ArrayList<GameData>(mapGames.values());
+      return mapGames.values();
+    //}
   }
 
   @Override

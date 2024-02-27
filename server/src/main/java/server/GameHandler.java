@@ -29,6 +29,24 @@ public class GameHandler extends GeneralHandler {
     gameService=gameS;
   }
 
+  public Object listGames(Request req, Response res){
+    String authToken = req.headers("authorization");
+    try{
+      generalService.checkAuth(authToken);
+      var gameList = gameService.listGames();
+      res.type("application/json");
+      res.status(200);
+      return new Gson().toJson(Map.of("game", gameList));
+    }
+    catch(DataAccessException exception){
+      return handleError(exception, req, res);
+    }
+    catch(Exception exception){
+      return handleRandomError(exception, req, res);
+    }
+  }
+
+
   public Object createGame(Request req, Response res){
     String authToken = req.headers("authorization");
     var gameName = new Gson().fromJson(req.body(), GameNameRecord.class);
