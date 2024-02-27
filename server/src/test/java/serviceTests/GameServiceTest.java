@@ -7,6 +7,7 @@ import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import service.GameService;
+import service.GeneralService;
 
 class GameServiceTest {
 
@@ -14,12 +15,14 @@ class GameServiceTest {
   MemoryAuthDAO authDAO = new MemoryAuthDAO();
   MemoryGameDAO gameDAO = new MemoryGameDAO();
   GameService gameService = new GameService(userDAO, authDAO, gameDAO);
+  GeneralService generalService = new GeneralService(userDAO, authDAO, gameDAO);
   AuthData authDataTest = new AuthData("123", "first");
 
   @Test
   void listGames() {
     gameDAO.mapGames.put(123, new GameData(123, "first", null, "GameNameAwesome", new ChessGame()));
     Assertions.assertEquals(gameDAO.mapGames.values(), gameService.listGames());
+    Assertions.assertThrows(DataAccessException.class, () -> generalService.checkAuth("876"));
   }
 
   @Test

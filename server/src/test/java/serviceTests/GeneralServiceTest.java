@@ -26,6 +26,7 @@ class GeneralServiceTest {
       Assertions.assertEquals(authDataTest.username(), authData.username());
     AuthData authData2 = generalService.createAuthModel(userData);
     Assertions.assertNotEquals(authData.authToken(), authData2.authToken());
+    Assertions.assertThrows(DataAccessException.class, () -> generalService.checkAuth("564"));
   }
 
   @Test
