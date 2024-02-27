@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
-  HashMap<Integer, GameData> mapGames = new HashMap<>();
+  public HashMap<Integer, GameData> mapGames = new HashMap<>();
 
   @Override
   public void createGame(model.GameData game){

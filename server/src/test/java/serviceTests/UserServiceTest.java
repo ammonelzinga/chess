@@ -1,6 +1,4 @@
 package serviceTests;
-
-import chess.InvalidMoveException;
 import dataAccess.*;
 import model.AuthData;
 import model.UserData;
@@ -9,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import service.UserService;
 
 import java.util.HashMap;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
 
