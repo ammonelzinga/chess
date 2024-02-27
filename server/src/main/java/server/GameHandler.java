@@ -1,14 +1,12 @@
 package server;
 import dataAccess.AuthDAO;
 import dataAccess.GameDAO;
-import model.AuthData;
 import service.GameService;
 import service.GeneralService;
 import service.UserService;
 import spark.*;
 import com.google.gson.Gson;
 import java.util.*;
-import model.UserData;
 import dataAccess.*;
 
 public class GameHandler extends GeneralHandler {
@@ -29,14 +27,15 @@ public class GameHandler extends GeneralHandler {
     gameService=gameS;
   }
 
-  public Object listGames(Request req, Response res){
+  public Object joinGame(Request req, Response res){
     String authToken = req.headers("authorization");
     try{
       generalService.checkAuth(authToken);
-      var gameList = gameService.listGames();
+      var joinGameRecord = new Gson().fromJson(req.body(), JoinGameRecord.class);
+      gameService.joinGame(authToken, joinGameRecord.playerColor(), joinGameRecord.gameID());
       res.type("application/json");
       res.status(200);
-      return new Gson().toJson(Map.of("game", gameList));
+      return new Gson().toJson(new EmptyRecord());
     }
     catch(DataAccessException exception){
       return handleError(exception, req, res);
@@ -45,7 +44,22 @@ public class GameHandler extends GeneralHandler {
       return handleRandomError(exception, req, res);
     }
   }
-
+  public Object listGames(Request req, Response res){
+    String authToken = req.headers("authorization");
+    try{
+      generalService.checkAuth(authToken);
+      var gameList = gameService.listGames();
+      res.type("application/json");
+      res.status(200);
+      return new Gson().toJson(Map.of("games", gameList));
+    }
+    catch(DataAccessException exception){
+      return handleError(exception, req, res);
+    }
+    catch(Exception exception){
+      return handleRandomError(exception, req, res);
+    }
+  }
 
   public Object createGame(Request req, Response res){
     String authToken = req.headers("authorization");

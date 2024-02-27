@@ -1,7 +1,5 @@
 package dataAccess;
 import model.AuthData;
-
-import javax.xml.crypto.Data;
 import java.util.HashMap;
 
 public class MemoryAuthDAO implements AuthDAO{

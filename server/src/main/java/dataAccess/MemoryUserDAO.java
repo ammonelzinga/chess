@@ -1,7 +1,5 @@
 package dataAccess;
 import model.UserData;
-
-import javax.xml.crypto.Data;
 import java.util.HashMap;
 public class MemoryUserDAO implements UserDAO{
 
@@ -21,7 +19,7 @@ public class MemoryUserDAO implements UserDAO{
     }
     else{
     userMap.put(newUser.username(), newUser);
-    System.out.print("yayy put in new user");}
+    }
   }
 
   @Override
@@ -38,7 +36,6 @@ public class MemoryUserDAO implements UserDAO{
 
   @Override
   public String toString() {
-    System.out.println("Doing hashmap to string");
     return "MemoryUserDAO{" +
             "userMap=" + userMap.values() +
             '}';

@@ -14,7 +14,6 @@ public class UserService extends GeneralService{
   public AuthData register(UserData user) throws DataAccessException{
       AuthData authData = null;
       if(user.username() == null || user.email() == null || user.password() == null){
-        System.out.println("BAD Requestt");
         DataAccessException exception = new DataAccessException("Error: bad request");
         exception.addStatusCode(400);
         throw exception;

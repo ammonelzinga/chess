@@ -1,13 +1,11 @@
 package server;
 import dataAccess.AuthDAO;
 import dataAccess.GameDAO;
-import model.AuthData;
 import service.GameService;
 import service.GeneralService;
 import service.UserService;
 import spark.*;
 import com.google.gson.Gson;
-import java.util.*;
 import model.UserData;
 import dataAccess.*;
 
@@ -29,25 +27,17 @@ public class UserHandler extends GeneralHandler{
     gameService = gameS;
   }
 
-  public Object registerUser(Request req, Response res) throws DataAccessException{
+  public Object registerUser(Request req, Response res) {
     var newUser = new Gson().fromJson(req.body(), UserData.class);
-    //System.out.print("newUser: ");
-    //System.out.print(newUser.toString());
     try{
       var newAuthData = userService.register(newUser);
-      //System.out.println("Registered new user: ");
-      //System.out.print(userDAO.toString());
-      //System.out.println("End to String");
       res.status(200);
       return new Gson().toJson(newAuthData);
     }
     catch(DataAccessException exception){
-      System.out.print("data access exception");
       return handleError(exception, req, res);
-      //throw exception;
     }
     catch(Exception exception){
-      System.out.println("RandomExc");
       return handleRandomError(exception, req, res);
     }
   }
@@ -81,7 +71,6 @@ public class UserHandler extends GeneralHandler{
       return handleRandomError(exception, req, res);
     }
   }
-
 
   public Object clearAll(Request req, Response res) {
     try {
