@@ -546,6 +546,8 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        DiagonalCheck diagonalCheck = new DiagonalCheck();
+        HorizontalCheck horizontalCheck = new HorizontalCheck();
         ChessPosition KingPosition = new ChessPosition(1, 1);
         if(teamColor == TeamColor.WHITE){
             if(whiteKingFound == false){
@@ -613,182 +615,11 @@ public class ChessGame {
                             gameBoard.getPiece(tempPosition).pieceType == ChessPiece.PieceType.KNIGHT){
                         return true;}}}
         }
-
-        //potential check from diagonal
-        for(int i = 0; i < 8; i ++){
-            int tempRow = KingPosition.Row;
-            int tempCol = KingPosition.Col;
-            boolean firstDiagonal = true;
-            //check ++ row, ++ col Diagonal, queen/bishop
-            if(i ==0){
-                tempRow = KingPosition.Row +1;
-                tempCol = KingPosition.Col + 1;
-                while (tempRow < 9 && tempCol < 9){
-                    if(gameBoard.getPiece(new ChessPosition(tempRow, tempCol)) == null){
-                        tempRow ++;
-                        tempCol ++;
-                        firstDiagonal = false;
-                    }
-                    else{
-                        if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                                && ((gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                                gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.BISHOP) || (firstDiagonal == true &&
-                                (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.PAWN ||
-                                        gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)))){
-                            return true;
-                        }
-                        else{
-                            break;
-                        }}}}
-            //check ++ row, -- col Diagonal, queen/bishop
-            tempRow = KingPosition.Row+1;
-            tempCol = KingPosition.Col-1;
-            if(i==1){
-                firstDiagonal = true;
-                while (tempRow < 9 && tempCol > 0){
-                    if(gameBoard.getPiece(new ChessPosition(tempRow, tempCol)) == null){
-                        tempRow ++;
-                        tempCol --;
-                        firstDiagonal = false;
-                    }
-                    else{
-                        if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                                && ((gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                                gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.BISHOP) || (firstDiagonal == true &&
-                                (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.PAWN ||
-                                        gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)))){
-                            return true;
-                        }
-                        else{
-                            break;
-                        }}}}
-            //check -- row, ++ col diagonal, queen/bishop
-            tempRow = KingPosition.Row-1;
-            tempCol = KingPosition.Col+1;
-            if(i==2){
-                firstDiagonal = true;
-                while (tempRow > 0 && tempCol < 9){
-                    if(gameBoard.getPiece(new ChessPosition(tempRow, tempCol)) == null){
-                        tempRow --;
-                        tempCol ++;
-                        firstDiagonal = false;
-                    }
-                    else{
-                        if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                                && ((gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                                gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.BISHOP)|| (firstDiagonal == true &&
-                                (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.PAWN ||
-                                        gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)))){
-                            return true;
-                        }
-                        else{
-                            break;
-                        }}}}
-            // row--, col -- diagonal queen/bishop
-            tempRow = KingPosition.Row-1;
-            tempCol = KingPosition.Col-1;
-            if(i==3){
-                firstDiagonal = true;
-                while (tempRow > 0 && tempCol >0 ){
-                    if(gameBoard.getPiece(new ChessPosition(tempRow, tempCol)) == null){
-                        tempRow --;
-                        tempCol --;
-                        firstDiagonal = false;
-                    }
-
-                    else{
-                        if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                                && ((gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                                gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.BISHOP)|| (firstDiagonal == true &&
-                                (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.PAWN ||
-                        gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)))){
-                            return true;
-                        }
-                        else{
-                            break;
-                        }}}}
-                //check + COL, check to the right horizontally
-                if(i ==4){
-                    firstDiagonal = true;
-                    tempRow = KingPosition.Row;
-                    tempCol = KingPosition.Col+1;
-                    while (tempCol < 9){
-                        if(gameBoard.getPiece(new ChessPosition(tempRow, tempCol)) == null){
-                            tempCol ++;
-                            firstDiagonal = false;
-                        }
-                        else{
-                            if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                                    && (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.ROOK)|| (firstDiagonal == true &&
-                                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)){
-                                return true;
-                            }
-                            else{
-                                break;
-                            }}}}
-                //check --col, left horizontally
-                tempRow = KingPosition.Row;
-                tempCol = KingPosition.Col-1;
-                if(i==5){
-                    firstDiagonal = true;
-                    while (tempCol > 0){
-                        if(gameBoard.getPiece(new ChessPosition(tempRow, tempCol)) == null){
-                            tempCol --;
-                            firstDiagonal = false;
-                        }
-                        else{
-                            if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                                    && (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.ROOK)|| (firstDiagonal == true &&
-                                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)){
-                                return true;
-                            }
-                            else{
-                                break;
-                            }}}}
-                //check ++row, check up vertically
-                tempRow = KingPosition.Row+1;
-                tempCol = KingPosition.Col;
-                if(i==6){
-                    firstDiagonal = true;
-                    while (tempRow < 9 && tempCol < 9){
-                        if(gameBoard.getPiece(new ChessPosition(tempRow, tempCol)) == null){
-                            tempRow ++;
-                            firstDiagonal = false;
-                        }
-                        else{
-                            if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                                    && (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.ROOK)|| (firstDiagonal == true &&
-                                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)){
-                                return true;
-                            }
-                            else{
-                                break;
-                            }}}}
-                // row -- down vertically
-                tempRow = KingPosition.Row-1;
-                tempCol = KingPosition.Col;
-                if(i==7){
-                    firstDiagonal = true;
-                    while (tempRow >0 && tempCol < 9){
-                        if(gameBoard.getPiece(new ChessPosition(tempRow, tempCol)) == null){
-                            tempRow --;
-                            firstDiagonal = false;
-                        }
-                        else{
-                            if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                                    && (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.ROOK)|| (firstDiagonal == true &&
-                                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)){
-                                return true;
-                            }
-                            else{
-                                break;
-                            }}}
-            }
-
+        if(diagonalCheck.checkDiagonal(KingPosition, gameBoard, teamColor)){
+            return true;
+        }
+        if(horizontalCheck.checkDiagonal(KingPosition, gameBoard, teamColor)){
+            return true;
         }
         return inCheck;
         //throw new RuntimeException("Not implemented");
