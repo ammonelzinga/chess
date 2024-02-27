@@ -29,18 +29,19 @@ public class UserService extends GeneralService{
       }
       return authData;
   }
-  public AuthData login(UserData user) {
-    AuthData authData=null;
-    try {
+  public AuthData login(UserData user) throws DataAccessException {
+      AuthData authData=null;
       UserData userData=userDAO.getUser(user.username());
-      if (userData.password() == user.password()) {
+      if (userData.password().equals(user.password())) {
         authData=createAuthModel(user);
         authDAO.createAuth(authData);
+        return authData;
       }
-    } catch (Exception e) {
-      return null;
-    }
-    return authData;
+      else{
+        DataAccessException exception = new DataAccessException("Error: unauthorized");
+        exception.addStatusCode(401);
+        throw exception;
+      }
   }
 
   public void logout(String authToken) {

@@ -28,6 +28,7 @@ public class Server {
         Spark.post("/user", (req, res) -> userHandler.registerUser(req, res));
         Spark.exception(DataAccessException.class, this::exceptionHandler);
         Spark.delete("/db", (req, res) -> userHandler.clearAll(req, res));
+        Spark.post("/session", (req, res) -> userHandler.login(req, res));
 
 
 

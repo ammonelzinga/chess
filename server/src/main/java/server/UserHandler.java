@@ -51,6 +51,21 @@ public class UserHandler extends GeneralHandler{
     }
   }
 
+  public Object login(Request req, Response res){
+    var user = new Gson().fromJson(req.body(), UserData.class);
+    try{
+      var authData = userService.login(user);
+      res.status(200);
+      return new Gson().toJson(authData);
+    }
+    catch(DataAccessException exception){
+      return handleError(exception, req, res);
+    }
+    catch(Exception exception){
+      return handleRandomError(exception, req, res);
+    }
+  }
+
   public Object clearAll(Request req, Response res) {
     try {
       generalService.deleteAllData();
