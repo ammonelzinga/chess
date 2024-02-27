@@ -13,13 +13,15 @@ public class MemoryUserDAO implements UserDAO{
   }
 
   @Override
-  public void createUser(UserData newUser) throws DataAccessException, alreadyTakenException {
+  public void createUser(UserData newUser) throws DataAccessException {
     if(userMap.containsKey(newUser.username())){
-      alreadyTakenException exception = new alreadyTakenException("already taken");
+      DataAccessException exception = new DataAccessException("Error: already taken");
+      exception.addStatusCode(403);
       throw exception;
     }
     else{
-    userMap.put(newUser.username(), newUser);}
+    userMap.put(newUser.username(), newUser);
+    System.out.print("yayy put in new user");}
   }
 
   @Override
@@ -33,5 +35,11 @@ public class MemoryUserDAO implements UserDAO{
     }
   }
 
-
+  @Override
+  public String toString() {
+    System.out.println("Doing hashmap to string");
+    return "MemoryUserDAO{" +
+            "userMap=" + userMap.values() +
+            '}';
+  }
 }

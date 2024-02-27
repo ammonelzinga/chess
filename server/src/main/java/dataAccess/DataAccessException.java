@@ -5,8 +5,14 @@ package dataAccess;
  */
 public class DataAccessException extends Exception{
 
-    //public DataAccessException() {}
+    int statusCode;
     public DataAccessException(String message) {
         super(message);
+    }
+    public void addStatusCode(int status){
+        statusCode = status;
+    }
+    public int getStatusCode(){
+        return statusCode;
     }
 }

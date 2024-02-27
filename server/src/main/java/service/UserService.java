@@ -11,8 +11,14 @@ public class UserService extends GeneralService{
     userDAO = userD;
     authDAO = authD;
   }
-  public AuthData register(UserData user) throws DataAccessException, alreadyTakenException{
+  public AuthData register(UserData user) throws DataAccessException{
       AuthData authData = null;
+      if(user.username() == null || user.email() == null || user.password() == null){
+        System.out.println("BAD Requestt");
+        DataAccessException exception = new DataAccessException("Error: bad request");
+        exception.addStatusCode(400);
+        throw exception;
+      }
       try{
          userDAO.createUser(user);
          authData = createAuthModel(user);
@@ -21,9 +27,6 @@ public class UserService extends GeneralService{
       catch(DataAccessException exception){
           throw exception;
       }
-      catch(alreadyTakenException exception){
-          throw exception;
-    }
       return authData;
   }
   public AuthData login(UserData user) {
