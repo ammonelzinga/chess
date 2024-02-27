@@ -1,6 +1,7 @@
 package server;
 import dataAccess.AuthDAO;
 import dataAccess.GameDAO;
+import model.AuthData;
 import service.GameService;
 import service.GeneralService;
 import service.UserService;
@@ -65,6 +66,22 @@ public class UserHandler extends GeneralHandler{
       return handleRandomError(exception, req, res);
     }
   }
+
+  public Object logout(Request req, Response res){
+    String authToken = req.headers("authorization");
+    try{
+      userService.logout(authToken);
+      res.status(200);
+      return new Gson().toJson(new EmptyRecord());
+    }
+    catch(DataAccessException exception){
+      return handleError(exception, req, res);
+    }
+    catch(Exception exception){
+      return handleRandomError(exception, req, res);
+    }
+  }
+
 
   public Object clearAll(Request req, Response res) {
     try {

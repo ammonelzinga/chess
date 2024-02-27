@@ -44,10 +44,12 @@ public class UserService extends GeneralService{
       }
   }
 
-  public void logout(String authToken) {
+  public void logout(String authToken) throws DataAccessException {
     try {
       authDAO.deleteAuth(authToken);}
-    catch(Exception e){}
+    catch(DataAccessException exception){
+      throw exception;
+    }
   }
 
 }

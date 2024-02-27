@@ -34,7 +34,8 @@ public class MemoryAuthDAO implements AuthDAO{
         if(authMap.containsKey(authToken)){
     authMap.remove(authToken);}
         else{
-          DataAccessException exception = new DataAccessException("Auth Token doesn't exist");
+          DataAccessException exception = new DataAccessException("Error: unauthorized");
+          exception.addStatusCode(401);
           throw exception;
         }
 
