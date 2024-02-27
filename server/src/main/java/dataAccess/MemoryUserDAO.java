@@ -2,8 +2,7 @@ package dataAccess;
 import model.UserData;
 import java.util.HashMap;
 public class MemoryUserDAO implements UserDAO{
-
-  HashMap<String, UserData> userMap = new HashMap<>();
+  public HashMap<String, UserData> userMap = new HashMap<>();
 
   @Override
   public void clearAllUserData() {

@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class MemoryAuthDAO implements AuthDAO{
 
-  HashMap<String, AuthData> authMap = new HashMap<>();
+  public HashMap<String, AuthData> authMap = new HashMap<>();
   @Override
   public void createAuth(model.AuthData authData) throws DataAccessException {
       if(authMap.containsKey(authData.authToken())){
