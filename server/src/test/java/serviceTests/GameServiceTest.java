@@ -22,7 +22,14 @@ class GameServiceTest {
   void listGames() {
     gameDAO.mapGames.put(123, new GameData(123, "first", null, "GameNameAwesome", new ChessGame()));
     Assertions.assertEquals(gameDAO.mapGames.values(), gameService.listGames());
-    Assertions.assertThrows(DataAccessException.class, () -> generalService.checkAuth("876"));
+  }
+
+  @Test
+  void listGamesNeg() {
+    gameDAO.mapGames.put(123, new GameData(123, "first", null, "GameNameAwesome", new ChessGame()));
+    generalService.deleteAllData();
+    Assertions.assertEquals(0, gameService.listGames().size());
+
   }
 
   @Test
@@ -32,6 +39,10 @@ class GameServiceTest {
     Assertions.assertEquals(gameDataTest.gameID(), gameData.gameID());
     Assertions.assertEquals(gameDataTest.whiteUsername(), gameData.whiteUsername());
     Assertions.assertEquals(gameDataTest.gameName(), gameData.gameName());
+  }
+
+  @Test
+  void createGameNeg() throws DataAccessException{
     Assertions.assertThrows(DataAccessException.class, () -> gameService.createGame(null));
   }
 
@@ -44,6 +55,15 @@ class GameServiceTest {
     Assertions.assertTrue(tru);
     Assertions.assertNull(gameDAO.mapGames.get(1).whiteUsername());
     Assertions.assertEquals("first", gameDAO.mapGames.get(1).blackUsername());
+
+  }
+
+  @Test
+  void joinGameNeg() throws DataAccessException {
+    gameService.createGame("Awesome");
+    authDAO.authMap.put("123", authDataTest);
+    authDAO.authMap.put("456", authDataTest);
+    boolean tru =gameService.joinGame("123", "BLACK", 1);
     Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame("456", "BLACK", 1));
   }
 }

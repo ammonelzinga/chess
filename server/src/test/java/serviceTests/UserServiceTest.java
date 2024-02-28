@@ -25,6 +25,13 @@ class UserServiceTest {
     try{userService.register(userData);}
     catch(DataAccessException e){}
     Assertions.assertEquals(userMapTest, userDAO.userMap);
+  }
+
+  @Test
+  void registerNeg() throws DataAccessException{
+    userMapTest.put("first", userData);
+    try{userService.register(userData);}
+    catch(DataAccessException e){}
     Assertions.assertThrows(DataAccessException.class, () -> userService.register(userData));
   }
 
@@ -42,6 +49,21 @@ class UserServiceTest {
     } catch (DataAccessException e) {
     }
     Assertions.assertEquals("first", authData.username());
+  }
+
+  @Test
+  void loginNeg() throws DataAccessException {
+    AuthData authData = new AuthData("12345qwerty", "second");
+    userMapTest.put("second", userDataSecond);
+    try{userService.register(userData);}
+    catch(DataAccessException e){}
+    try {
+      userService.register(userDataSecond);
+    } catch (DataAccessException e) {}
+    try {
+      authData=userService.login(userData);
+    } catch (DataAccessException e) {
+    }
     Assertions.assertThrows(DataAccessException.class, () -> userService.login(userDataFake));
   }
   @Test
@@ -55,6 +77,19 @@ class UserServiceTest {
     }
     catch(DataAccessException e){}
     Assertions.assertEquals(0, authDAO.authMap.size());
+    Assertions.assertThrows(DataAccessException.class, () -> userService.logout("123"));
+  }
+
+  @Test
+  void logoutNeg() throws DataAccessException{
+    AuthData authData = new AuthData("12345qwerty", "second");
+    try{ authData = userService.register(userData);}
+    catch(DataAccessException e){}
+    Assertions.assertEquals(1, authDAO.authMap.size());
+    try{
+      userService.logout(authData.authToken());
+    }
+    catch(DataAccessException e){}
     Assertions.assertThrows(DataAccessException.class, () -> userService.logout("123"));
   }
 

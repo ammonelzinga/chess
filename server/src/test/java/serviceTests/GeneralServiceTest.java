@@ -24,9 +24,13 @@ class GeneralServiceTest {
   void createAuthModel() {
       AuthData authData = generalService.createAuthModel(userData);
       Assertions.assertEquals(authDataTest.username(), authData.username());
+  }
+
+  @Test
+  void createAuthModelNeg() {
+    AuthData authData = generalService.createAuthModel(userData);
     AuthData authData2 = generalService.createAuthModel(userData);
     Assertions.assertNotEquals(authData.authToken(), authData2.authToken());
-    Assertions.assertThrows(DataAccessException.class, () -> generalService.checkAuth("564"));
   }
 
   @Test
@@ -34,6 +38,12 @@ class GeneralServiceTest {
     authDAO.authMap.put("123", authDataTest);
     boolean tru = generalService.checkAuth("123");
     Assertions.assertTrue(tru);
+  }
+
+  @Test
+  void checkAuthNeg() throws DataAccessException{
+    authDAO.authMap.put("123", authDataTest);
+    boolean tru = generalService.checkAuth("123");
     Assertions.assertThrows(DataAccessException.class, () -> generalService.checkAuth("987"));
   }
 
