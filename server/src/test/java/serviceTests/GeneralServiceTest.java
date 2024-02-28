@@ -47,5 +47,6 @@ class GeneralServiceTest {
     Assertions.assertEquals(0, authDAO.authMap.size());
     Assertions.assertEquals(0, userDAO.userMap.size());
     Assertions.assertEquals(0, gameDAO.mapGames.size());
+    Assertions.assertThrows(DataAccessException.class, () -> generalService.checkAuth("987"));
   }
 }

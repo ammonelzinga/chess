@@ -78,7 +78,7 @@ public class ChessPiece {
         RookMove rookMove = new RookMove();
         PawnMove pawnMove = new PawnMove();
         Collection<ChessMove> potentialMoves = new HashSet<ChessMove>();
-        int currentRow = myPosition.Row;
+        int currentRow = myPosition.row;
         int currentColumn = myPosition.Col;
         ChessPosition tempPosition = new ChessPosition(currentRow, currentColumn);
         if (PieceType.PAWN == pieceType){

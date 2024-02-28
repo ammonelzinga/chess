@@ -29,7 +29,7 @@ public class PawnMove {
         tempPosition.updateCol(currentColumn - 1);
         if (board.getPiece(tempPosition) != null) {
           if (board.getPiece(tempPosition).getTeamColor() != thisPieceColor) {
-            if (tempPosition.Row == 1) {
+            if (tempPosition.row == 1) {
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentColumn - 1), ChessPiece.PieceType.QUEEN));
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentColumn - 1), ChessPiece.PieceType.ROOK));
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentColumn - 1), ChessPiece.PieceType.KNIGHT));
@@ -42,7 +42,7 @@ public class PawnMove {
         tempPosition.updateCol(currentColumn + 1);
         if (board.getPiece(tempPosition) != null) {
           if (board.getPiece(tempPosition).getTeamColor() != thisPieceColor) {
-            if (tempPosition.Row == 1) {
+            if (tempPosition.row == 1) {
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentColumn + 1), ChessPiece.PieceType.QUEEN));
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentColumn + 1), ChessPiece.PieceType.ROOK));
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentColumn + 1), ChessPiece.PieceType.KNIGHT));
@@ -76,7 +76,7 @@ public class PawnMove {
         tempPosition.updateCol(currentColumn - 1);
         if (board.getPiece(tempPosition) != null) {
           if (board.getPiece(tempPosition).getTeamColor() != thisPieceColor) {
-            if (tempPosition.Row == 1) {
+            if (tempPosition.row == 1) {
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentColumn - 1), ChessPiece.PieceType.QUEEN));
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentColumn - 1), ChessPiece.PieceType.ROOK));
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentColumn - 1), ChessPiece.PieceType.KNIGHT));
@@ -89,7 +89,7 @@ public class PawnMove {
         tempPosition.updateCol(currentColumn + 1);
         if (board.getPiece(tempPosition) != null) {
           if (board.getPiece(tempPosition).getTeamColor() != thisPieceColor) {
-            if (tempPosition.Row == 1) {
+            if (tempPosition.row == 1) {
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentColumn + 1), ChessPiece.PieceType.QUEEN));
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentColumn + 1), ChessPiece.PieceType.ROOK));
               potentialMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentColumn + 1), ChessPiece.PieceType.KNIGHT));

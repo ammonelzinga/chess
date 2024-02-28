@@ -42,12 +42,12 @@ public class KnightMove {
         tempPosition.updateCol(currentColumn - 2);
         tempPosition.updateRow((currentRow - 1));
       }
-      if (tempPosition.Row < 9 && tempPosition.Row > 0 && tempPosition.Col < 9 && tempPosition.Col > 0) {
+      if (tempPosition.row < 9 && tempPosition.row > 0 && tempPosition.Col < 9 && tempPosition.Col > 0) {
         if (board.getPiece(tempPosition) == null) {
-          potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tempPosition.Row, tempPosition.Col), null));
+          potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tempPosition.row, tempPosition.Col), null));
         } else {
           if (board.getPiece(tempPosition).getTeamColor() != thisPieceColor) {
-            potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tempPosition.Row, tempPosition.Col), null));
+            potentialMoves.add(new ChessMove(myPosition, new ChessPosition(tempPosition.row, tempPosition.Col), null));
           }
         }
 
