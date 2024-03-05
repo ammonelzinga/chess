@@ -42,19 +42,19 @@ public class sqlUserDAO implements UserDAO{
   @Override
   public void createUser(UserData newUser) throws DataAccessException {
     try (var conn = dbm.getConnection()) {
-      var addUserStatement = conn.prepareStatement("INSERT INTO usertable (username, password, email) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+      try(var addUserStatement = conn.prepareStatement("INSERT INTO usertable (username, password, email) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS)){
       addUserStatement.setString(1, newUser.username());
       addUserStatement.setString(2, newUser.password());
       addUserStatement.setString(3, newUser.email());
       addUserStatement.executeUpdate();
-      var resultSet = addUserStatement.getGeneratedKeys();
+      try (var resultSet = addUserStatement.getGeneratedKeys()){
       var id = "";
       if(resultSet.next()){
         id = resultSet.getString(1);
       }
       System.out.println("New Users Primary Key: ");
-      System.out.print(id);
-    }
+      System.out.print(id);}
+    }}
     catch(SQLException e){
       throw new DataAccessException(e.getMessage());
     }

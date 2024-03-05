@@ -11,14 +11,15 @@ public class Main {
     }
 
     private void run(){
-        UserData newUser = new UserData("Roo", "password", "roo@fakeemail.com");
+        UserData newUser = new UserData("Eeyore", "dismal", "eeyore@fakeemail.com");
         UserDAO sqlUserDao = new sqlUserDAO();
         try{sqlUserDao.createUser(newUser);}
         catch(DataAccessException e){
             System.out.print(e.getMessage());
         }
-        try{UserData currentUser = sqlUserDao.getUser("Tigger");
+        try{UserData currentUser = sqlUserDao.getUser("Rabbit");
             System.out.print(currentUser.username());
+            System.out.print(currentUser.password());
             System.out.print(currentUser.email());}
         catch(DataAccessException e){
             System.out.print(e.getMessage());
