@@ -4,6 +4,7 @@ import model.AuthData;
 import model.UserData;
 import dataAccess.AuthDAO;
 
+import java.sql.SQLException;
 import java.util.UUID;
 public class GeneralService {
 
@@ -37,10 +38,13 @@ public class GeneralService {
       throw exception;
     }
   }
-  public void deleteAllData(){
-    userDAO.clearAllUserData();
+  public void deleteAllData() throws DataAccessException{
+    try{userDAO.clearAllUserData();
     authDAO.deleteAll();
-    gameDAO.deleteAll();
+    gameDAO.deleteAll();}
+    catch(DataAccessException e){
+      throw e;
+    }
   }
 
 }

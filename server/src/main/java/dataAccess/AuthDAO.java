@@ -5,5 +5,5 @@ public interface AuthDAO {
   public model.AuthData getAuth(String authToken) throws DataAccessException;
   public void deleteAuth(String authToken) throws DataAccessException;
   public boolean checkAuth(String authToken);
-  public void deleteAll();
+  public void deleteAll() throws DataAccessException;
 }

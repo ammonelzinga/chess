@@ -1,6 +1,7 @@
 package dataAccess;
 import com.google.gson.Gson;
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,16 +36,35 @@ public class sqlUserDAO implements UserDAO{
   }
 
   @Override
-  public void clearAllUserData() {
+  public void clearAllUserData() throws DataAccessException {
+    try (var conn = dbm.getConnection()) {
+      try(var deleteUserTableStatement = conn.prepareStatement("TRUNCATE usertable")){
+        deleteUserTableStatement.executeUpdate();
+      }}
+    catch(SQLException e){
+      DataAccessException exception = new DataAccessException(e.getMessage());
+      throw exception;
+    }
+  }
 
+  private String hashPassword(String password){
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    String hashedPassword = encoder.encode(password);
+    return hashedPassword;
   }
 
   @Override
   public void createUser(UserData newUser) throws DataAccessException {
+    if(getUser(newUser.username()) != null){
+      DataAccessException exception = new DataAccessException("Error: already taken");
+      exception.addStatusCode(403);
+      throw exception;
+    }
+    String hashedPassword = hashPassword(newUser.password());
     try (var conn = dbm.getConnection()) {
       try(var addUserStatement = conn.prepareStatement("INSERT INTO usertable (username, password, email) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS)){
       addUserStatement.setString(1, newUser.username());
-      addUserStatement.setString(2, newUser.password());
+      addUserStatement.setString(2, hashedPassword);
       addUserStatement.setString(3, newUser.email());
       addUserStatement.executeUpdate();
       try (var resultSet = addUserStatement.getGeneratedKeys()){
@@ -72,13 +92,19 @@ public class sqlUserDAO implements UserDAO{
             var password = rs.getString("password");
             var email = rs.getString("email");
             UserData user = new UserData(name, password, email);
-            return user;
-          }
-        }
-      }
-    }
+            if(user != null){
+              return user;
+            }
+            else{
+              DataAccessException exception = new DataAccessException("Error: unauthorized");
+              exception.addStatusCode(401);
+              throw exception;
+            }
+          }}}}
     catch(SQLException e){
-      throw new DataAccessException(e.getMessage());
+      DataAccessException exception = new DataAccessException("Error: unauthorized");
+      exception.addStatusCode(401);
+      throw exception;
     }
     return null;
   }

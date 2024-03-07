@@ -27,7 +27,8 @@ class GameServiceTest {
   @Test
   void listGamesNeg() {
     gameDAO.mapGames.put(123, new GameData(123, "first", null, "GameNameAwesome", new ChessGame()));
-    generalService.deleteAllData();
+    try{generalService.deleteAllData();}
+    catch(Exception e){System.out.print(e.getMessage());}
     Assertions.assertEquals(0, gameService.listGames().size());
 
   }

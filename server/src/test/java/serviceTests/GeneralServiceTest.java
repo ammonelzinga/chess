@@ -53,7 +53,10 @@ class GeneralServiceTest {
     authDAO.authMap.put("456", authDataTest);
     userDAO.userMap.put("first", userData);
     gameDAO.mapGames.put(123, new GameData(123, "first", null, "GameNameAwesome", new ChessGame()));
-    generalService.deleteAllData();
+    try{generalService.deleteAllData();}
+    catch(DataAccessException e){
+      System.out.print(e.getMessage());
+    }
     Assertions.assertEquals(0, authDAO.authMap.size());
     Assertions.assertEquals(0, userDAO.userMap.size());
     Assertions.assertEquals(0, gameDAO.mapGames.size());

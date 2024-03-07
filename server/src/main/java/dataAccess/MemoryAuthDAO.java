@@ -47,7 +47,11 @@ public class MemoryAuthDAO implements AuthDAO{
 
   }
 @Override
-  public void deleteAll(){
-    authMap.clear();
+  public void deleteAll() throws DataAccessException {
+    try{authMap.clear();}
+    catch(Exception e){
+      DataAccessException exception = new DataAccessException(e.getMessage());
+      throw exception;
+    }
   }
 }

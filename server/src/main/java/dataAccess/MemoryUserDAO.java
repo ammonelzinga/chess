@@ -5,8 +5,12 @@ public class MemoryUserDAO implements UserDAO{
   public HashMap<String, UserData> userMap = new HashMap<>();
 
   @Override
-  public void clearAllUserData() {
-    userMap.clear();
+  public void clearAllUserData() throws DataAccessException{
+    try{userMap.clear();}
+    catch(Exception e){
+      DataAccessException exception = new DataAccessException(e.getMessage());
+      throw exception;
+    }
   }
 
   @Override

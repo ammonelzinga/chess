@@ -3,6 +3,7 @@ import dataAccess.*;
 import model.AuthData;
 import model.UserData;
 import dataAccess.AuthDAO;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserService extends GeneralService{
   UserDAO userDAO;
@@ -30,13 +31,24 @@ public class UserService extends GeneralService{
   }
   public AuthData login(UserData user) throws DataAccessException {
       AuthData authData=null;
-      UserData userData=userDAO.getUser(user.username());
-      if (userData.password().equals(user.password())) {
+      try{UserData userData=userDAO.getUser(user.username());
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+      if (encoder.matches(user.password(), userData.password())) {
         authData=createAuthModel(user);
         authDAO.createAuth(authData);
         return authData;
       }
       else{
+        DataAccessException exception = new DataAccessException("Error: unauthorized");
+        exception.addStatusCode(401);
+        throw exception;
+      }}
+      catch(DataAccessException e){
+        DataAccessException exception = new DataAccessException("Error: unauthorized");
+        exception.addStatusCode(401);
+        throw exception;
+      }
+      catch(Exception e){
         DataAccessException exception = new DataAccessException("Error: unauthorized");
         exception.addStatusCode(401);
         throw exception;
