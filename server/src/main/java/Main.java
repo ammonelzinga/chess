@@ -2,6 +2,9 @@ import chess.*;
 import server.Server;
 import dataAccess.*;
 import model.*;
+
+import java.sql.SQLException;
+
 //public static void main(String[] args)
 public class Main {
     public static void main(String[] args) {
@@ -11,6 +14,12 @@ public class Main {
     }
 
     private void run(){
+        /*GameDAO sqlgameD = new sqlGameDAO();
+        GameData game = new GameData(1, "ammon", "emma", "love", new ChessGame());
+        try{sqlgameD.createGame(game);}
+            catch(Exception e){
+                System.out.print(e.getMessage());
+            }*/
         //UserDAO sqlUserDao = new sqlUserDAO();
         /*UserData newUser = new UserData("Eeyore", "dismal", "eeyore@fakeemail.com");
         UserDAO sqlUserDao = new sqlUserDAO();

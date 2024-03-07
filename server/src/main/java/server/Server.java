@@ -10,7 +10,7 @@ public class Server {
 
     UserDAO userDAO = new sqlUserDAO();
     AuthDAO authDAO = new sqlAuthDAO();
-    GameDAO gameDAO = new MemoryGameDAO();
+    GameDAO gameDAO = new sqlGameDAO();
     UserService userService = new UserService(userDAO, authDAO);
     GeneralService generalService = new GeneralService(userDAO, authDAO, gameDAO);
     GameService gameService = new GameService(userDAO, authDAO, gameDAO);

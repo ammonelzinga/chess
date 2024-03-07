@@ -28,6 +28,7 @@ public class GameService extends GeneralService {
       throw exception;
     } else {
       ChessGame newGame=new ChessGame();
+      //SQL now handles the game ID, soooooo update this code
       nextGameID++;
       GameData newGameData=new GameData(nextGameID, null, null, gameName, newGame);
       gameDAO.createGame(newGameData);
