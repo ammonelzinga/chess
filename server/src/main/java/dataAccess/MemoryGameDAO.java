@@ -7,8 +7,9 @@ public class MemoryGameDAO implements GameDAO{
   public HashMap<Integer, GameData> mapGames = new HashMap<>();
 
   @Override
-  public void createGame(model.GameData game){
+  public int createGame(model.GameData game){
         mapGames.put(game.gameID(), game);
+        return game.gameID();
   }
 
   @Override
@@ -24,8 +25,13 @@ public class MemoryGameDAO implements GameDAO{
   }
 
   @Override
-  public Collection<GameData> listGames() {
-      return mapGames.values();
+  public Collection<GameData> listGames() throws DataAccessException {
+      try{return mapGames.values();}
+      catch(Exception e){
+        DataAccessException exception = new DataAccessException("Error: unauthorized");
+        exception.addStatusCode(401);
+        throw exception;
+      }
   }
 
   @Override
@@ -40,8 +46,12 @@ public class MemoryGameDAO implements GameDAO{
     }
   }
 @Override
-  public void deleteAll(){
-    mapGames.clear();
+  public void deleteAll() throws DataAccessException{
+    try{mapGames.clear();}
+    catch(Exception e){
+      DataAccessException exception = new DataAccessException(e.getMessage());
+      throw exception;
+    }
   }
 
 }

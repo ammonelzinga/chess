@@ -15,11 +15,20 @@ public class Main {
 
     private void run(){
         /*GameDAO sqlgameD = new sqlGameDAO();
-        GameData game = new GameData(1, "ammon", "emma", "love", new ChessGame());
+        ChessGame newGame=new ChessGame();
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
+        newGame.setBoard(board);
+        GameData game = new GameData(2, "ammon", "emma", "awesome", newGame);
         try{sqlgameD.createGame(game);}
             catch(Exception e){
                 System.out.print(e.getMessage());
-            }*/
+            }
+        try{GameData gameData = sqlgameD.getGame(2); System.out.print(gameData.toString());
+        System.out.print(gameData.game().getBoard().toString());}
+        catch(DataAccessException e){
+            System.out.print(e.getMessage());
+        }*/
         //UserDAO sqlUserDao = new sqlUserDAO();
         /*UserData newUser = new UserData("Eeyore", "dismal", "eeyore@fakeemail.com");
         UserDAO sqlUserDao = new sqlUserDAO();

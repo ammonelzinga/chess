@@ -17,7 +17,7 @@ public class sqlAuthDAO implements AuthDAO{
       var createAuthTable ="""
               CREATE TABLE IF NOT EXISTS authtable (
                 authtoken VARCHAR(255) NOT NULL,
-                username VARCHAR(255), NOT NULL,
+                username VARCHAR(255) NOT NULL,
                 PRIMARY KEY (authtoken)
               )""";
 
@@ -117,7 +117,8 @@ public class sqlAuthDAO implements AuthDAO{
 
   @Override
   public boolean checkAuth(String authToken) {
-    try{getAuth(authToken); return true;
+    try{if(getAuth(authToken) != null){ return true;}
+      else{return false;}
     }
     catch(DataAccessException e){
       return false;

@@ -1,8 +1,11 @@
 package service;
+import chess.ChessBoard;
 import chess.ChessGame;
 import dataAccess.*;
 import model.GameData;
 import dataAccess.AuthDAO;
+
+import javax.xml.crypto.Data;
 import java.util.Collection;
 
 public class GameService extends GeneralService {
@@ -17,8 +20,11 @@ public class GameService extends GeneralService {
     gameDAO=gameD;
   }
 
-  public Collection<GameData> listGames() {
-    return gameDAO.listGames();
+  public Collection<GameData> listGames() throws DataAccessException {
+    try{return gameDAO.listGames();}
+    catch(DataAccessException e){
+      throw e;
+    }
   }
 
   public GameData createGame(String gameName) throws DataAccessException {
@@ -28,18 +34,28 @@ public class GameService extends GeneralService {
       throw exception;
     } else {
       ChessGame newGame=new ChessGame();
-      //SQL now handles the game ID, soooooo update this code
+      ChessBoard board = new ChessBoard();
+      board.resetBoard();
+      newGame.setBoard(board);
       nextGameID++;
       GameData newGameData=new GameData(nextGameID, null, null, gameName, newGame);
-      gameDAO.createGame(newGameData);
-      return newGameData;
+      int realGameID = gameDAO.createGame(newGameData);
+      GameData realGameData=new GameData(realGameID, null, null, gameName, newGame);
+      return realGameData;
     }
   }
 
   public boolean joinGame(String authToken, String playerColor, int gameID) throws DataAccessException {
     try {
       GameData gameData=gameDAO.getGame(gameID);
+      if(gameData == null){
+        DataAccessException exception=new DataAccessException("Error: bad request");
+        exception.addStatusCode(400);
+        throw exception;
+      }
+      else{
       if (playerColor == null || playerColor.equals("")) {
+        System.out.print("potential audience");
         return true;
       }
       if (playerColor.equals("BLACK")) {
@@ -69,8 +85,9 @@ public class GameService extends GeneralService {
         DataAccessException exception=new DataAccessException("Error: bad request");
         exception.addStatusCode(400);
         throw exception;
-      }
+      }}
     } catch (DataAccessException exception) {
+      System.out.print(exception.getMessage());
       throw exception;}
   }
 

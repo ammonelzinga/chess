@@ -20,16 +20,23 @@ class GameServiceTest {
 
   @Test
   void listGames() {
-    gameDAO.mapGames.put(123, new GameData(123, "first", null, "GameNameAwesome", new ChessGame()));
-    Assertions.assertEquals(gameDAO.mapGames.values(), gameService.listGames());
+    try{gameDAO.mapGames.put(123, new GameData(123, "first", null, "GameNameAwesome", new ChessGame()));
+    Assertions.assertEquals(gameDAO.mapGames.values(), gameService.listGames());}
+    catch(DataAccessException e){
+      System.out.print(e.getMessage());
+    }
+
   }
 
   @Test
   void listGamesNeg() {
-    gameDAO.mapGames.put(123, new GameData(123, "first", null, "GameNameAwesome", new ChessGame()));
+    try{gameDAO.mapGames.put(123, new GameData(123, "first", null, "GameNameAwesome", new ChessGame()));
     try{generalService.deleteAllData();}
     catch(Exception e){System.out.print(e.getMessage());}
-    Assertions.assertEquals(0, gameService.listGames().size());
+    Assertions.assertEquals(0, gameService.listGames().size());}
+    catch(DataAccessException e){
+      System.out.print(e.getMessage());
+    }
 
   }
 
