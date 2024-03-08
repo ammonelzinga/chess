@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import model.UserData;
 import dataAccess.DataAccessException;
-import static org.junit.jupiter.api.Assertions.*;
 
 class sqlUserDAOTest {
   public UserDAO sqlUserDao=new sqlUserDAO();
