@@ -43,13 +43,14 @@ public class sqlAuthDAO implements AuthDAO{
         addAuthStatement.setString(1, authData.authToken());
         addAuthStatement.setString(2, authData.username());
         addAuthStatement.executeUpdate();
-        try (var resultSet = addAuthStatement.getGeneratedKeys()){
-          var id = "";
-          if(resultSet.next()){
-            id = resultSet.getString(1);
+        try (var resultSet = addAuthStatement.getGeneratedKeys()) {
+          var id="";
+          if (resultSet.next()) {
+            id=resultSet.getString(1);
           }
-          System.out.println("New Auth Primary Key: ");
-          System.out.print(id);}
+          //System.out.println("New Auth Primary Key: ");
+          //System.out.print(id);}
+        }
       }}
     catch(SQLException e){
       throw new DataAccessException(e.getMessage());

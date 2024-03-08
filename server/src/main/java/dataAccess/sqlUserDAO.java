@@ -67,13 +67,14 @@ public class sqlUserDAO implements UserDAO{
       addUserStatement.setString(2, hashedPassword);
       addUserStatement.setString(3, newUser.email());
       addUserStatement.executeUpdate();
-      try (var resultSet = addUserStatement.getGeneratedKeys()){
-      var id = "";
-      if(resultSet.next()){
-        id = resultSet.getString(1);
+      try (var resultSet = addUserStatement.getGeneratedKeys()) {
+        var id="";
+        if (resultSet.next()) {
+          id=resultSet.getString(1);
+        }
+        //System.out.println("New Users Primary Key: ");
+        //System.out.print(id);}
       }
-      System.out.println("New Users Primary Key: ");
-      System.out.print(id);}
     }}
     catch(SQLException e){
       throw new DataAccessException(e.getMessage());

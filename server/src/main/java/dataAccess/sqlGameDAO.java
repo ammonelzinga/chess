@@ -1,6 +1,5 @@
 package dataAccess;
 import model.GameData;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import com.google.gson.Gson;
@@ -111,7 +110,8 @@ public class sqlGameDAO implements GameDAO{
       try (var ps = conn.prepareStatement(statement)) {
         try (var rs = ps.executeQuery()) {
           while (rs.next()) {
-            mapGames.put(rs.getInt("gameid"), readGame(rs));
+            var gameID = rs.getInt("gameid");
+            mapGames.put(gameID, readGame(rs, gameID));
           }}}
     return mapGames.values();}
   catch(SQLException e){
@@ -120,10 +120,11 @@ public class sqlGameDAO implements GameDAO{
     throw exception;
     }
   }
-  GameData readGame(ResultSet rs) throws DataAccessException{
+  GameData readGame(ResultSet rs, int gameID) throws DataAccessException{
     try{var gameString = rs.getString("game");
-    var game = new Gson().fromJson(gameString, GameData.class);
-    return game;}
+    var gameData = new Gson().fromJson(gameString, GameData.class);
+    GameData realGame = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
+    return realGame;}
     catch(SQLException e){
       DataAccessException exception = new DataAccessException("Error: unauthorized");
       exception.addStatusCode(401);
