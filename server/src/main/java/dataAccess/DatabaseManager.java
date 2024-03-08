@@ -26,6 +26,7 @@ public class DatabaseManager {
         var port = Integer.parseInt(props.getProperty("db.port"));
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
       }
+      createDatabase();
     } catch (Exception ex) {
       throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
     }
