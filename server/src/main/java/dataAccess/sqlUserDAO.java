@@ -10,6 +10,13 @@ import java.sql.Statement;
 public class sqlUserDAO implements UserDAO{
   DatabaseManager dbm = new DatabaseManager();
 
+  public sqlUserDAO(){
+    try{configureUserTable();}
+    catch(DataAccessException e){
+      System.out.print(e.getMessage());
+    }
+  }
+
   void configureUserTable() throws DataAccessException {
     try (var conn = dbm.getConnection()) {
       var createUserTable ="""

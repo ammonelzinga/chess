@@ -12,6 +12,13 @@ public class sqlAuthDAO implements AuthDAO{
 
   DatabaseManager dbm = new DatabaseManager();
 
+  public sqlAuthDAO(){
+    try{configureAuthTable();}
+    catch(DataAccessException e){
+      System.out.print(e.getMessage());
+    }
+  }
+
    void configureAuthTable() throws DataAccessException {
     try (var conn = dbm.getConnection()) {
       var createAuthTable ="""

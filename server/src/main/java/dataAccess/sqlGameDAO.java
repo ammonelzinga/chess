@@ -17,6 +17,13 @@ import java.util.HashMap;
 public class sqlGameDAO implements GameDAO{
   DatabaseManager dbm = new DatabaseManager();
 
+  public sqlGameDAO(){
+    try{configureGameTable();}
+    catch(DataAccessException e){
+      System.out.print(e.getMessage());
+    }
+  }
+
   void configureGameTable() throws DataAccessException {
     try (var conn = dbm.getConnection()) {
       var createGameTable ="""
