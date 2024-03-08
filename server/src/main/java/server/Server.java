@@ -17,7 +17,13 @@ public class Server {
     UserHandler userHandler = new UserHandler(userDAO, authDAO, gameDAO, userService, generalService, gameService);
     GameHandler gameHandler = new GameHandler(userDAO, authDAO, gameDAO, userService, generalService, gameService);
 
+    DatabaseManager dbm = new DatabaseManager();
+
     public int run(int desiredPort) {
+        /*try{dbm.createDatabase();}
+        catch(Exception e){
+            System.out.print(e.getMessage());
+        }*/
         System.out.print("running server");
         Spark.port(desiredPort);
 
