@@ -15,41 +15,46 @@ public class ServerFacade {
       System.out.print("ServerFacade Main");
     }
 
-    public void run(String url, String method, String body, Class model) throws Exception{
-      Server server = new Server();
-      int port = 8080;
+    public Object run(String url, String method, boolean hasBody, String body, Class model, boolean hasHeader, String header) throws Exception{
+      //Server server = new Server();
+      //int port = 8080;
       //System.out.println("♕ 240 Chess Server: " + piece);
-      server.run(port);
+      //server.run(port);
       UserData user = new UserData("username", "password", "email");
       //HttpURLConnection http = sendRequest("http://localhost:8080/session", "POST", new Gson().toJson(user));
-      HttpURLConnection http = sendRequest(url, method, body);
-      receiveResponse(http, model);
+      HttpURLConnection http = sendRequest(url, method, hasBody, body, hasHeader, header);
+      return receiveResponse(http, model);
     }
 
-    public static HttpURLConnection sendRequest(String url, String method, String body) throws URISyntaxException, IOException {
+    public static HttpURLConnection sendRequest(String url, String method, boolean hasBody, String body, boolean hasHeader, String header) throws URISyntaxException, IOException {
       URI uri = new URI(url);
       HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
       http.setRequestMethod(method);
-      writeRequestBody(body, http);
+      writeRequestBody(hasBody, body, http, hasHeader, header);
       http.connect();
       System.out.printf("= Request =========\n[%s] %s\n\n%s\n\n", method, url, body);
       return http;
     }
 
-    public static void writeRequestBody(String body, HttpURLConnection http) throws IOException {
+    public static void writeRequestBody(boolean hasBody, String body, HttpURLConnection http, boolean hasHeader, String header) throws IOException {
       if (!body.isEmpty()) {
         http.setDoOutput(true);
+        if(hasHeader){
+          http.addRequestProperty("Authorization", header);
+        }
+        if(hasBody){
         try (var outputStream = http.getOutputStream()) {
           outputStream.write(body.getBytes());
-        }
+        }}
       }
     }
 
-    public static void receiveResponse(HttpURLConnection http, Class model) throws IOException {
+    public static Object receiveResponse(HttpURLConnection http, Class model) throws IOException {
       var statusCode = http.getResponseCode();
       var statusMessage = http.getResponseMessage();
       Object responseBody = readResponseBody(http, model);
       System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, responseBody);
+      return responseBody;
     }
 
     public static Object readResponseBody(HttpURLConnection http, Class model) throws IOException {

@@ -59,6 +59,7 @@ public class UserHandler extends GeneralHandler{
 
   public Object logout(Request req, Response res){
     String authToken = req.headers("authorization");
+    System.out.print(req.headers());
     try{
       userService.logout(authToken);
       res.status(200);

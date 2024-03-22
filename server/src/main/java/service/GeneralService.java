@@ -30,6 +30,7 @@ public class GeneralService {
 
   public boolean checkAuth(String authToken) throws DataAccessException{
     if(authDAO.checkAuth(authToken)){
+      System.out.println("Great Authorization");
       return true;
     }
     else{
