@@ -3,6 +3,7 @@ import server.Server;
 import dataAccess.*;
 import model.*;
 
+
 import java.sql.SQLException;
 
 //public static void main(String[] args)
@@ -56,6 +57,7 @@ public class Main {
         //System.out.println("♕ 240 Chess Server: " + piece);
         server.run(port);
         System.out.print("okayy");
+
 
     }
 }

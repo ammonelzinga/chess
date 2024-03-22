@@ -1,15 +1,26 @@
+import com.google.gson.Gson;
+import model.AuthData;
+import model.UserData;
+import server.Server;
+
 import java.util.Scanner;
 
 public class LoggedOut {
+  ServerFacade serverFacade;
+  String url;
+  public LoggedOut(String URL){
+    serverFacade = new ServerFacade();
+    url = URL;
+  }
 
-  public static void main(String[] args) throws Exception {
+  public void main(String[] args) throws Exception {
     boolean stageLoggedOut = true;
     while (stageLoggedOut) {
       System.out.println("Welcome to 240 chess. Type Help to get started");
       Run();
     }
   }
-  public static void Run() throws Exception {
+  public void Run() throws Exception {
     Scanner scanner = new Scanner(System.in);
     String line = scanner.nextLine();
     if(line.equals("Help") || line.equals("help")){
@@ -19,7 +30,7 @@ public class LoggedOut {
       Login();
     }
   }
-  public static void Help() throws Exception {
+  public void Help() throws Exception {
       System.out.println("Register -- to create a new account");
       System.out.println("Login -- to play chess");
       System.out.println("Quit -- to exit chess");
@@ -27,11 +38,11 @@ public class LoggedOut {
       Run();
   }
 
-  public static void Quit(String[] args) throws Exception {
+  public void Quit(String[] args) throws Exception {
 
   }
 
-  public static void Login() throws Exception {
+  public void Login() throws Exception {
     String username;
     String password;
     System.out.println("Enter your username: ");
@@ -43,6 +54,9 @@ public class LoggedOut {
     System.out.println(username);
     System.out.print("Password enetered: ");
     System.out.print(password);
+    UserData userData = new UserData(username, password, "email");
+    String sessionUrl = url + "/session";
+    serverFacade.run(sessionUrl, "POST", new Gson().toJson(userData), AuthData.class);
   }
 
 
