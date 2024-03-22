@@ -2,8 +2,11 @@ import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import server.Server;
+import server.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class LoggedOut {
@@ -30,7 +33,7 @@ public class LoggedOut {
       runLoggedOut();
       System.out.print("finished runloggedout");}
       if(stage == "loggedIn"){
-        System.out.println("starting logged in");
+        //System.out.println("starting logged in");
         runPostLogin();
       }
     }
@@ -65,9 +68,9 @@ public class LoggedOut {
     System.out.print(authData.username());
     switch (line) {
       case "logout" -> Logout();
-      //case "create" -> createGame();
+      case "create" -> createGame();
       case "list"   -> listGames();
-      //case "join"   -> joinGame();
+      case "join"   -> joinGame();
       //case "observe" -> observeGame();
       default -> helpPost();
     }
@@ -132,7 +135,14 @@ public class LoggedOut {
     email = scanner.nextLine();
     UserData userData = new UserData(username, password, email);
     String sessionUrl = url + "/user";
-    serverFacade.run(sessionUrl, "POST", true, new Gson().toJson(userData), AuthData.class, false, "");
+    try{var objAuth = serverFacade.run(sessionUrl, "POST", true, new Gson().toJson(userData), AuthData.class, false, "");
+      String tempAuth = new Gson().toJson(objAuth);
+      authData = new Gson().fromJson(tempAuth, AuthData.class);
+      auth =authData.authToken();
+      stage = "loggedIn";}
+    catch(Exception e){
+      System.out.print(e.getMessage());
+    }
   }
 
   public void Logout() throws Exception {
@@ -148,11 +158,73 @@ public class LoggedOut {
     stage = "loggedOut";
   }
 
+  public void joinGame() throws Exception {
+    String sessionUrl = url + "/game";
+    String stringGameID;
+    System.out.println("Enter the GameID for the game you'd like to join: ");
+    Scanner scanner = new Scanner(System.in);
+    stringGameID = scanner.nextLine();
+    int gameID = Integer.parseInt(stringGameID);
+    String color;
+    System.out.println("Which color would you like to play as?");
+    color = scanner.nextLine();
+    color = color.toUpperCase();
+    JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
+    try{serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
+      System.out.println("Game join successful");}
+    catch(Exception e){
+      System.out.println(e.getMessage());
+    }
+  }
+  public void createGame() throws Exception{
+    String sessionUrl = url + "/game";
+    String gameName;
+    System.out.println("Enter your new Game Name: ");
+    Scanner scanner = new Scanner(System.in);
+    gameName = scanner.nextLine();
+    GameNameRecord gameNameRecord = new GameNameRecord(gameName);
+    try{var objGameID = serverFacade.run(sessionUrl, "POST", true, new Gson().toJson(gameNameRecord), GameIdRecord.class, true, auth);
+      String tempGameID = new Gson().toJson(objGameID);
+      GameIdRecord gameID = new Gson().fromJson(tempGameID, GameIdRecord.class);
+      System.out.println("");
+      System.out.println("Game Creation Successful. Your Game ID for " + gameName + " is " + gameID);
+    }
+    catch(Exception e){
+      System.out.print(e.getMessage());
+    }
+
+  }
+
   public void listGames() throws Exception {
     String sessionUrl = url + "/game";
-    try{serverFacade.run(sessionUrl, "GET", false, new Gson().toJson(authData), GameData.class, true, auth);}
+    int gameCount = 1;
+    try{var objGame = serverFacade.run(sessionUrl, "GET", false, new Gson().toJson(authData), Map.class, true, auth);
+      String tempGame = new Gson().toJson(objGame);
+      var mapGameData = new Gson().fromJson(tempGame, Map.class);
+      //System.out.print(mapGameData);
+      System.out.println("");
+      System.out.println("Here are the current games: ");
+      System.out.println("");
+      for(Object game : mapGameData.values()){
+        //System.out.println("Object....");
+        //System.out.print(game);
+        //System.out.print(game.getClass());
+        if(game.getClass() == ArrayList.class){
+          //System.out.println("True");
+          var realGameList = ((ArrayList<?>) game);
+          for(Object tempGameData : realGameList){
+            String newTempGame = new Gson().toJson(tempGameData);
+            GameData GameData = new Gson().fromJson(newTempGame, GameData.class);
+            System.out.println(gameCount + ") " + "GameID: " + GameData.gameID() + ", Game Name: " + GameData.gameName()
+              + ", WhiteUsername: " + GameData.whiteUsername() + ", BlackUsername: " + GameData.blackUsername());
+            gameCount++;
+          }
+        }
+      }
+    }
     catch(Exception e){
       System.out.print(e.getMessage());
     }
   }
+
 }
