@@ -4,16 +4,14 @@ import model.GameData;
 import model.UserData;
 import server.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class LoggedOut {
   ServerFacade serverFacade;
   String url;
   String auth;
   AuthData authData;
+  HashMap<Integer, Integer> gameNumberIDMap;
 
   String stage;
   boolean continueChess;
@@ -24,6 +22,7 @@ public class LoggedOut {
     stage = "loggedOut";
     continueChess = true;
     scanner = new Scanner(System.in);
+    gameNumberIDMap = new HashMap<>();
   }
 
   public void main(String[] args) throws Exception {
@@ -71,9 +70,14 @@ public class LoggedOut {
       case "create" -> createGame();
       case "list"   -> listGames();
       case "join"   -> joinGame();
-      //case "observe" -> observeGame();
+      case "observe" -> observeGame();
       default -> helpPost();
     }
+  }
+
+  public void drawChessBoard() throws Exception {
+
+
   }
 
   public void helpPost() throws Exception {
@@ -157,14 +161,29 @@ public class LoggedOut {
     authData = null;
     stage = "loggedOut";
   }
-
+  public void observeGame() throws Exception {
+    String sessionUrl = url + "/game";
+    String stringGameID;
+    System.out.println("Enter the game number for the game you'd like to join: ");
+    Scanner scanner = new Scanner(System.in);
+    stringGameID = scanner.nextLine();
+    int gameNum = Integer.parseInt(stringGameID);
+    int gameID = gameNumberIDMap.get(gameNum);
+    JoinGameRecord JoinGameRecord = new JoinGameRecord(null, gameID);
+    try{serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
+      System.out.println("You are now an observer for gameID: " + gameID);}
+    catch(Exception e){
+      System.out.println(e.getMessage());
+    }
+  }
   public void joinGame() throws Exception {
     String sessionUrl = url + "/game";
     String stringGameID;
-    System.out.println("Enter the GameID for the game you'd like to join: ");
+    System.out.println("Enter the game number for the game you'd like to join: ");
     Scanner scanner = new Scanner(System.in);
     stringGameID = scanner.nextLine();
-    int gameID = Integer.parseInt(stringGameID);
+    int gameNum = Integer.parseInt(stringGameID);
+    int gameID = gameNumberIDMap.get(gameNum);
     String color;
     System.out.println("Which color would you like to play as?");
     color = scanner.nextLine();
@@ -201,6 +220,8 @@ public class LoggedOut {
     try{var objGame = serverFacade.run(sessionUrl, "GET", false, new Gson().toJson(authData), Map.class, true, auth);
       String tempGame = new Gson().toJson(objGame);
       var mapGameData = new Gson().fromJson(tempGame, Map.class);
+      if(gameNumberIDMap!= null){
+        gameNumberIDMap.clear();}
       //System.out.print(mapGameData);
       System.out.println("");
       System.out.println("Here are the current games: ");
@@ -217,6 +238,7 @@ public class LoggedOut {
             GameData GameData = new Gson().fromJson(newTempGame, GameData.class);
             System.out.println(gameCount + ") " + "GameID: " + GameData.gameID() + ", Game Name: " + GameData.gameName()
               + ", WhiteUsername: " + GameData.whiteUsername() + ", BlackUsername: " + GameData.blackUsername());
+            gameNumberIDMap.put(gameCount, GameData.gameID());
             gameCount++;
           }
         }
@@ -226,5 +248,6 @@ public class LoggedOut {
       System.out.print(e.getMessage());
     }
   }
+
 
 }
