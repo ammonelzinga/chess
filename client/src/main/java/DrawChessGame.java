@@ -23,22 +23,32 @@ public class DrawChessGame {
     game=Game;
   }
 
-  public void main() {
+  public void main(boolean blackTop) {
     var out=new PrintStream(System.out, true, StandardCharsets.UTF_8);
-    drawBoard(out);
+    drawBoard(out, blackTop);
   }
 
-  private void drawBoard(PrintStream out) {
+  private void drawBoard(PrintStream out, boolean blackTop) {
+
+    if(blackTop){
     boolean white = true;
     for (int boardRow=8; boardRow > 0; boardRow--) {
-      drawRowOfSquares(out, boardRow, white);
+      drawRowOfSquares(out, boardRow, white, blackTop);
       white = !white;
       out.print(SET_BG_COLOR_LIGHT_GREY);
-    }
+    }}
+    else{
+      boolean white = true;
+      for (int boardRow=1; boardRow < 9; boardRow++) {
+        drawRowOfSquares(out, boardRow, white, blackTop);
+        white = !white;
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+    }}
 
   }
 
-  private void drawRowOfSquares(PrintStream out, int row, boolean White) {
+  private void drawRowOfSquares(PrintStream out, int row, boolean White, boolean blackTop) {
+    if(blackTop){
     boolean white=White;
     boolean whitewhite=true;
 
@@ -54,7 +64,7 @@ public class DrawChessGame {
         } else {
           out.print(SET_BG_COLOR_BLACK);
           out.print(SET_TEXT_COLOR_BLACK);
-          if (boardCol != 1) {
+          if (boardCol != 8) {
             white=true;
           }
         }
@@ -75,7 +85,45 @@ public class DrawChessGame {
       }
 
       out.println();
-    }
+    }}
+    else{
+      boolean white=White;
+      boolean whitewhite=true;
+
+      for (int squareRow=0; squareRow < 1; squareRow++) {
+        for (int boardCol=8; boardCol > 0; --boardCol) {
+          whitewhite=white;
+          if (white) {
+            out.print(SET_BG_COLOR_WHITE);
+            out.print(SET_TEXT_COLOR_WHITE);
+            if (boardCol != 1) {
+              white=false;
+            }
+          } else {
+            out.print(SET_BG_COLOR_BLACK);
+            out.print(SET_TEXT_COLOR_BLACK);
+            if (boardCol != 1) {
+              white=true;
+            }
+          }
+          if (squareRow == SQUARE_SIZE_IN_CHARS / 2) {
+            int prefixLength=SQUARE_SIZE_IN_CHARS / 2;
+            int suffixLength=SQUARE_SIZE_IN_CHARS - prefixLength - 1;
+
+            out.print(EMPTY.repeat(prefixLength));
+            printPlayer(out, row, boardCol, whitewhite);
+            out.print(EMPTY.repeat(suffixLength));
+          } else {
+            out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
+          }
+          //out.print(SET_BG_COLOR_LIGHT_GREY);
+          out.print(SET_BG_COLOR_DARK_GREY);
+          out.print(SET_TEXT_COLOR_DARK_GREY);
+        }
+
+        out.println();
+      }}
+
   }
 
   private void printPlayer(PrintStream out, int row, int col, boolean white) {

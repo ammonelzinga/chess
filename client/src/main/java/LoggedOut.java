@@ -185,7 +185,10 @@ public class LoggedOut {
       System.out.println("You are now an observer for gameID: " + gameID);
       listGames(false);
       artist.updateGame(gameMap.get(gameID).game());
-      artist.main();}
+      artist.main(false);
+      System.out.println("");
+      System.out.println("");
+      artist.main(true);}
     catch(Exception e){
       System.out.println(e.getMessage());
     }
@@ -207,7 +210,10 @@ public class LoggedOut {
       System.out.println("Game join successful");
       listGames(false);
       artist.updateGame(gameMap.get(gameID).game());
-      artist.main();
+      artist.main(false);
+      System.out.println("");
+      System.out.println("");
+      artist.main(true);
         }
     catch(Exception e){
       System.out.println(e.getMessage());
