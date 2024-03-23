@@ -55,7 +55,7 @@ public class GameService extends GeneralService {
       }
       else{
       if (playerColor == null || playerColor.equals("")) {
-        System.out.print("potential audience");
+        //System.out.print("potential audience");
         return true;
       }
       if (playerColor.equals("BLACK")) {

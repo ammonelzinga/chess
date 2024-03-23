@@ -32,7 +32,7 @@ public class ServerFacade {
       http.setRequestMethod(method);
       writeRequestBody(hasBody, body, http, hasHeader, header);
       http.connect();
-      System.out.printf("= Request =========\n[%s] %s\n\n%s\n\n", method, url, body);
+      //System.out.printf("= Request =========\n[%s] %s\n\n%s\n\n", method, url, body);
       return http;
     }
 
@@ -53,7 +53,7 @@ public class ServerFacade {
       var statusCode = http.getResponseCode();
       var statusMessage = http.getResponseMessage();
       Object responseBody = readResponseBody(http, model);
-      System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, responseBody);
+      //System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, responseBody);
       return responseBody;
     }
 
@@ -63,8 +63,8 @@ public class ServerFacade {
         InputStreamReader inputStreamReader = new InputStreamReader(respBody);
         responseBody = new Gson().fromJson(inputStreamReader, model);
       }
-      System.out.print("Response....");
-      System.out.print(responseBody);
+      //System.out.print("Response....");
+      //System.out.print(responseBody);
       return responseBody;
     }
   }

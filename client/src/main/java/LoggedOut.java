@@ -12,6 +12,8 @@ public class LoggedOut {
   String auth;
   AuthData authData;
   HashMap<Integer, Integer> gameNumberIDMap;
+  HashMap<Integer, GameData> gameMap;
+  DrawChessGame artist;
 
   String stage;
   boolean continueChess;
@@ -23,14 +25,17 @@ public class LoggedOut {
     continueChess = true;
     scanner = new Scanner(System.in);
     gameNumberIDMap = new HashMap<>();
+    gameMap = new HashMap<>();
+    artist = new DrawChessGame(null);
   }
 
   public void main(String[] args) throws Exception {
+    System.out.println("Welcome to 240 chess. Type Help to get started");
     while (continueChess) {
-      if(stage == "loggedOut"){
-      System.out.println("Welcome to 240 chess. Type Help to get started");
-      runLoggedOut();
-      System.out.print("finished runloggedout");}
+      if(stage == "loggedOut") {
+        runLoggedOut();
+        //System.out.print("finished runloggedout");}
+      }
       if(stage == "loggedIn"){
         //System.out.println("starting logged in");
         runPostLogin();
@@ -44,7 +49,7 @@ public class LoggedOut {
     switch (line) {
       case "login":
           Login();
-          System.out.print("end login");
+          //System.out.print("end login");
           break;
       case "register":
         Register();
@@ -63,22 +68,20 @@ public class LoggedOut {
   public void runPostLogin() throws Exception {
     String line = scanner.nextLine();
     line = line.toLowerCase();
-    System.out.println("Welcome back ");
-    System.out.print(authData.username());
+    //System.out.print("Welcome back ");
+    //System.out.println(authData.username());
+    System.out.println("");
+    helpPost();
     switch (line) {
       case "logout" -> Logout();
       case "create" -> createGame();
-      case "list"   -> listGames();
+      case "list"   -> listGames(true);
       case "join"   -> joinGame();
       case "observe" -> observeGame();
       default -> helpPost();
     }
   }
 
-  public void drawChessBoard() throws Exception {
-
-
-  }
 
   public void helpPost() throws Exception {
     System.out.println("logout -- sign out of your account");
@@ -87,6 +90,7 @@ public class LoggedOut {
     System.out.println("join -- an existing chess game");
     System.out.println("observe -- watch a chess game");
     System.out.println("help -- to view possible commands");
+    System.out.println("");
     //runPostLogin();
   }
   public void Help() throws Exception {
@@ -94,6 +98,7 @@ public class LoggedOut {
       System.out.println("Login -- to play chess");
       System.out.println("Quit -- to exit chess");
       System.out.println("Help -- to view possible commands");
+      System.out.println("");
       //runLoggedOut();
   }
 
@@ -109,17 +114,22 @@ public class LoggedOut {
     username = scanner.nextLine();
     System.out.println("Enter your password: ");
     password = scanner.nextLine();
-    System.out.print("Username entered: ");
-    System.out.println(username);
-    System.out.print("Password enetered: ");
-    System.out.print(password);
+    //System.out.print("Username entered: ");
+    //System.out.println(username);
+    //System.out.print("Password enetered: ");
+    //System.out.print(password);
     UserData userData = new UserData(username, password, "email");
     String sessionUrl = url + "/session";
     try{var objAuth = serverFacade.run(sessionUrl, "POST", true, new Gson().toJson(userData), AuthData.class, false, "");
     String tempAuth = new Gson().toJson(objAuth);
     authData = new Gson().fromJson(tempAuth, AuthData.class);
     auth =authData.authToken();
-    stage = "loggedIn";}
+    stage = "loggedIn";
+    System.out.print("Welcome back ");
+    System.out.println(authData.username());
+    System.out.println("");
+    helpPost();
+    listGames(false);}
     catch(Exception e){
       System.out.print(e.getMessage());
     }
@@ -143,7 +153,8 @@ public class LoggedOut {
       String tempAuth = new Gson().toJson(objAuth);
       authData = new Gson().fromJson(tempAuth, AuthData.class);
       auth =authData.authToken();
-      stage = "loggedIn";}
+      stage = "loggedIn";
+      listGames(false);}
     catch(Exception e){
       System.out.print(e.getMessage());
     }
@@ -171,7 +182,10 @@ public class LoggedOut {
     int gameID = gameNumberIDMap.get(gameNum);
     JoinGameRecord JoinGameRecord = new JoinGameRecord(null, gameID);
     try{serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
-      System.out.println("You are now an observer for gameID: " + gameID);}
+      System.out.println("You are now an observer for gameID: " + gameID);
+      listGames(false);
+      artist.updateGame(gameMap.get(gameID).game());
+      artist.main();}
     catch(Exception e){
       System.out.println(e.getMessage());
     }
@@ -190,7 +204,11 @@ public class LoggedOut {
     color = color.toUpperCase();
     JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
     try{serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
-      System.out.println("Game join successful");}
+      System.out.println("Game join successful");
+      listGames(false);
+      artist.updateGame(gameMap.get(gameID).game());
+      artist.main();
+        }
     catch(Exception e){
       System.out.println(e.getMessage());
     }
@@ -214,7 +232,7 @@ public class LoggedOut {
 
   }
 
-  public void listGames() throws Exception {
+  public void listGames(boolean print) throws Exception {
     String sessionUrl = url + "/game";
     int gameCount = 1;
     try{var objGame = serverFacade.run(sessionUrl, "GET", false, new Gson().toJson(authData), Map.class, true, auth);
@@ -222,9 +240,12 @@ public class LoggedOut {
       var mapGameData = new Gson().fromJson(tempGame, Map.class);
       if(gameNumberIDMap!= null){
         gameNumberIDMap.clear();}
+      if(gameMap!=null){
+        gameMap.clear();
+      }
       //System.out.print(mapGameData);
       System.out.println("");
-      System.out.println("Here are the current games: ");
+      if(print){System.out.println("Here are the current games: ");}
       System.out.println("");
       for(Object game : mapGameData.values()){
         //System.out.println("Object....");
@@ -236,9 +257,11 @@ public class LoggedOut {
           for(Object tempGameData : realGameList){
             String newTempGame = new Gson().toJson(tempGameData);
             GameData GameData = new Gson().fromJson(newTempGame, GameData.class);
+            if(print){
             System.out.println(gameCount + ") " + "GameID: " + GameData.gameID() + ", Game Name: " + GameData.gameName()
-              + ", WhiteUsername: " + GameData.whiteUsername() + ", BlackUsername: " + GameData.blackUsername());
+              + ", WhiteUsername: " + GameData.whiteUsername() + ", BlackUsername: " + GameData.blackUsername());}
             gameNumberIDMap.put(gameCount, GameData.gameID());
+            gameMap.put(GameData.gameID(), GameData);
             gameCount++;
           }
         }
