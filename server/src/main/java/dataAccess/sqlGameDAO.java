@@ -66,8 +66,8 @@ public class sqlGameDAO implements GameDAO{
           if(resultSet.next()){
             id = resultSet.getString(1);
           }
-          System.out.println("New Game Primary Key: ");
-          System.out.print(id);
+          //System.out.println("New Game Primary Key: ");
+          //System.out.print(id);
           int gameID = Integer.parseInt(id);
           return gameID;}
       }}
@@ -91,8 +91,8 @@ public class sqlGameDAO implements GameDAO{
             var game = rs.getString("game");
             var gameData = new Gson().fromJson(game, GameData.class);
             if(gameData != null){
-              System.out.print("gameId: ");
-              System.out.print(gameData.gameID());
+              //System.out.print("gameId: ");
+              //System.out.print(gameData.gameID());
               return gameData;
             }
             else{
@@ -152,7 +152,7 @@ public class sqlGameDAO implements GameDAO{
         updateGameStatement.setInt(4, gameID);
         updateGameStatement.executeUpdate();}}
     catch(SQLException e){
-      System.out.print(e.getMessage());
+      //System.out.print(e.getMessage());
       throw new DataAccessException(e.getMessage());
     }}
     else{

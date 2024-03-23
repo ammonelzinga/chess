@@ -99,7 +99,7 @@ public class sqlAuthDAO implements AuthDAO{
       try (var ps = conn.prepareStatement(selectStatement)){
         ps.setString(1, authToken);
         ps.executeUpdate();
-        System.out.print("tried to delete authtoken");
+        //System.out.print("tried to delete authtoken");
           }}}
     else{DataAccessException exception = new DataAccessException("Error: unauthorized");
       exception.addStatusCode(401);
