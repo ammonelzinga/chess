@@ -8,9 +8,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import model.*;
+import org.junit.jupiter.api.BeforeAll;
 import server.Server;
 
 public class ServerFacade {
+
+
     public static void main() throws Exception {
       System.out.print("ServerFacade Main");
     }
