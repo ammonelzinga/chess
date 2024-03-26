@@ -1,3 +1,5 @@
+package Play;
+
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
@@ -7,12 +9,12 @@ import server.*;
 import java.util.*;
 
 public class LoggedOut {
-  ServerFacade serverFacade;
-  String url;
-  String auth;
-  AuthData authData;
+  public ServerFacade serverFacade;
+  public String url;
+  public String auth;
+  public AuthData authData;
   HashMap<Integer, Integer> gameNumberIDMap;
-  HashMap<Integer, GameData> gameMap;
+  public HashMap<Integer, GameData> gameMap;
   DrawChessGame artist;
 
   String stage;
@@ -295,6 +297,7 @@ public class LoggedOut {
               + ", WhiteUsername: " + GameData.whiteUsername() + ", BlackUsername: " + GameData.blackUsername());}
             gameNumberIDMap.put(gameCount, GameData.gameID());
             gameMap.put(GameData.gameID(), GameData);
+            System.out.print(gameMap);
             gameCount++;
           }
         }

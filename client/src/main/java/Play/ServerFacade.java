@@ -1,3 +1,5 @@
+package Play;
+
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -15,7 +17,7 @@ public class ServerFacade {
 
 
     public static void main() throws Exception {
-      System.out.print("ServerFacade Main");
+      System.out.print("Play.ServerFacade Main");
     }
 
     public Object run(String url, String method, boolean hasBody, String body, Class model, boolean hasHeader, String header) throws Exception{
