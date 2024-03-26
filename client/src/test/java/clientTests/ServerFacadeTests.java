@@ -78,8 +78,19 @@ public class ServerFacadeTests {
   }
   @Test
   void registerNeg() {
-    UserData userData = new UserData("ExistingUser", "password", "email");
-    String sessionUrl = url + "/user";
+    AuthData authData;
+    String auth;
+    UserData userData=new UserData("bruce", "banner", "email");
+    String sessionUrl=url + "/user";
+    try {
+      var objAuth=serverFacade.run(sessionUrl, "POST", true, new Gson().toJson(userData), AuthData.class, false, "");
+      String tempAuth=new Gson().toJson(objAuth);
+      authData=new Gson().fromJson(tempAuth, AuthData.class);
+      auth=authData.authToken();
+      Assertions.assertTrue(auth.length() > 0);
+    } catch (Exception e) {
+      System.out.print(e.getMessage());
+    }
     Assertions.assertThrows(Exception.class, ()-> serverFacade.run(sessionUrl, "POST", true, new Gson().toJson(userData), AuthData.class, false, ""));
   }
 
@@ -279,7 +290,7 @@ public class ServerFacadeTests {
     gameMap = new HashMap<>();
     AuthData authData;
     String auth = "";
-    UserData userData=new UserData("new", "banner", "email");
+    UserData userData=new UserData("neww", "banner", "email");
     String sessionUrl=url + "/user";
     try {
       var objAuth=serverFacade.run(sessionUrl, "POST", true, new Gson().toJson(userData), AuthData.class, false, "");
