@@ -33,14 +33,14 @@ public class DrawChessGame {
   private void drawBoard(PrintStream out, boolean blackTop) {
 
     if(blackTop){
-    boolean white = true;
+    boolean white = false;
     for (int boardRow=9; boardRow > -1; boardRow--) {
       drawRowOfSquares(out, boardRow, white, blackTop);
       white = !white;
       out.print(SET_BG_COLOR_LIGHT_GREY);
     }}
     else{
-      boolean white = true;
+      boolean white = false;
       for (int boardRow=0; boardRow < 10; boardRow++) {
         drawRowOfSquares(out, boardRow, white, blackTop);
         white = !white;
@@ -85,28 +85,28 @@ public class DrawChessGame {
       out.print(SET_TEXT_COLOR_WHITE);
       switch (col){
         case 1:
-          out.print(" 8.");
+          out.print(" 1.");
           break;
         case 2:
-          out.print(" 7.");
-          break;
-        case 3:
-          out.print(" 6.");
-          break;
-        case 4:
-          out.print(" 5.");
-          break;
-        case 5:
-          out.print(" 4.");
-          break;
-        case 6:
-          out.print(" 3.");
-          break;
-        case 7:
           out.print(" 2.");
           break;
+        case 3:
+          out.print(" 3.");
+          break;
+        case 4:
+          out.print(" 4.");
+          break;
+        case 5:
+          out.print(" 5.");
+          break;
+        case 6:
+          out.print(" 6.");
+          break;
+        case 7:
+          out.print(" 7.");
+          break;
         case 8:
-          out.print(" 1.");
+          out.print(" 8.");
           break;
       }}
   }
