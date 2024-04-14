@@ -1,5 +1,6 @@
 package clientTests;
 
+import Play.ClientSide;
 import Play.LoggedOut;
 import Play.ServerFacade;
 import com.google.gson.Gson;
@@ -16,7 +17,7 @@ import java.util.Scanner;
 public class ServerFacadeTests {
 
   private static Server server;
-  private static LoggedOut loggedOut;
+  private static ClientSide loggedOut;
   private static ServerFacade serverFacade;
   private static String url;
 
@@ -27,7 +28,7 @@ public class ServerFacadeTests {
     var port = server.run(0);
     System.out.println("Started test HTTP server on " +  port);
     url = "http://localhost:" + port;
-    loggedOut = new LoggedOut(url);
+    loggedOut = new ClientSide(url);
     serverFacade = new ServerFacade();
   }
 

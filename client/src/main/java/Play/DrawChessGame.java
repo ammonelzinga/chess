@@ -28,6 +28,7 @@ public class DrawChessGame {
   public void main(boolean blackTop) {
     var out=new PrintStream(System.out, true, StandardCharsets.UTF_8);
     drawBoard(out, blackTop);
+    out.print(SET_BG_COLOR_DARK_GREY);
   }
 
   private void drawBoard(PrintStream out, boolean blackTop) {

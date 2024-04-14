@@ -1,5 +1,6 @@
 package Play;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
@@ -8,7 +9,7 @@ import server.*;
 
 import java.util.*;
 
-public class clientSide {
+public class LoggedIn {
   public ServerFacade serverFacade;
   public String url;
   public String auth;
@@ -16,86 +17,26 @@ public class clientSide {
   HashMap<Integer, Integer> gameNumberIDMap;
   public HashMap<Integer, GameData> gameMap;
   DrawChessGame artist;
+  private WebSocketFacade ws;
+  private final ServerMessageHandler notificationHandler = new ServerMessageHandler();
+  private ChessGame.TeamColor teamColor;
+  private ChessGame game;
+  int gameID;
 
   String stage;
   boolean continueChess;
   Scanner scanner;
-  public clientSide(String URL){
-    serverFacade = new ServerFacade();
+  public LoggedIn(String URL, String stagee, ServerFacade serverFac, boolean continueChesss, Scanner scannerr,
+                  HashMap gameNumMap, HashMap gameMapp, DrawChessGame artistt){
+    serverFacade = serverFac;
     url = URL;
-    stage = "loggedOut";
-    continueChess = true;
-    scanner = new Scanner(System.in);
-    gameNumberIDMap = new HashMap<>();
-    gameMap = new HashMap<>();
-    artist = new DrawChessGame(null);
+    stage = stagee;
+    continueChess = continueChesss;
+    scanner = scannerr;
+    gameNumberIDMap = gameNumMap;
+    gameMap = gameMapp;
+    artist = artistt;
   }
-
-  public void main(String[] args) throws Exception {
-    System.out.println("Welcome to 240 chess. Type Help to get started");
-    while (continueChess) {
-      if(stage == "loggedOut") {
-        runLoggedOut();
-        //System.out.print("finished runloggedout");}
-      }
-      if(stage == "loggedIn"){
-        //System.out.println("starting logged in");
-        runPostLogin();
-      }
-    }
-  }
-  public void runLoggedOut() throws Exception {
-    System.out.println("");
-    String line = scanner.nextLine();
-    line = line.toLowerCase();
-    switch (line) {
-      case "login":
-        Login();
-        //System.out.print("end login");
-        break;
-      case "register":
-        Register();
-        break;
-      case "quit":
-        Quit();
-        break;
-      default:
-        Help();
-        break;
-    }
-    return;
-    //scanner.close();
-  }
-
-  public void runPostLogin() throws Exception {
-    String line = scanner.nextLine();
-    line = line.toLowerCase();
-    //System.out.print("Welcome back ");
-    //System.out.println(authData.username());
-    System.out.println("");
-    //helpPost();
-    switch (line) {
-      case "logout":
-        Logout();
-        break;
-      case "create":
-        createGame();
-        break;
-      case "list":
-        listGames(true);
-        break;
-      case "join":
-        joinGame();
-        break;
-      case "observe":
-        observeGame();
-        break;
-      default:
-        helpPost();
-        break;
-    }
-  }
-
 
   public void helpPost() throws Exception {
     System.out.println("logout -- sign out of your account");
@@ -107,79 +48,8 @@ public class clientSide {
     System.out.println("");
     //runPostLogin();
   }
-  public void Help() throws Exception {
-    System.out.println("Register -- to create a new account");
-    System.out.println("Login -- to play chess");
-    System.out.println("Quit -- to exit chess");
-    System.out.println("Help -- to view possible commands");
-    System.out.println("");
-    //runLoggedOut();
-  }
 
-  public void Quit() throws Exception {
-    System.out.print("Good bye");
-    continueChess = false;
-  }
-
-  public void Login() throws Exception {
-    String username;
-    String password;
-    try{System.out.println("Enter your username: ");
-      username = scanner.nextLine();
-      System.out.println("Enter your password: ");
-      password = scanner.nextLine();
-      //System.out.print("Username entered: ");
-      //System.out.println(username);
-      //System.out.print("Password enetered: ");
-      //System.out.print(password);
-      UserData userData = new UserData(username, password, "email");
-      String sessionUrl = url + "/session";
-      var objAuth = serverFacade.run(sessionUrl, "POST", true, new Gson().toJson(userData), AuthData.class, false, "");
-      String tempAuth = new Gson().toJson(objAuth);
-      authData = new Gson().fromJson(tempAuth, AuthData.class);
-      auth =authData.authToken();
-      stage = "loggedIn";
-      System.out.print("Welcome back ");
-      System.out.println(authData.username());
-      System.out.println("");
-      helpPost();
-      listGames(false);}
-    catch(Exception e){
-      System.out.println("Sorry incorrect login information, please try again.");
-      //System.out.print(e.getMessage());
-    }
-    return;
-    //scanner.close();
-  }
-  public void Register() throws Exception {
-    String username;
-    String password;
-    String email;
-    System.out.println("Create your username: ");
-    try{Scanner scanner = new Scanner(System.in);
-      username = scanner.nextLine();
-      System.out.println("Create your password: ");
-      password = scanner.nextLine();
-      System.out.println("Enter your email: ");
-      email = scanner.nextLine();
-      UserData userData = new UserData(username, password, email);
-      String sessionUrl = url + "/user";
-      var objAuth = serverFacade.run(sessionUrl, "POST", true, new Gson().toJson(userData), AuthData.class, false, "");
-      String tempAuth = new Gson().toJson(objAuth);
-      authData = new Gson().fromJson(tempAuth, AuthData.class);
-      auth =authData.authToken();
-      stage = "loggedIn";
-      System.out.print("Hello ");
-      System.out.println(authData.username());
-      System.out.println("");
-      helpPost();
-      listGames(false);}
-    catch(Exception e){
-      System.out.println("Sorry, username already taken, pick a new one.");
-    }
-  }
-
-  public void Logout() throws Exception {
+  public String Logout() throws Exception {
     String sessionUrl = url + "/session";
     try{serverFacade.run(sessionUrl, "DELETE", true, new Gson().toJson(authData), AuthData.class, true, auth);}
     catch(Exception e){
@@ -191,8 +61,9 @@ public class clientSide {
     auth = "";
     authData = null;
     stage = "loggedOut";
+    return stage;
   }
-  public void observeGame() throws Exception {
+  public String observeGame() throws Exception {
     String sessionUrl = url + "/game";
     String stringGameID;
     System.out.println("Enter the game number for the game you'd like to join: ");
@@ -203,6 +74,8 @@ public class clientSide {
       JoinGameRecord JoinGameRecord = new JoinGameRecord(null, gameID);
       serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
       System.out.println("You are now an observer for gameID: " + gameID);
+      //ws = new WebSocketFacade(url);
+      //ws.joinGameObserver(authData.authToken(), authData.username(), gameID);
       listGames(false);
       artist.updateGame(gameMap.get(gameID).game());
       System.out.println("Game " + gameMap.get(gameID).gameName());
@@ -211,13 +84,15 @@ public class clientSide {
       artist.main(false);
       System.out.println("");
       System.out.println("");
-      artist.main(true);}
+      artist.main(true);
+      stage = "gameIn";}
     catch(Exception e){
       System.out.println("Sorry, not a game. Choose a game number from the game list");
-      //System.out.println(e.getMessage());
+      System.out.println(e.getMessage());
     }
+    return stage;
   }
-  public void joinGame() throws Exception {
+  public String joinGame() throws Exception {
     String sessionUrl = url + "/game";
     String stringGameID;
     System.out.println("Enter the game number for the game you'd like to join: ");
@@ -229,10 +104,29 @@ public class clientSide {
       System.out.println("Which color would you like to play as?");
       color = scanner.nextLine();
       color = color.toUpperCase();
-      JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
-      serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
+      if(color.equals("WHITE") == false && color.equals("BLACK") == false){
+        System.out.println("Sorryyyyyy, color already taken, choose another or become an observer");
+        return stage;
+      }
+      if((color.equals("WHITE") && gameMap.get(gameID).whiteUsername().equals(authData.username()) == false)
+            || (color.equals("BLACK") && gameMap.get(gameID).blackUsername().equals(authData.username())) == false){
+        System.out.print("trying to update game player");
+        JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
+        serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
+      }
+      //JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
+      //serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
       System.out.println("Game join successful");
       listGames(false);
+      game = gameMap.get(gameID).game();
+      if(color == "WHITE" || color.equals("WHITE")){
+        teamColor = ChessGame.TeamColor.WHITE;
+      }
+      if(color == "BLACK" || color.equals("BLACK")){
+        teamColor = ChessGame.TeamColor.BLACK;
+      }
+      //ws = new WebSocketFacade(url);
+      //ws.joinGamePlayer(authData.authToken(), authData.username(),gameID, teamColor);
       System.out.println("Game " + gameMap.get(gameID).gameName());
       System.out.println("White played as " + gameMap.get(gameID).whiteUsername());
       System.out.println("Black played as " + gameMap.get(gameID).blackUsername());
@@ -241,11 +135,13 @@ public class clientSide {
       System.out.println("");
       System.out.println("");
       artist.main(true);
+      stage = "gameIn";
     }
     catch(Exception e){
       System.out.println("Sorry, color already taken, choose another or become an observer");
       //System.out.println(e.getMessage());
     }
+    return stage;
   }
   public void createGame() throws Exception{
     String sessionUrl = url + "/game";
@@ -307,6 +203,15 @@ public class clientSide {
       System.out.println("Having trouble, try again");
       //System.out.print(e.getMessage());
     }
+  }
+  public ChessGame.TeamColor getColor(){
+    return teamColor;
+  }
+  public ChessGame getGame(){
+    return game;
+  }
+  public WebSocketFacade getWs(){
+    return ws;
   }
 
 

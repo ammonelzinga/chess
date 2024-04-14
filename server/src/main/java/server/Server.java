@@ -4,6 +4,7 @@ import service.GameService;
 import service.GeneralService;
 import service.UserService;
 import spark.*;
+import com.google.gson.Gson;
 
 
 public class Server {
@@ -16,6 +17,7 @@ public class Server {
     GameService gameService = new GameService(userDAO, authDAO, gameDAO);
     UserHandler userHandler = new UserHandler(userDAO, authDAO, gameDAO, userService, generalService, gameService);
     GameHandler gameHandler = new GameHandler(userDAO, authDAO, gameDAO, userService, generalService, gameService);
+    WebSocketHandler webSocketHandler = new WebSocketHandler(gameDAO);
 
     DatabaseManager dbm = new DatabaseManager();
 
@@ -30,6 +32,9 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+
+        Spark.webSocket("/connect", webSocketHandler);
+
         Spark.post("/user", (req, res) -> userHandler.registerUser(req, res));
         Spark.delete("/db", (req, res) -> userHandler.clearAll(req, res));
         Spark.post("/session", (req, res) -> userHandler.login(req, res));
