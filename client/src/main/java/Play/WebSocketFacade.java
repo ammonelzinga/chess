@@ -17,13 +17,15 @@ public class WebSocketFacade extends Endpoint {
   int gameID;
   DrawChessGame artist;
   LoggedIn loggedIn;
+  boolean blackTop;
 
 
-  public WebSocketFacade(String url, int gameeID, DrawChessGame artistt, LoggedIn loggedInn) throws Exception {
+  public WebSocketFacade(String url, int gameeID, DrawChessGame artistt, LoggedIn loggedInn, boolean blackTopp) throws Exception {
     try {
       artist = artistt;
       loggedIn = loggedInn;
       gameID = gameeID;
+      blackTop = blackTopp;
       url = url.replace("http", "ws");
       URI socketURI = new URI(url + "/connect");
       this.notificationHandler = new ServerMessageHandler();
@@ -57,7 +59,9 @@ public class WebSocketFacade extends Endpoint {
   public void redraw(){
     try{loggedIn.listGames(false);
     artist.updateGame(loggedIn.gameMap.get(gameID).game());
-    artist.main(true);}
+    if(blackTop){
+    artist.main(true, false);}
+    else{artist.main(false, false);}}
     catch(Exception e){
       System.out.print("Couldn't redraw game at this time");
       System.out.print(e.getMessage());

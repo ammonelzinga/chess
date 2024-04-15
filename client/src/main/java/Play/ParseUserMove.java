@@ -74,6 +74,16 @@ public class ParseUserMove {
     System.out.print(promotionPiece);
     return promotionPiece;
   }
+
+  public ChessPosition getStartPos(){
+    Scanner scanner=new Scanner(System.in);
+    String startPositionString=scanner.nextLine();
+    char startPositionRow = startPositionString.charAt(1);
+    int startRow = startPositionRow - '0';
+    char startPositionCol=startPositionString.charAt(0);
+    int startCol = letterToCol(startPositionCol);
+    return new ChessPosition(startRow, startCol);
+  }
   private ChessPiece.PieceType wordToChessPiece(String word){
         if(word.equals("queen")){
           return ChessPiece.PieceType.QUEEN;

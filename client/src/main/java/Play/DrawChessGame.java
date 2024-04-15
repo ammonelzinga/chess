@@ -1,35 +1,40 @@
 package Play;
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+
 import static ui.EscapeSequences.*;
 public class DrawChessGame {
   ChessGame game;
   private static final int BOARD_SIZE_IN_SQUARES=8;
   private static final int SQUARE_SIZE_IN_CHARS=1;
   private static final int LINE_WIDTH_IN_CHARS=1;
+
+  public Collection<ChessPosition> validPositions;
   public DrawChessGame(ChessGame gamee) {
     game=gamee;}
   public void updateGame(ChessGame gamee) {
     game=gamee;
   }
-  public void main(boolean blackTop) {
+  public void main(boolean blackTop, boolean highlight) {
     var out=new PrintStream(System.out, true, StandardCharsets.UTF_8);
-    drawBoard(out, blackTop);
+    drawBoard(out, blackTop, highlight);
     out.print(SET_BG_COLOR_DARK_GREY);}
-  private void drawBoard(PrintStream out, boolean blackTop) {
+  private void drawBoard(PrintStream out, boolean blackTop, boolean highlight) {
     if(blackTop){
     boolean white = false;
     for (int boardRow=9; boardRow > -1; boardRow--) {
-      drawRowOfSquares(out, boardRow, white, blackTop);
+      drawRowOfSquares(out, boardRow, white, blackTop, highlight);
       white = !white;
       out.print(SET_BG_COLOR_LIGHT_GREY);}}
     else{
       boolean white = false;
       for (int boardRow=0; boardRow < 10; boardRow++) {
-        drawRowOfSquares(out, boardRow, white, blackTop);
+        drawRowOfSquares(out, boardRow, white, blackTop, highlight);
         white = !white;
         out.print(SET_BG_COLOR_LIGHT_GREY);}}}
   private void printCol(PrintStream out, int col, boolean blackTop){
@@ -122,7 +127,7 @@ public class DrawChessGame {
           break;
       }}
   }
-  private void drawRowOfSquares(PrintStream out, int row, boolean whitee, boolean blackTop) {
+  private void drawRowOfSquares(PrintStream out, int row, boolean whitee, boolean blackTop, boolean highlight) {
     if(row == 0 || row ==9){
       out.print(SET_BG_COLOR_DARK_GREY);
       out.print(EMPTY);
@@ -153,13 +158,21 @@ public class DrawChessGame {
         if(boardCol > 0 && boardCol < 9) {
           whitewhite=white;
           if (white) {
-            out.print(SET_BG_COLOR_WHITE);
+            ChessPosition tempPosition = new ChessPosition(row, boardCol);
+            if(highlight && validPositions.contains(tempPosition)){
+              out.print(SET_BG_COLOR_YELLOW);
+            }
+            else{out.print(SET_BG_COLOR_WHITE);}
             out.print(SET_TEXT_COLOR_WHITE);
             if (boardCol != 8) {
               white=false;
             }
           } else {
-            out.print(SET_BG_COLOR_BLACK);
+            ChessPosition tempPosition = new ChessPosition(row, boardCol);
+            if(highlight && validPositions.contains(tempPosition)){
+              out.print(SET_BG_COLOR_GREEN);
+            }
+            else{out.print(SET_BG_COLOR_BLACK);}
             out.print(SET_TEXT_COLOR_BLACK);
             if (boardCol != 8) {
               white=true;
@@ -169,7 +182,7 @@ public class DrawChessGame {
             int prefixLength=SQUARE_SIZE_IN_CHARS / 2;
             int suffixLength=SQUARE_SIZE_IN_CHARS - prefixLength - 1;
             out.print(EMPTY.repeat(prefixLength));
-            printPlayer(out, row, boardCol, whitewhite);
+            printPlayer(out, row, boardCol, whitewhite, highlight);
             out.print(EMPTY.repeat(suffixLength));
           } else {
             out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
@@ -192,13 +205,23 @@ public class DrawChessGame {
           if(boardCol > 0 && boardCol < 9) {
           whitewhite=white;
           if (white) {
-            out.print(SET_BG_COLOR_WHITE);
+            ChessPosition tempPosition = new ChessPosition(row, boardCol);
+            if(highlight && validPositions.contains(tempPosition)){
+              out.print(SET_BG_COLOR_YELLOW);
+            }
+            else{
+            out.print(SET_BG_COLOR_WHITE);}
             out.print(SET_TEXT_COLOR_WHITE);
             if (boardCol != 1) {
               white=false;
             }
           } else {
-            out.print(SET_BG_COLOR_BLACK);
+            ChessPosition tempPosition = new ChessPosition(row, boardCol);
+            if(highlight && validPositions.contains(tempPosition)){
+              out.print(SET_BG_COLOR_GREEN);
+            }
+            else{
+            out.print(SET_BG_COLOR_BLACK);}
             out.print(SET_TEXT_COLOR_BLACK);
             if (boardCol != 1) {
               white=true;
@@ -207,7 +230,7 @@ public class DrawChessGame {
             int prefixLength=SQUARE_SIZE_IN_CHARS / 2;
             int suffixLength=SQUARE_SIZE_IN_CHARS - prefixLength - 1;
             out.print(EMPTY.repeat(prefixLength));
-            printPlayer(out, row, boardCol, whitewhite);
+            printPlayer(out, row, boardCol, whitewhite, highlight);
             out.print(EMPTY.repeat(suffixLength));
           } else {
             out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
@@ -218,11 +241,17 @@ public class DrawChessGame {
         out.println();
       }}}
   }
-  private void printPlayer(PrintStream out, int row, int col, boolean white) {
+  private void printPlayer(PrintStream out, int row, int col, boolean white, boolean highlight) {
     if (white) {
-      out.print(SET_BG_COLOR_WHITE);
+      ChessPosition tempPosition = new ChessPosition(row, col);
+      if(highlight && validPositions.contains(tempPosition)){
+        out.print(SET_BG_COLOR_YELLOW);}
+      else{out.print(SET_BG_COLOR_WHITE);}
     } else {
-      out.print(SET_BG_COLOR_BLACK);
+      ChessPosition tempPosition = new ChessPosition(row, col);
+      if(highlight && validPositions.contains(tempPosition)){
+        out.print(SET_BG_COLOR_GREEN);}
+      else{out.print(SET_BG_COLOR_BLACK);}
     }
     if (game.getBoard().getPiece(new ChessPosition(row, col)) != null) {
       ChessPiece piece=game.getBoard().getPiece(new ChessPosition(row, col));
@@ -272,9 +301,19 @@ public class DrawChessGame {
         }}
     } else {
       out.print(EMPTY);}
-      if (white) {
-        out.print(SET_BG_COLOR_WHITE);
+      if(white) {
+        ChessPosition tempPosition = new ChessPosition(row, col);
+        if(highlight && validPositions.contains(tempPosition)){
+          out.print(SET_BG_COLOR_YELLOW);}
+        else{out.print(SET_BG_COLOR_WHITE);}
       } else {
-        out.print(SET_BG_COLOR_BLACK);
+        ChessPosition tempPosition = new ChessPosition(row, col);
+        if(highlight && validPositions.contains(tempPosition)){
+          out.print(SET_BG_COLOR_GREEN);}
+        else{out.print(SET_BG_COLOR_BLACK);}
       }}
+
+  public void updateValidPositions(Collection<ChessPosition> validMovess){
+    validPositions = validMovess;
+  }
 }

@@ -1,10 +1,13 @@
 package Play;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 
 import java.util.*;
+
+import static chess.ChessGame.TeamColor.BLACK;
 
 public class ClientSide {
   public ServerFacade serverFacade;
@@ -13,6 +16,7 @@ public class ClientSide {
   public AuthData authData;
   HashMap<Integer, Integer> gameNumberIDMap;
   public HashMap<Integer, GameData> gameMap;
+  public HighlightMoves highlightMoves;
   DrawChessGame artist;
   private WebSocketFacade ws;
   private final ServerMessageHandler notificationHandler = new ServerMessageHandler();
@@ -57,6 +61,20 @@ public class ClientSide {
     String line = scanner.nextLine();
     line = line.toLowerCase();
     switch (line) {
+      case "highlight":
+          try{
+            updateGame();
+            if(stageGame.teamColor == BLACK){
+            highlightMoves = new HighlightMoves(false, artist, stageGame.game);}
+            else{
+              highlightMoves = new HighlightMoves(true, artist, stageGame.game);}
+            highlightMoves.run();
+            }
+          catch(Exception e){
+            //System.out.println(e.getMessage());
+            System.out.println("Sorry try again.");
+          }
+          break;
       case "resign":
           stageGame.resign();
           break;
@@ -65,10 +83,16 @@ public class ClientSide {
         break;
       case "leave":
         stage = stageGame.leave();
+        stageLoggedIn.helpPost();
+        stageGame.teamColor = null;
         break;
       case "redraw":
         try{updateGame();
-        artist.main(true);}
+          if(stageGame.teamColor == BLACK){
+            artist.main(false, false);
+          }
+          else{
+        artist.main(true, false);}}
         catch(Exception e){
           System.out.println("Unable to redraw game, please try again.");
         }
@@ -116,6 +140,7 @@ public class ClientSide {
         break;
       case "create":
         stageLoggedIn.createGame();
+        stageLoggedIn.listGames(false);
         updateStageGame();
         break;
       case "list":
@@ -126,11 +151,17 @@ public class ClientSide {
         stage = stageLoggedIn.joinGame();
         updateStageGame();
         stageGame.joinGamePlayer();
+        if(stage == "gameIn"){
+          stageGame.helpGame();
+        }
         break;
       case "observe":
         stage = stageLoggedIn.observeGame();
         updateStageGame();
         stageGame.joinGameObserver();
+        if(stage == "gameIn"){
+          stageGame.helpGame();
+        }
         break;
       default:
         stageLoggedIn.helpPost();

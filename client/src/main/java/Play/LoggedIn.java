@@ -72,10 +72,9 @@ public class LoggedIn {
       System.out.println("Game " + gameMap.get(gameID).gameName());
       System.out.println("White played as " + gameMap.get(gameID).whiteUsername());
       System.out.println("Black played as " + gameMap.get(gameID).blackUsername());
-      artist.main(false);
       System.out.println("");
       System.out.println("");
-      artist.main(true);
+      //artist.main(true);
       stage = "gameIn";}
     catch(Exception e){
       System.out.println("Sorry, not a game. Choose a game number from the game list");
@@ -114,10 +113,10 @@ public class LoggedIn {
       System.out.println("White played as " + gameMap.get(gameID).whiteUsername());
       System.out.println("Black played as " + gameMap.get(gameID).blackUsername());
       artist.updateGame(gameMap.get(gameID).game());
-      artist.main(false);
+      //artist.main(false);
       System.out.println("");
       System.out.println("");
-      artist.main(true);
+      //artist.main(true);
       stage = "gameIn";
     }
     catch(Exception e){

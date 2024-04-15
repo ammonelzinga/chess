@@ -11,6 +11,8 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
 import static ui.EscapeSequences.ERASE_SCREEN;
 import static ui.EscapeSequences.SET_BG_COLOR_DARK_GREY;
 
@@ -82,23 +84,30 @@ public class GameIn {
   public void joinGamePlayer(){
     if(stage == "gameIn"){
     try{
-    ws = new WebSocketFacade(url, gameID, artist, loggedIn);
+    ws = new WebSocketFacade(url, gameID, artist, loggedIn, isBlackTop());
     ws.joinGamePlayer(authData.authToken(), authData.username(),gameID, teamColor);}
     catch(Exception e){}
   }
   else{
       try{
-        ws = new WebSocketFacade(url, gameID, artist, loggedIn);
+        ws = new WebSocketFacade(url, gameID, artist, loggedIn, isBlackTop());
         ws.joinGamePlayer("majolmajol", authData.username(),gameID, teamColor);}
       catch(Exception e){}
     }
   }
 
+  private boolean isBlackTop(){
+    boolean blackTop = true;
+    if(teamColor == BLACK){
+      blackTop = false;
+    }
+    return blackTop;
+  }
 
   public void joinGameObserver(){
     if(stage == "gameIn"){
       try{
-    ws = new WebSocketFacade(url, gameID, artist, loggedIn);
+    ws = new WebSocketFacade(url, gameID, artist, loggedIn, true);
     ws.joinGameObserver(authData.authToken(), authData.username(), gameID);
   }
       catch(Exception e){}
