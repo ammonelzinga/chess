@@ -4,6 +4,7 @@ import chess.ChessMove;
 import com.google.gson.Gson;
 //import dataaccess.DataAccess;
 //import exception.ResponseException;
+import dataAccess.AuthDAO;
 import dataAccess.GameDAO;
 import model.GameData;
 import org.eclipse.jetty.server.Authentication;
@@ -23,14 +24,17 @@ import java.util.Timer;
 @WebSocket
 public class WebSocketHandler {
   private GameDAO gameDAO;
-  public WebSocketHandler(GameDAO gameD){
+  private AuthDAO authDAO;
+  public WebSocketHandler(GameDAO gameD, AuthDAO authD){
     gameDAO = gameD;
+    authDAO = authD;
   }
   private final ConnectionManager connectionManager = new ConnectionManager();
 
   @OnWebSocketMessage
   public void onMessage(Session session, String message) throws IOException {
     UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
+    if(verifyAuth(action.getAuthString(), action.getUsername(), action.getGameID(), session)){
     switch (action.getCommandType()) {
       case MAKE_MOVE:
         makeMove(action.getUsername(), action.getGameID(), session, action.getPlayerColor(), action.getMove());
@@ -48,10 +52,26 @@ public class WebSocketHandler {
       case RESIGN:
         resign(action.getUsername(), action.getGameID(), session, action.getPlayerColor());
         break;
+    }}
+    else{
+      System.out.print("Wrong authentication when websocket handler received it");
     }
   }
 
+  private boolean verifyAuth(String auth, String username, int gameID, Session session){
+    if(authDAO.checkAuth(auth) != true){
+      try{var message = "Error - invalid authentication!";
+      var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+      connectionManager.broadcastRootUser(username, notification, gameID);
+      return false;}
+      catch(Exception e){
+        System.out.print(e.getMessage());
+        return false;}
+    }
+    else{return true;}
+  }
   private void resign(String username, int gameID, Session session,ChessGame.TeamColor playerColor) throws IOException {
+
     try {
       GameData gameData=gameDAO.getGame(gameID);
       String opponentName=gameData.whiteUsername();

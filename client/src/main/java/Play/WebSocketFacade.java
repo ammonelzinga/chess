@@ -42,7 +42,6 @@ public class WebSocketFacade extends Endpoint {
         public void onMessage(String message) {
           ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
           if(notification.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME){
-            System.out.println("ws attempting redraw");
             redraw();
           }
           notificationHandler.notify(notification);

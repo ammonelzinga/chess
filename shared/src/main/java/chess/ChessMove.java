@@ -35,38 +35,54 @@ public class ChessMove {
         switch (startPos.Col){
             case 1:
                 letterStartCol = "a";
+                break;
             case 2:
                 letterStartCol = "b";
+                break;
             case 3:
                 letterStartCol = "c";
+                break;
             case 4:
                 letterStartCol = "d";
+                break;
             case 5:
                 letterStartCol = "e";
+                break;
             case 6:
                 letterStartCol = "f";
+                break;
             case 7:
                 letterStartCol = "g";
+                break;
             case 8:
                 letterStartCol = "h";
+                break;
         }
         switch (endPos.Col){
             case 1:
                 letterEndCol = "a";
+                break;
             case 2:
                 letterEndCol = "b";
+                break;
             case 3:
                 letterEndCol = "c";
+                break;
             case 4:
                 letterEndCol = "d";
+                break;
             case 5:
                 letterEndCol = "e";
+                break;
             case 6:
                 letterEndCol = "f";
+                break;
             case 7:
                 letterEndCol = "g";
+                break;
             case 8:
                 letterEndCol = "h";
+                break;
         }
         wordMove += letterStartCol + startPos.row + " to " + letterEndCol + endPos.row;
         return wordMove;
