@@ -39,7 +39,7 @@ public class ClientSide {
    stageLoggedIn = new LoggedIn(url, this.stage, serverFacade, this.continueChess, scanner,
            gameNumberIDMap, gameMap, artist);
    stageGame = new GameIn(url, this.stage, serverFacade, this.continueChess, scanner,
-           gameNumberIDMap, gameMap, artist);
+           gameNumberIDMap, gameMap, artist, stageLoggedIn);
   }
 
   public void main(String[] args) throws Exception {
@@ -69,7 +69,12 @@ public class ClientSide {
         stage = stageGame.leave();
         break;
       case "redraw":
-        artist.main(true);
+        try{updateGame();
+        artist.main(true);}
+        catch(Exception e){
+          System.out.println("Unable to redraw game, please try again.");
+          System.out.print(e.getMessage());
+        }
         break;
       default:
         stageGame.helpGame();
@@ -135,6 +140,17 @@ public class ClientSide {
       default:
         stageLoggedIn.helpPost();
         break;
+    }
+  }
+
+  void updateGame() throws Exception {
+    try {
+      stageLoggedIn.listGames(false);
+      stageGame.game = stageLoggedIn.gameMap.get(stageGame.gameID).game();
+      artist.updateGame(stageGame.game);
+    }
+    catch(Exception e){
+      throw e;
     }
   }
 

@@ -16,6 +16,8 @@ public class ParseUserMove {
       int startRow = startPositionRow - '0';
       char startPositionCol=startPositionString.charAt(0);
       int startCol = letterToCol(startPositionCol);
+      System.out.println("start Col");
+      System.out.println(startCol);
       if(startCol == 0){
         return null;
       }
@@ -25,12 +27,15 @@ public class ParseUserMove {
       int endRow = endPositionRow - '0';
       char endPositionCol=endPositionString.charAt(0);
       int endCol = letterToCol(endPositionCol);
+    System.out.println("end Col");
+    System.out.println(endCol);
       if(endCol == 0){
         return null;
       }
       ChessPosition startPosFinal = new ChessPosition(startRow, startCol);
       ChessPosition endPosFinal = new ChessPosition(endRow, endCol);
       if(board.getPiece(startPosFinal) == null){
+        System.out.print("not a piece there");
         return null;
       }
       if(board.getPiece(startPosFinal).getTeamColor() != playerColor){
@@ -41,14 +46,22 @@ public class ParseUserMove {
         if((endRow == 8 && board.getPiece(startPosFinal).getTeamColor() == ChessGame.TeamColor.WHITE)
             || endRow == 1 && board.getPiece(startPosFinal).getTeamColor() == ChessGame.TeamColor.BLACK){
           ChessPiece.PieceType promotionPiece = getPromotionPiece();
-          if(promotionPiece == null){return null;}
+          if(promotionPiece == null){
+            System.out.print("not a valid promotion piece");
+            return null;}
             else{
+              System.out.print("Returning this chess move");
+              System.out.print(startPosFinal);
+              System.out.print(endPosFinal);
               return new ChessMove(startPosFinal, endPosFinal, promotionPiece);
             }
       }}
-      else{
-      return new ChessMove(startPosFinal, endPosFinal, null);}
-      return null;
+        System.out.print("Returning this chess move");
+        System.out.print(startPosFinal);
+        System.out.print(endPosFinal);
+      return new ChessMove(startPosFinal, endPosFinal, null);
+      //System.out.println("uhhhhh");
+      //return null;
   }
 
   private ChessPiece.PieceType getPromotionPiece(){
@@ -60,23 +73,25 @@ public class ParseUserMove {
     while(promotionPiece == null){
       wordPromotionPiece =scanner.nextLine();
       wordPromotionPiece = wordPromotionPiece.toLowerCase();
+      System.out.println(wordPromotionPiece);
       if(wordPromotionPiece.equals("stop")){
         return null;
       }
       promotionPiece = wordToChessPiece(wordPromotionPiece);
     }
+    System.out.print(promotionPiece);
     return promotionPiece;
   }
   private ChessPiece.PieceType wordToChessPiece(String word){
-        if(word == "queen"){
+        if(word.equals("queen")){
           return ChessPiece.PieceType.QUEEN;
-        } else if (word == "rook") {
+        } else if (word.equals("rook")) {
           return ChessPiece.PieceType.ROOK;
         }
-        else if (word == "bishop") {
+        else if (word.equals("bishop")) {
           return ChessPiece.PieceType.BISHOP;
         }
-        else if (word == "knight") {
+        else if (word.equals("knight")) {
           return ChessPiece.PieceType.KNIGHT;
         }
         System.out.println("Sorry, try again: ");

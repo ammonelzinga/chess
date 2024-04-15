@@ -32,6 +32,7 @@ public class ConnectionManager {
 
   public void broadcast(String excludeUsername, ServerMessage notification, int gameID) throws IOException {
     System.out.println("going to try broadcasting");
+    System.out.print(connectionMap.size());
     var removeList = new ArrayList<Connection>();
     if(connectionMap.get(gameID) != null){
     for (var c : connectionMap.get(gameID)) {

@@ -33,8 +33,9 @@ public class GameIn {
   Scanner scanner;
   ChessGame game;
   ChessGame.TeamColor teamColor;
+  LoggedIn loggedIn;
   public GameIn(String URL, String stagee, ServerFacade serverFac, boolean continueChesss, Scanner scannerr,
-                HashMap gameNumMap, HashMap gameMapp, DrawChessGame artistt){
+                HashMap gameNumMap, HashMap gameMapp, DrawChessGame artistt, LoggedIn loggedInn){
     serverFacade = serverFac;
     url = URL;
     stage = stagee;
@@ -43,6 +44,7 @@ public class GameIn {
     gameNumberIDMap = gameNumMap;
     gameMap = gameMapp;
     artist = artistt;
+    loggedIn = loggedInn;
   }
 
   public void updateGame(ChessGame gamee, int gaameID){
@@ -72,7 +74,7 @@ public class GameIn {
   public void joinGamePlayer(){
     if(stage == "gameIn"){
     try{
-    ws = new WebSocketFacade(url);
+    ws = new WebSocketFacade(url, gameID, artist, loggedIn);
     ws.joinGamePlayer(authData.authToken(), authData.username(),gameID, teamColor);}
     catch(Exception e){}
   }}
@@ -80,7 +82,7 @@ public class GameIn {
   public void joinGameObserver(){
     if(stage == "gameIn"){
       try{
-    ws = new WebSocketFacade(url);
+    ws = new WebSocketFacade(url, gameID, artist, loggedIn);
     ws.joinGameObserver(authData.authToken(), authData.username(), gameID);
   }
       catch(Exception e){}
@@ -89,10 +91,13 @@ public class GameIn {
   public void makeMove(){
     try{
       //String sessionUrl = url + "/game";
+      loggedIn.listGames(false);
+      game = (loggedIn.gameMap.get(gameID).game());
       ChessMove chessMove = parseUserMove.run(game.getBoard(), teamColor);
       if(chessMove == null){
         System.out.println("Sorry invalid move");
         return;}
+      System.out.print(chessMove.getPromotionPiece());
       ws.makeMove(auth, authData.username(), gameID, chessMove, teamColor);}
     catch(Exception e){
       System.out.print(e.getMessage());

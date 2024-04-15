@@ -33,7 +33,7 @@ public class WebSocketHandler {
     UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
     switch (action.getCommandType()) {
       case MAKE_MOVE:
-        //makeMove(action.getUsername(), action.getGameID(), session);
+        makeMove(action.getUsername(), action.getGameID(), session, action.getPlayerColor(), action.getMove());
         makeMoveNotify(action.getUsername(), action.getGameID(), session, action.getPlayerColor(), action.getMove());
         break;
       case JOIN_OBSERVER:
@@ -50,13 +50,18 @@ public class WebSocketHandler {
   }
 
   private void makeMove(String username, int gameID, Session session,ChessGame.TeamColor playerColor, ChessMove move) throws IOException {
+    System.out.println(gameID);
+    System.out.println("......................................");
+    System.out.print(move.getPromotionPiece());
     try{
       GameData gameData = gameDAO.getGame(gameID);
+      System.out.println(gameData);
       gameData.game().makeMove(move);
       gameDAO.updateGame(gameID, gameData);
       String message = "game updated";
       var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
       connectionManager.broadcast("majolmajol", notification, gameID);
+      System.out.print("updated game move");
     }
     catch(Exception e){
       System.out.println(e.getMessage());
@@ -65,7 +70,7 @@ public class WebSocketHandler {
 
   }
   private void makeMoveNotify(String username, int gameID, Session session, ChessGame.TeamColor playerColor, ChessMove move) throws IOException {
-    connectionManager.add(username, gameID, session);
+    //connectionManager.add(username, gameID, session);
     var message = String.format("%s as ", username);
     message +=playerColor.toString();
     message += " made this move: ";

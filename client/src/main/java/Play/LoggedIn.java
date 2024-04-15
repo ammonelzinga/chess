@@ -70,7 +70,7 @@ public class LoggedIn {
     try{Scanner scanner = new Scanner(System.in);
       stringGameID = scanner.nextLine();
       int gameNum = Integer.parseInt(stringGameID);
-      int gameID = gameNumberIDMap.get(gameNum);
+      gameID = gameNumberIDMap.get(gameNum);
       JoinGameRecord JoinGameRecord = new JoinGameRecord(null, gameID);
       serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
       System.out.println("You are now an observer for gameID: " + gameID);
@@ -99,7 +99,7 @@ public class LoggedIn {
     try{Scanner scanner = new Scanner(System.in);
       stringGameID = scanner.nextLine();
       int gameNum = Integer.parseInt(stringGameID);
-      int gameID = gameNumberIDMap.get(gameNum);
+      gameID = gameNumberIDMap.get(gameNum);
       String color;
       System.out.println("Which color would you like to play as?");
       color = scanner.nextLine();
@@ -108,12 +108,22 @@ public class LoggedIn {
         System.out.println("Sorryyyyyy, color already taken, choose another or become an observer");
         return stage;
       }
-      if((color.equals("WHITE") && gameMap.get(gameID).whiteUsername().equals(authData.username()) == false)
-            || (color.equals("BLACK") && gameMap.get(gameID).blackUsername().equals(authData.username())) == false){
-        System.out.print("trying to update game player");
-        JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
+      if((color.equals("WHITE") && gameMap.get(gameID).whiteUsername() == null)
+              || (color.equals("BLACK") && gameMap.get(gameID).blackUsername() == null)) {
+        System.out.print("trying to update game player, null");
+        JoinGameRecord JoinGameRecord=new JoinGameRecord(color, gameID);
         serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
       }
+      else{
+      if((color.equals("WHITE") && gameMap.get(gameID).whiteUsername().equals(authData.username()) == false)
+            || (color.equals("BLACK") && gameMap.get(gameID).blackUsername().equals(authData.username()) == false)){
+        System.out.print(gameMap.get(gameID).whiteUsername());
+        System.out.print(authData.username());
+        System.out.print(gameMap.get(gameID).whiteUsername().equals(authData.username()));
+        System.out.print("trying to update game player, not null");
+        JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
+        serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
+      }}
       //JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
       //serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
       System.out.println("Game join successful");
@@ -139,7 +149,7 @@ public class LoggedIn {
     }
     catch(Exception e){
       System.out.println("Sorry, color already taken, choose another or become an observer");
-      //System.out.println(e.getMessage());
+      System.out.println(e.getMessage());
     }
     return stage;
   }

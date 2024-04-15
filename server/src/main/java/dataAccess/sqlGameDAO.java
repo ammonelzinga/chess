@@ -78,6 +78,8 @@ public class sqlGameDAO implements GameDAO{
 
   @Override
   public GameData getGame(int gameId) throws DataAccessException {
+    System.out.print("Trying to get game");
+    System.out.println(gameId);
     try(var conn = dbm.getConnection()) {
       var selectStatement = "SELECT gameid, game FROM gametable WHERE gameid=?";
       try (var ps = conn.prepareStatement(selectStatement)){
@@ -90,20 +92,24 @@ public class sqlGameDAO implements GameDAO{
             var gameName = rs.getString("gamename");*/
             var game = rs.getString("game");
             var gameData = new Gson().fromJson(game, GameData.class);
-            if(gameData != null){
-              //System.out.print("gameId: ");
-              //System.out.print(gameData.gameID());
-              return gameData;
+            GameData realGame = new GameData(gameId, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
+            if(realGame != null){
+              System.out.print("gameId: ");
+              System.out.print(gameData.gameID());
+              return realGame;
+              //return gameData;
             }
             else{
               DataAccessException exception = new DataAccessException("Error: bad request");
               exception.addStatusCode(400);
+              System.out.print(exception.getMessage());
               throw exception;
             }
           }}}}
     catch(SQLException e){
       DataAccessException exception = new DataAccessException("Error: unauthorized");
       exception.addStatusCode(401);
+      System.out.print(exception.getMessage());
       throw exception;
     }
     return null;

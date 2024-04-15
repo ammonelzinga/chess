@@ -19,10 +19,16 @@ public class WebSocketFacade extends Endpoint {
 
   Session session;
   ServerMessageHandler notificationHandler;
+  int gameID;
+  DrawChessGame artist;
+  LoggedIn loggedIn;
 
 
-  public WebSocketFacade(String url) throws Exception {
+  public WebSocketFacade(String url, int gameeID, DrawChessGame artistt, LoggedIn loggedInn) throws Exception {
     try {
+      artist = artistt;
+      loggedIn = loggedInn;
+      gameID = gameeID;
       url = url.replace("http", "ws");
       URI socketURI = new URI(url + "/connect");
       this.notificationHandler = new ServerMessageHandler();
@@ -35,6 +41,10 @@ public class WebSocketFacade extends Endpoint {
         @Override
         public void onMessage(String message) {
           ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
+          if(notification.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME){
+            System.out.println("ws attempting redraw");
+            redraw();
+          }
           notificationHandler.notify(notification);
         }
       });
@@ -50,8 +60,19 @@ public class WebSocketFacade extends Endpoint {
   public void onOpen(Session session, EndpointConfig endpointConfig) {
   }
 
+  public void redraw(){
+    try{loggedIn.listGames(false);
+    artist.updateGame(loggedIn.gameMap.get(gameID).game());
+    artist.main(true);}
+    catch(Exception e){
+      System.out.print("Couldn't redraw game at this time");
+      System.out.print(e.getMessage());
+    }
+  }
+
   public void makeMove(String auth, String username, int gameID, ChessMove chessMove, ChessGame.TeamColor playerColor) throws Exception {
-    System.out.println("WebFacade about to try joinGameObserver");
+    System.out.println("WebFacade about to try makeMove");
+    //System.out.println(session.toString());
     try {
       var action = new MakeMoveCommand(auth, username, gameID, UserGameCommand.CommandType.MAKE_MOVE, playerColor, chessMove);
       this.session.getBasicRemote().sendText(new Gson().toJson(action));
@@ -63,9 +84,10 @@ public class WebSocketFacade extends Endpoint {
       throw exception;
     }
   }
-  public void joinGameObserver(String auth, String username, int gameID) throws DataAccessException {
+  public void joinGameObserver(String auth, String username, int gameeID) throws DataAccessException {
     System.out.println("WebFacade about to try joinGameObserver");
     try {
+      gameID = gameeID;
       var action = new JoinObserver(auth, username, gameID, UserGameCommand.CommandType.JOIN_OBSERVER, null, null);
       this.session.getBasicRemote().sendText(new Gson().toJson(action));
       System.out.println("sent text to web socket server");
@@ -77,9 +99,10 @@ public class WebSocketFacade extends Endpoint {
     }
   }
 
-  public void joinGamePlayer(String auth, String username, int gameID, ChessGame.TeamColor teamColor) throws DataAccessException {
+  public void joinGamePlayer(String auth, String username, int gameeID, ChessGame.TeamColor teamColor) throws DataAccessException {
     System.out.println("WebFacade about to try joinGamePlayer");
     try {
+      gameID = gameeID;
       var action = new JoinPlayerCommand(auth, username, gameID, UserGameCommand.CommandType.JOIN_PLAYER, teamColor, null);
       this.session.getBasicRemote().sendText(new Gson().toJson(action));
       System.out.println("sent text to web socket server");
@@ -91,11 +114,12 @@ public class WebSocketFacade extends Endpoint {
     }
   }
 
-  public void leaveGame(String auth, String username, int gameID) throws Exception {
+  public void leaveGame(String auth, String username, int gameeID) throws Exception {
     try {
-      var action = new LeaveCommand(auth, username, gameID, UserGameCommand.CommandType.LEAVE, null, null);
+      var action = new LeaveCommand(auth, username, gameeID, UserGameCommand.CommandType.LEAVE, null, null);
       this.session.getBasicRemote().sendText(new Gson().toJson(action));
       System.out.println("sent text to web socket server");
+      gameID = 0;
       this.session.close();
     } catch (IOException ex) {
       DataAccessException exception = new DataAccessException(ex.getMessage());
