@@ -30,6 +30,21 @@ public class ConnectionManager {
     }
   }
 
+  public void broadcastRootUser(String username, ServerMessage notification, int gameID) throws IOException {
+    var removeList = new ArrayList<Connection>();
+    if(connectionMap.get(gameID) != null){
+      for (var c : connectionMap.get(gameID)) {
+        System.out.println(c);
+        if (c.session.isOpen()) {
+          if (c.username.equals(username)) {
+            c.send(new Gson().toJson(notification));
+          }} else {
+          removeList.add(c);
+        }}
+      for (var c : removeList) {
+        connectionMap.get(gameID).remove(c.username);
+      }}}
+
   public void broadcast(String excludeUsername, ServerMessage notification, int gameID) throws IOException {
     System.out.println("going to try broadcasting");
     System.out.print(connectionMap.size());

@@ -50,18 +50,10 @@ public class ParseUserMove {
             System.out.print("not a valid promotion piece");
             return null;}
             else{
-              System.out.print("Returning this chess move");
-              System.out.print(startPosFinal);
-              System.out.print(endPosFinal);
               return new ChessMove(startPosFinal, endPosFinal, promotionPiece);
             }
       }}
-        System.out.print("Returning this chess move");
-        System.out.print(startPosFinal);
-        System.out.print(endPosFinal);
       return new ChessMove(startPosFinal, endPosFinal, null);
-      //System.out.println("uhhhhh");
-      //return null;
   }
 
   private ChessPiece.PieceType getPromotionPiece(){

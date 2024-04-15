@@ -71,6 +71,15 @@ public class GameIn {
     stage = "loggedIn";
     return stage;
   }
+
+  public void resign() throws Exception {
+    System.out.println("Are you sure you want to resign?");
+    System.out.println("Please type 'yes' if you want to resign");
+    String line = scanner.nextLine();
+    line.toLowerCase();
+    if(line.equals("yes")){
+    ws.resign(authData.authToken(), authData.username(), gameID, teamColor);}
+  }
   public void joinGamePlayer(){
     if(stage == "gameIn"){
     try{
@@ -88,19 +97,18 @@ public class GameIn {
       catch(Exception e){}
     }}
 
+
   public void makeMove(){
     try{
-      //String sessionUrl = url + "/game";
       loggedIn.listGames(false);
       game = (loggedIn.gameMap.get(gameID).game());
       ChessMove chessMove = parseUserMove.run(game.getBoard(), teamColor);
       if(chessMove == null){
         System.out.println("Sorry invalid move");
         return;}
-      System.out.print(chessMove.getPromotionPiece());
       ws.makeMove(auth, authData.username(), gameID, chessMove, teamColor);}
     catch(Exception e){
-      System.out.print(e.getMessage());
+      System.out.print("Sorry try again.");
     }}
 
 

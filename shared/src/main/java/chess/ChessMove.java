@@ -28,6 +28,50 @@ public class ChessMove {
         //throw new RuntimeException("Not implemented");
     }
 
+    public String wordsToString(){
+        String wordMove = "";
+        String letterStartCol = "";
+        String letterEndCol = "";
+        switch (startPos.Col){
+            case 1:
+                letterStartCol = "a";
+            case 2:
+                letterStartCol = "b";
+            case 3:
+                letterStartCol = "c";
+            case 4:
+                letterStartCol = "d";
+            case 5:
+                letterStartCol = "e";
+            case 6:
+                letterStartCol = "f";
+            case 7:
+                letterStartCol = "g";
+            case 8:
+                letterStartCol = "h";
+        }
+        switch (endPos.Col){
+            case 1:
+                letterEndCol = "a";
+            case 2:
+                letterEndCol = "b";
+            case 3:
+                letterEndCol = "c";
+            case 4:
+                letterEndCol = "d";
+            case 5:
+                letterEndCol = "e";
+            case 6:
+                letterEndCol = "f";
+            case 7:
+                letterEndCol = "g";
+            case 8:
+                letterEndCol = "h";
+        }
+        wordMove += letterStartCol + startPos.row + " to " + letterEndCol + endPos.row;
+        return wordMove;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

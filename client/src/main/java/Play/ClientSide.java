@@ -47,14 +47,11 @@ public class ClientSide {
     while (continueChess) {
       if(stage == "loggedOut") {
         runLoggedOut();
-        //System.out.print("finished runloggedout");}
       }
       if(stage == "loggedIn"){
-        //System.out.println("starting logged in");
         runPostLogin();
       }
       if(stage == "gameIn"){
-        System.out.println("starting game stage");
         runGameIn();
       }}}
 
@@ -62,6 +59,9 @@ public class ClientSide {
     String line = scanner.nextLine();
     line = line.toLowerCase();
     switch (line) {
+      case "resign":
+          stageGame.resign();
+          break;
       case "move":
         stageGame.makeMove();
         break;
@@ -73,7 +73,6 @@ public class ClientSide {
         artist.main(true);}
         catch(Exception e){
           System.out.println("Unable to redraw game, please try again.");
-          System.out.print(e.getMessage());
         }
         break;
       default:
@@ -109,8 +108,6 @@ public class ClientSide {
   public void runPostLogin() throws Exception {
     String line=scanner.nextLine();
     line=line.toLowerCase();
-    //System.out.print("Welcome back ");
-    //System.out.println(authData.username());
     System.out.println("");
     //helpPost();
     switch (line) {

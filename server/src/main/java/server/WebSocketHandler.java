@@ -34,7 +34,6 @@ public class WebSocketHandler {
     switch (action.getCommandType()) {
       case MAKE_MOVE:
         makeMove(action.getUsername(), action.getGameID(), session, action.getPlayerColor(), action.getMove());
-        makeMoveNotify(action.getUsername(), action.getGameID(), session, action.getPlayerColor(), action.getMove());
         break;
       case JOIN_OBSERVER:
         joinGameObserver(action.getUsername(), action.getGameID(), session);
@@ -46,35 +45,78 @@ public class WebSocketHandler {
       case LEAVE:
         leave(action.getUsername(), action.getGameID(), session);
         break;
+      case RESIGN:
+        resign(action.getUsername(), action.getGameID(), session, action.getPlayerColor());
+        break;
     }
   }
 
+  private void resign(String username, int gameID, Session session,ChessGame.TeamColor playerColor) throws IOException {
+    try {
+      GameData gameData=gameDAO.getGame(gameID);
+      String opponentName=gameData.whiteUsername();
+      ChessGame.TeamColor color=ChessGame.TeamColor.WHITE;
+      if (playerColor == ChessGame.TeamColor.WHITE) {
+        color=ChessGame.TeamColor.BLACK;
+        opponentName=gameData.blackUsername();
+      }
+      gameData.game().updateGameOver(true);
+        String message=username + " playing as " + playerColor + " has resigned! " + opponentName + " playing as " + color
+                + " has won the game!!!";
+        notifyGamePoint(username, gameID, session, playerColor, message);
+      gameDAO.updateGame(gameID, gameData);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+    private void notifyGamePoint(String username, int gameID, Session session, ChessGame.TeamColor playerColor, String message) throws IOException {
+    var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+    connectionManager.broadcast("majolmajol", notification, gameID);
+  }
   private void makeMove(String username, int gameID, Session session,ChessGame.TeamColor playerColor, ChessMove move) throws IOException {
-    System.out.println(gameID);
-    System.out.println("......................................");
-    System.out.print(move.getPromotionPiece());
     try{
       GameData gameData = gameDAO.getGame(gameID);
+      String opponentName = gameData.whiteUsername();
+      ChessGame.TeamColor color = ChessGame.TeamColor.WHITE;
+      if(playerColor == ChessGame.TeamColor.WHITE){
+        color = ChessGame.TeamColor.BLACK;
+        opponentName = gameData.blackUsername();
+      }
       System.out.println(gameData);
       gameData.game().makeMove(move);
       gameDAO.updateGame(gameID, gameData);
       String message = "game updated";
       var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
       connectionManager.broadcast("majolmajol", notification, gameID);
-      System.out.print("updated game move");
+      makeMoveNotify(username, gameID, session, playerColor, move);
+      if(gameData.game().isInCheckmate(color)){
+        String messageTwo = opponentName + " playing as " + color + " is in checkmate! " + username + " playing as " + playerColor
+                + " has won the game!!!";
+        notifyGamePoint(username, gameID, session, playerColor, messageTwo);
+      } else if (gameData.game().isInCheck(color)) {
+        String messageTwo = opponentName + " playing as " + color + " is in check! Good move " + username + " playing as " + playerColor;
+        notifyGamePoint(username, gameID, session, playerColor, messageTwo);
+      }
+      else if (gameData.game().isInStalemate(color)) {
+        String messageTwo = "Wow it's a stalemate! Looks like " + username + " and " + opponentName + " are evenly matched!";
+        notifyGamePoint(username, gameID, session, playerColor, messageTwo);
+      }
     }
     catch(Exception e){
       System.out.println(e.getMessage());
+      var message = "Error - sorry that is illegal.";
+      var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+      connectionManager.broadcastRootUser(username, notification, gameID);
     }
 
 
   }
   private void makeMoveNotify(String username, int gameID, Session session, ChessGame.TeamColor playerColor, ChessMove move) throws IOException {
-    //connectionManager.add(username, gameID, session);
     var message = String.format("%s as ", username);
     message +=playerColor.toString();
-    message += " made this move: ";
-    message += move.toString();
+    message += " moved from ";
+    message += move.wordsToString();
     var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
     connectionManager.broadcast(username, notification, gameID);
   }
@@ -99,13 +141,4 @@ public class WebSocketHandler {
     connectionManager.broadcast(username, notification, gameID);
   }
 
-  /*public void makeNoise(String petName, String sound) throws ResponseException {
-    try {
-      var message = String.format("%s says %s", petName, sound);
-      var notification = new Notification(Notification.Type.NOISE, message);
-      connections.broadcast("", notification);
-    } catch (Exception ex) {
-      throw new ResponseException(500, ex.getMessage());
-    }
-  } */
 }

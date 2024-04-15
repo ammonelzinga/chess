@@ -12,6 +12,7 @@ import java.util.Iterator;
  */
 public class ChessGame {
     ChessBoard gameBoard = new ChessBoard();
+    boolean gameOver = false;
     TeamColor playerTurn;
     ChessPosition whiteKingPosition;
     ChessPosition blackKingPosition;
@@ -391,7 +392,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if(move.getStartPosition().row < 1 || move.getStartPosition().row > 8 || move.getEndPosition().row < 1 || move.getEndPosition().row > 8
+        if(gameOver || move.getStartPosition().row < 1 || move.getStartPosition().row > 8 || move.getEndPosition().row < 1 || move.getEndPosition().row > 8
         || move.getStartPosition().Col < 1 || move.getStartPosition().Col > 8 || move.getEndPosition().Col < 1 || move.getEndPosition().Col > 8) {
             InvalidMoveException exception = new InvalidMoveException("Move not on board");
             throw exception;
@@ -639,6 +640,14 @@ public class ChessGame {
             }
         }
 
+    }
+    public void updateGameOver(boolean isOver){
+        if(isOver){
+            gameOver = true;
+        }
+        else{
+            gameOver = false;
+        }
     }
 
     /**

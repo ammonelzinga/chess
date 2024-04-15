@@ -71,60 +71,59 @@ public class WebSocketFacade extends Endpoint {
   }
 
   public void makeMove(String auth, String username, int gameID, ChessMove chessMove, ChessGame.TeamColor playerColor) throws Exception {
-    System.out.println("WebFacade about to try makeMove");
-    //System.out.println(session.toString());
+
     try {
       var action = new MakeMoveCommand(auth, username, gameID, UserGameCommand.CommandType.MAKE_MOVE, playerColor, chessMove);
       this.session.getBasicRemote().sendText(new Gson().toJson(action));
-      System.out.println("sent text to web socket server");
     } catch (IOException ex) {
       DataAccessException exception = new DataAccessException(ex.getMessage());
       exception.addStatusCode(500);
-      System.out.println(exception.getMessage());
       throw exception;
     }
   }
   public void joinGameObserver(String auth, String username, int gameeID) throws DataAccessException {
-    System.out.println("WebFacade about to try joinGameObserver");
     try {
       gameID = gameeID;
       var action = new JoinObserver(auth, username, gameID, UserGameCommand.CommandType.JOIN_OBSERVER, null, null);
       this.session.getBasicRemote().sendText(new Gson().toJson(action));
-      System.out.println("sent text to web socket server");
     } catch (IOException ex) {
       DataAccessException exception = new DataAccessException(ex.getMessage());
       exception.addStatusCode(500);
-      System.out.println(exception.getMessage());
       throw exception;
     }
   }
 
   public void joinGamePlayer(String auth, String username, int gameeID, ChessGame.TeamColor teamColor) throws DataAccessException {
-    System.out.println("WebFacade about to try joinGamePlayer");
     try {
       gameID = gameeID;
       var action = new JoinPlayerCommand(auth, username, gameID, UserGameCommand.CommandType.JOIN_PLAYER, teamColor, null);
       this.session.getBasicRemote().sendText(new Gson().toJson(action));
-      System.out.println("sent text to web socket server");
     } catch (IOException ex) {
       DataAccessException exception = new DataAccessException(ex.getMessage());
       exception.addStatusCode(500);
-      System.out.println(exception.getMessage());
       throw exception;
     }
   }
+
+  public void resign(String auth, String username, int gameeID, ChessGame.TeamColor playerColor) throws Exception {
+    try {
+      var action = new ResignCommand(auth, username, gameeID, UserGameCommand.CommandType.RESIGN, playerColor, null);
+      this.session.getBasicRemote().sendText(new Gson().toJson(action));
+    } catch (IOException ex) {
+      DataAccessException exception = new DataAccessException(ex.getMessage());
+      exception.addStatusCode(500);
+      throw exception;
+    }}
 
   public void leaveGame(String auth, String username, int gameeID) throws Exception {
     try {
       var action = new LeaveCommand(auth, username, gameeID, UserGameCommand.CommandType.LEAVE, null, null);
       this.session.getBasicRemote().sendText(new Gson().toJson(action));
-      System.out.println("sent text to web socket server");
       gameID = 0;
       this.session.close();
     } catch (IOException ex) {
       DataAccessException exception = new DataAccessException(ex.getMessage());
       exception.addStatusCode(500);
-      System.out.println(exception.getMessage());
       throw exception;
     }
   }
