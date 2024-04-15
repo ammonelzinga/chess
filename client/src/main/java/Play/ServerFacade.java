@@ -11,7 +11,6 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import model.*;
 import org.junit.jupiter.api.BeforeAll;
-import server.Server;
 
 public class ServerFacade {
 
@@ -21,10 +20,6 @@ public class ServerFacade {
     }
 
     public Object run(String url, String method, boolean hasBody, String body, Class model, boolean hasHeader, String header) throws Exception{
-      //Server server = new Server();
-      //int port = 8080;
-      //System.out.println("♕ 240 Chess Server: " + piece);
-      //server.run(port);
       UserData user = new UserData("username", "password", "email");
       //HttpURLConnection http = sendRequest("http://localhost:8080/session", "POST", new Gson().toJson(user));
       HttpURLConnection http = sendRequest(url, method, hasBody, body, hasHeader, header);

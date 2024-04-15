@@ -2,10 +2,8 @@ package Play;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
-import model.GameData;
-import model.UserData;
-import server.*;
+import model.*;
+
 
 import java.util.*;
 

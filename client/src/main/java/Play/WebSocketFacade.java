@@ -2,13 +2,8 @@ package Play;
 import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.*;
-//import exception.ResponseException;
-//import webSocketMessages.Action;
-//import webSocketMessages.Notification;
-
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;

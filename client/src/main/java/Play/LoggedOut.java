@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import server.*;
 
 import java.util.*;
 
@@ -57,10 +56,6 @@ public class LoggedOut {
     username = scanner.nextLine();
     System.out.println("Enter your password: ");
     password = scanner.nextLine();
-    //System.out.print("Username entered: ");
-    //System.out.println(username);
-    //System.out.print("Password enetered: ");
-    //System.out.print(password);
     UserData userData = new UserData(username, password, "email");
     String sessionUrl = url + "/session";
     var objAuth = serverFacade.run(sessionUrl, "POST", true, new Gson().toJson(userData), AuthData.class, false, "");
