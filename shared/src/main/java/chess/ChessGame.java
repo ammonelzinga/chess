@@ -649,6 +649,9 @@ public class ChessGame {
             gameOver = false;
         }
     }
+    public boolean getGameOverStatus(){
+        return gameOver;
+    }
 
     /**
      * Sets this game's chessboard with a given board

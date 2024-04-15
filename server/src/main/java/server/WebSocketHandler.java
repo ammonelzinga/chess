@@ -11,6 +11,9 @@ import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import service.GameService;
+import webSocketMessages.serverMessages.ErrorMessage;
+import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinPlayerCommand;
 import webSocketMessages.userCommands.UserGameCommand;
@@ -25,7 +28,9 @@ import java.util.Timer;
 public class WebSocketHandler {
   private GameDAO gameDAO;
   private AuthDAO authDAO;
-  public WebSocketHandler(GameDAO gameD, AuthDAO authD){
+  private String username;
+  private GameService gameService;
+  public WebSocketHandler(GameDAO gameD, AuthDAO authD, GameService gameService){
     gameDAO = gameD;
     authDAO = authD;
   }
@@ -34,34 +39,43 @@ public class WebSocketHandler {
   @OnWebSocketMessage
   public void onMessage(Session session, String message) throws IOException {
     UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
-    if(verifyAuth(action.getAuthString(), action.getUsername(), action.getGameID(), session)){
+    try{verifyAuth(action.getAuthString(), action.getUsername(), action.getGameID(), session);
+      System.out.print("got through auth");
+      username = authDAO.getAuth(action.getAuthString()).username();
     switch (action.getCommandType()) {
       case MAKE_MOVE:
-        makeMove(action.getUsername(), action.getGameID(), session, action.getPlayerColor(), action.getMove());
+        makeMove(username, action.getGameID(), session, action.getPlayerColor(), action.getMove());
         break;
       case JOIN_OBSERVER:
-        joinGameObserver(action.getUsername(), action.getGameID(), session);
+        joinGameObserver(username, action.getGameID(), session);
         System.out.println("server received join observer mesage");
         break;
       case JOIN_PLAYER:
-        joinGamePlayer(action.getUsername(), action.getGameID(), session, action.getPlayerColor());
+        try{
+          verifyAuth(action.getAuthString(), username, action.getGameID(), session);
+        joinGamePlayer(username, action.getGameID(), session, action.getPlayerColor());}
+        catch(Exception e){
+          sendError(username, action.getGameID(), session);
+        }
         break;
       case LEAVE:
-        leave(action.getUsername(), action.getGameID(), session);
+        leave(username, action.getGameID(), session);
         break;
       case RESIGN:
-        resign(action.getUsername(), action.getGameID(), session, action.getPlayerColor());
+        resign(username, action.getGameID(), session, action.getPlayerColor());
         break;
     }}
-    else{
-      System.out.print("Wrong authentication when websocket handler received it");
+    catch(Exception e){
+      connectionManager.add(username, action.getGameID(), session);
+      System.out.print("errrrrrr");
+      sendError(username, action.getGameID(), session);
+      }
     }
-  }
 
-  private boolean verifyAuth(String auth, String username, int gameID, Session session){
+  private boolean verifyAuth(String auth, String username, int gameID, Session session) throws Exception{
     if(authDAO.checkAuth(auth) != true){
       try{var message = "Error - invalid authentication!";
-      var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+      var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message, message);
       connectionManager.broadcastRootUser(username, notification, gameID);
       return false;}
       catch(Exception e){
@@ -71,9 +85,14 @@ public class WebSocketHandler {
     else{return true;}
   }
   private void resign(String username, int gameID, Session session,ChessGame.TeamColor playerColor) throws IOException {
-
     try {
       GameData gameData=gameDAO.getGame(gameID);
+      if(gameData.game().getGameOverStatus()){
+        var message = "Error - sorry that is illegal.";
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+        connectionManager.broadcastRootUser(username, notification, gameID);
+        return;
+      }
       String opponentName=gameData.whiteUsername();
       ChessGame.TeamColor color=ChessGame.TeamColor.WHITE;
       if (playerColor == ChessGame.TeamColor.WHITE) {
@@ -95,6 +114,8 @@ public class WebSocketHandler {
     connectionManager.broadcast("majolmajol", notification, gameID);
   }
   private void makeMove(String username, int gameID, Session session,ChessGame.TeamColor playerColor, ChessMove move) throws IOException {
+    System.out.print("player colorrrrrrrrrrrrrr make moveeeeeeeeeeeeeee");
+    System.out.print(playerColor);
     try{
       GameData gameData = gameDAO.getGame(gameID);
       String opponentName = gameData.whiteUsername();
@@ -107,7 +128,7 @@ public class WebSocketHandler {
       gameData.game().makeMove(move);
       gameDAO.updateGame(gameID, gameData);
       String message = "game updated";
-      var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, message);
+      var notification = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, message, message);
       connectionManager.broadcast("majolmajol", notification, gameID);
       makeMoveNotify(username, gameID, session, playerColor, move);
       if(gameData.game().isInCheckmate(color)){
@@ -141,24 +162,82 @@ public class WebSocketHandler {
     connectionManager.broadcast(username, notification, gameID);
   }
   private void joinGamePlayer(String username, int gameID, Session session, ChessGame.TeamColor playerColor) throws IOException {
+    try{System.out.println("joingameplayer....");
+      String color = "";
+    System.out.print(username);
     connectionManager.add(username, gameID, session);
+    if(playerColor == ChessGame.TeamColor.WHITE){
+      color = "WHITE";
+    }
+    if(playerColor == ChessGame.TeamColor.BLACK){
+      color = "BLACK";
+    }
+    System.out.print("HHHHHHHHHHHH");
+    if((username.equals(gameDAO.getGame(gameID).whiteUsername()) == false && color == "WHITE") ||
+      (username.equals(gameDAO.getGame(gameID).blackUsername()) == false && color == "BLACK")){
+    gameService.joinGame(username, color, gameID);}
+    System.out.print("got through game service join game");
     var message = String.format("%s is now playing as ", username);
     message +=playerColor.toString();
+    var loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, message, message);
+    connectionManager.broadcastRootUser(username, loadGame, gameID);
     var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-    connectionManager.broadcast(username, notification, gameID);
+    connectionManager.broadcast(username, notification, gameID);}
+    catch(Exception e){
+      System.out.print("....//////////....");
+      sendError(username, gameID, session);
+    }
+  }
+
+  private void sendError(String username, int gameID, Session session){
+    try{
+      var message = "Error - sorry that is illegal.";
+    var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message, message);
+    if(username!= null){
+    connectionManager.broadcastRootUser(username, notification, gameID);}
+    else{
+      connectionManager.broadcastRootUserError(username, notification, gameID, session);}
+    }
+    catch(Exception e){
+      System.out.print(e.getMessage());
+    }
   }
   private void joinGameObserver(String username, int gameID, Session session) throws IOException {
     connectionManager.add(username, gameID, session);
+    try{GameData gameData = gameDAO.getGame(gameID);
+    if(gameData == null) {
+      sendError(username, gameID, session);
+    }
+    else{
     var message = String.format("%s has joined as an observer", username);
+    var loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, message, message);
+    connectionManager.broadcastRootUser(username, loadGame, gameID);
     var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-    connectionManager.broadcast(username, notification, gameID);
+    connectionManager.broadcast(username, notification, gameID);}}
+    catch(Exception e){
+      sendError(username, gameID, session);
+    }
   }
 
   private void leave(String username, int gameID, Session session) throws IOException {
+    try{GameData gameData = gameDAO.getGame(gameID);
+      if(gameData.whiteUsername() != null){
+      if(username.equals(gameData.whiteUsername())){
+        GameData newGameData = new GameData(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
+        gameDAO.updateGame(gameID, newGameData);}
+      }
+      if(gameData.blackUsername() != null){
+        if(username.equals(gameData.blackUsername())){
+        GameData newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
+        gameDAO.updateGame(gameID, newGameData);}
+      }
     connectionManager.remove(username, gameID, session);
     var message = String.format("%s left the game", username);
     var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-    connectionManager.broadcast(username, notification, gameID);
+    connectionManager.broadcast(username, notification, gameID);}
+    catch(Exception e){
+      System.out.print(e.getMessage());
+    }
   }
 
 }

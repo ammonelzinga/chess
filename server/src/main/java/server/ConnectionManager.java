@@ -12,6 +12,8 @@ public class ConnectionManager {
   public final ConcurrentHashMap<Integer, ArrayList<Connection>> connectionMap = new ConcurrentHashMap<>();
 
   public void add(String username, int gameID, Session session) {
+    System.out.println("gonna add");
+    System.out.println(username);
     var connection = new Connection(username, session);
     if(connectionMap.containsKey(gameID)){
       connectionMap.get(gameID).add(connection);
@@ -45,13 +47,31 @@ public class ConnectionManager {
         connectionMap.get(gameID).remove(c.username);
       }}}
 
+  public void broadcastRootUserError(String username, ServerMessage notification, int gameID, Session session) throws IOException {
+    var removeList = new ArrayList<Connection>();
+    if(connectionMap.get(gameID) != null){
+      for (var c : connectionMap.get(gameID)) {
+        System.out.println(c);
+        if (c.session.isOpen()) {
+          if (c.session.equals(session)) {
+            c.send(new Gson().toJson(notification));
+          }} else {
+          removeList.add(c);
+        }}
+      for (var c : removeList) {
+        connectionMap.get(gameID).remove(c.session);
+      }}}
+
   public void broadcast(String excludeUsername, ServerMessage notification, int gameID) throws IOException {
     System.out.println("going to try broadcasting");
     System.out.print(connectionMap.size());
     var removeList = new ArrayList<Connection>();
     if(connectionMap.get(gameID) != null){
     for (var c : connectionMap.get(gameID)) {
+      System.out.println(".......");
       System.out.println(c);
+      System.out.println(c.session);
+      System.out.println(c.username);
       if (c.session.isOpen()) {
         System.out.println("seeing an open session");
         if (!c.username.equals(excludeUsername)) {

@@ -17,7 +17,7 @@ public class Server {
     GameService gameService = new GameService(userDAO, authDAO, gameDAO);
     UserHandler userHandler = new UserHandler(userDAO, authDAO, gameDAO, userService, generalService, gameService);
     GameHandler gameHandler = new GameHandler(userDAO, authDAO, gameDAO, userService, generalService, gameService);
-    WebSocketHandler webSocketHandler = new WebSocketHandler(gameDAO, authDAO);
+    WebSocketHandler webSocketHandler = new WebSocketHandler(gameDAO, authDAO, gameService);
 
     DatabaseManager dbm = new DatabaseManager();
 

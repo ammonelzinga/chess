@@ -108,22 +108,22 @@ public class LoggedIn {
         System.out.println("Sorryyyyyy, color already taken, choose another or become an observer");
         return stage;
       }
-      if((color.equals("WHITE") && gameMap.get(gameID).whiteUsername() == null)
-              || (color.equals("BLACK") && gameMap.get(gameID).blackUsername() == null)) {
-        System.out.print("trying to update game player, null");
-        JoinGameRecord JoinGameRecord=new JoinGameRecord(color, gameID);
-        serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
-      }
-      else{
-      if((color.equals("WHITE") && gameMap.get(gameID).whiteUsername().equals(authData.username()) == false)
-            || (color.equals("BLACK") && gameMap.get(gameID).blackUsername().equals(authData.username()) == false)){
-        System.out.print(gameMap.get(gameID).whiteUsername());
-        System.out.print(authData.username());
-        System.out.print(gameMap.get(gameID).whiteUsername().equals(authData.username()));
-        System.out.print("trying to update game player, not null");
+      //if((color.equals("WHITE") && gameMap.get(gameID).whiteUsername() == null)
+        //      || (color.equals("BLACK") && gameMap.get(gameID).blackUsername() == null)) {
+        //System.out.print("trying to update game player, null");
+        //JoinGameRecord JoinGameRecord=new JoinGameRecord(color, gameID);
+        //serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
+      //}
+      //else{
+      //if((color.equals("WHITE") && gameMap.get(gameID).whiteUsername().equals(authData.username()) == false)
+        //    || (color.equals("BLACK") && gameMap.get(gameID).blackUsername().equals(authData.username()) == false)){
+        //System.out.print(gameMap.get(gameID).whiteUsername());
+        //System.out.print(authData.username());
+        //System.out.print(gameMap.get(gameID).whiteUsername().equals(authData.username()));
+        //System.out.print("trying to update game player, not null");
         JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
         serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
-      }}
+  //    }}
       //JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
       //serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
       System.out.println("Game join successful");
@@ -148,8 +148,9 @@ public class LoggedIn {
       stage = "gameIn";
     }
     catch(Exception e){
+      stage = "loggedIn";
       System.out.println("Sorry, color already taken, choose another or become an observer");
-      System.out.println(e.getMessage());
+      //System.out.println(e.getMessage());
     }
     return stage;
   }

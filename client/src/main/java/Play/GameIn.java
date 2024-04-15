@@ -86,7 +86,15 @@ public class GameIn {
     ws = new WebSocketFacade(url, gameID, artist, loggedIn);
     ws.joinGamePlayer(authData.authToken(), authData.username(),gameID, teamColor);}
     catch(Exception e){}
-  }}
+  }
+  else{
+      try{
+        ws = new WebSocketFacade(url, gameID, artist, loggedIn);
+        ws.joinGamePlayer("majolmajol", authData.username(),gameID, teamColor);}
+      catch(Exception e){}
+    }
+  }
+
 
   public void joinGameObserver(){
     if(stage == "gameIn"){
