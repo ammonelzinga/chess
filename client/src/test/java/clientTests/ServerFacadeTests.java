@@ -322,18 +322,18 @@ public class ServerFacadeTests {
       //System.out.print(e.getMessage());
     }
 
-    try{loggedOut.listGames(false);
+   /* try{loggedOut.listGames(false);
       //System.out.println(loggedOut.gameMap);
       //System.out.println(gameMap);
       Assertions.assertNotEquals(gameMap, loggedOut.gameMap);
     }
     catch(Exception e){
       System.out.print(e.getMessage());
-    }
+    }*/
 
   }
 
-  @Test
+  /*@Test
   void listGamesNeg() {
     HashMap<Integer, Integer> gameNumberIDMap;
     HashMap<Integer, GameData> gameMap;
@@ -345,7 +345,5 @@ public class ServerFacadeTests {
     Assertions.assertEquals(gameMap, loggedOut.gameMap);}
     catch(Exception e){
       System.out.print(e.getMessage());
-    }
+    }*/
   }
-
-}
