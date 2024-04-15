@@ -114,9 +114,9 @@ public class WebSocketFacade extends Endpoint {
       throw exception;
     }}
 
-  public void leaveGame(String auth, String username, int gameeID) throws Exception {
+  public void leaveGame(String auth, String username, int gameeID, ChessGame.TeamColor playerColor) throws Exception {
     try {
-      var action = new LeaveCommand(auth, username, gameeID, UserGameCommand.CommandType.LEAVE, null, null);
+      var action = new LeaveCommand(auth, username, gameeID, UserGameCommand.CommandType.LEAVE, playerColor, null);
       this.session.getBasicRemote().sendText(new Gson().toJson(action));
       gameID = 0;
       this.session.close();
@@ -126,15 +126,5 @@ public class WebSocketFacade extends Endpoint {
       throw exception;
     }
   }
-
-  /*public void leavePetShop(String visitorName) throws DataAccessException {
-    try {
-      var action = new Action(Action.Type.EXIT, visitorName);
-      this.session.getBasicRemote().sendText(new Gson().toJson(action));
-      this.session.close();
-    } catch (IOException ex) {
-      throw new ResponseException(500, ex.getMessage());
-    }
-  }*/
 
 }

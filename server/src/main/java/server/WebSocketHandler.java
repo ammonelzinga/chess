@@ -2,8 +2,6 @@ package server;
 import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
-//import dataaccess.DataAccess;
-//import exception.ResponseException;
 import dataAccess.AuthDAO;
 import dataAccess.GameDAO;
 import model.GameData;
@@ -17,11 +15,7 @@ import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinPlayerCommand;
 import webSocketMessages.userCommands.UserGameCommand;
-//import webSocketMessages.Action;
-//import webSocketMessages.Notification;
-
 import java.io.IOException;
-import java.util.Timer;
 
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
@@ -47,17 +41,7 @@ public class WebSocketHandler {
       username = authDAO.getAuth(action.getAuthString()).username();
     switch (action.getCommandType()) {
       case MAKE_MOVE:
-        ChessGame.TeamColor playerColor = null;
-        GameData tempGameData = gameDAO.getGame(action.getGameID());
-        if(tempGameData.whiteUsername() != null){
-        if(username.equals(tempGameData.whiteUsername())){
-          playerColor = WHITE;
-        }}
-        if(tempGameData.blackUsername() != null){
-        if(username.equals(tempGameData.blackUsername())){
-          playerColor = BLACK;
-        }}
-        makeMove(username, action.getGameID(), session, playerColor, action.getMove());
+        makeMove(username, action.getGameID(), session, getColor(action.getGameID()), action.getMove());
         break;
       case JOIN_OBSERVER:
         joinGameObserver(username, action.getGameID(), session);
@@ -75,26 +59,32 @@ public class WebSocketHandler {
         leave(username, action.getGameID(), session);
         break;
       case RESIGN:
-        playerColor = null;
-        tempGameData = gameDAO.getGame(action.getGameID());
-        if(tempGameData.whiteUsername() != null){
-          if(username.equals(tempGameData.whiteUsername())){
-            playerColor = WHITE;
-          }}
-        if(tempGameData.blackUsername() != null){
-          if(username.equals(tempGameData.blackUsername())){
-            playerColor = BLACK;
-          }}
-        resign(username, action.getGameID(), session, action.getPlayerColor());
+        resign(username, action.getGameID(), session, getColor(action.getGameID()));
         break;
     }}
     catch(Exception e){
       connectionManager.add(username, action.getGameID(), session);
-      System.out.print("errrrrrr");
       sendError(username, action.getGameID(), session);
       }
     }
 
+    private ChessGame.TeamColor getColor(int gameID){
+      ChessGame.TeamColor playerColor = null;
+      try{
+      GameData tempGameData = gameDAO.getGame(gameID);
+      if(tempGameData.whiteUsername() != null){
+        if(username.equals(tempGameData.whiteUsername())){
+          playerColor = WHITE;
+        }}
+      if(tempGameData.blackUsername() != null){
+        if(username.equals(tempGameData.blackUsername())){
+          playerColor = BLACK;
+        }}}
+      catch(Exception e){
+        System.out.print(e.getMessage());
+      }
+      return playerColor;
+  }
   private boolean verifyAuth(String auth, String username, int gameID, Session session) throws Exception{
     if(authDAO.checkAuth(auth) != true){
       try{var message = "Error - invalid authentication!";
@@ -143,11 +133,14 @@ public class WebSocketHandler {
   private void makeMove(String username, int gameID, Session session,ChessGame.TeamColor playerColor, ChessMove move) throws IOException {
     if(playerColor == null){
       sendError(username, gameID, session);
+      return;
     }
-    System.out.print("player colorrrrrrrrrrrrrr make moveeeeeeeeeeeeeee");
-    System.out.print(playerColor);
     try{
       GameData gameData = gameDAO.getGame(gameID);
+      if(playerColor != gameData.game().getTeamTurn()){
+        sendError(username, gameID, session);
+        return;
+      }
       String opponentName = gameData.whiteUsername();
       ChessGame.TeamColor color = WHITE;
       if(playerColor == WHITE){
@@ -175,10 +168,7 @@ public class WebSocketHandler {
       }
     }
     catch(Exception e){
-      System.out.println(e.getMessage());
-      var message = "Error - sorry that is illegal.";
-      var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message, message);
-      connectionManager.broadcastRootUser(username, notification, gameID);
+      sendError(username, gameID, session);
     }
 
 
@@ -191,9 +181,8 @@ public class WebSocketHandler {
     connectionManager.broadcast(username, notification, gameID);
   }
   private void joinGamePlayer(String username, int gameID, Session session, ChessGame.TeamColor playerColor) throws IOException {
-    try{System.out.println("joingameplayer....");
+    try{
       String color = "";
-    System.out.print(username);
     connectionManager.add(username, gameID, session);
     if(playerColor == WHITE){
       color = "WHITE";
@@ -201,20 +190,24 @@ public class WebSocketHandler {
     if(playerColor == BLACK){
       color = "BLACK";
     }
-    System.out.print("HHHHHHHHHHHH");
     if((username.equals(gameDAO.getGame(gameID).whiteUsername()) == false && color == "WHITE") ||
       (username.equals(gameDAO.getGame(gameID).blackUsername()) == false && color == "BLACK")){
     gameService.joinGame(username, color, gameID);}
-    System.out.print("got through game service join game");
     var message = String.format("%s is now playing as ", username);
     message +=playerColor.toString();
-    var loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, message, message);
+    loadNotify(username, message, gameID);}
+    catch(Exception e){
+      sendError(username, gameID, session);
+    }
+  }
+
+  private void loadNotify(String username, String message, int gameID){
+    try{var loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, message, message);
     connectionManager.broadcastRootUser(username, loadGame, gameID);
     var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
     connectionManager.broadcast(username, notification, gameID);}
     catch(Exception e){
-      System.out.print("....//////////....");
-      sendError(username, gameID, session);
+      System.out.print(e.getMessage());
     }
   }
 
@@ -239,17 +232,16 @@ public class WebSocketHandler {
     }
     else{
     var message = String.format("%s has joined as an observer", username);
-    var loadGame = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, message, message);
-    connectionManager.broadcastRootUser(username, loadGame, gameID);
-    var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-    connectionManager.broadcast(username, notification, gameID);}}
+    loadNotify(username, message, gameID);}}
     catch(Exception e){
       sendError(username, gameID, session);
     }
   }
 
   private void leave(String username, int gameID, Session session) throws IOException {
-    try{GameData gameData = gameDAO.getGame(gameID);
+    try{
+      connectionManager.remove(username, gameID, session);
+      GameData gameData = gameDAO.getGame(gameID);
       if(gameData.whiteUsername() != null){
       if(username.equals(gameData.whiteUsername())){
         GameData newGameData = new GameData(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
@@ -260,13 +252,14 @@ public class WebSocketHandler {
         GameData newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
         gameDAO.updateGame(gameID, newGameData);}
       }
-    connectionManager.remove(username, gameID, session);
     var message = String.format("%s left the game", username);
     var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
     connectionManager.broadcast(username, notification, gameID);}
     catch(Exception e){
-      System.out.print(e.getMessage());
-    }
+      connectionManager.remove(username, gameID, session);
+      var message = String.format("%s left the game", username);
+      var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+      connectionManager.broadcast(username, notification, gameID);}
   }
 
 }

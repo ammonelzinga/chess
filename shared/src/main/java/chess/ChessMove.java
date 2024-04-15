@@ -32,7 +32,15 @@ public class ChessMove {
         String wordMove = "";
         String letterStartCol = "";
         String letterEndCol = "";
-        switch (startPos.Col){
+        letterStartCol = getLetterFromInt(startPos.Col);
+        letterEndCol = getLetterFromInt(endPos.Col);
+        wordMove += letterStartCol + startPos.row + " to " + letterEndCol + endPos.row;
+        return wordMove;
+    }
+
+    public String getLetterFromInt(int num){
+        String letterStartCol = "";
+        switch (num){
             case 1:
                 letterStartCol = "a";
                 break;
@@ -58,36 +66,8 @@ public class ChessMove {
                 letterStartCol = "h";
                 break;
         }
-        switch (endPos.Col){
-            case 1:
-                letterEndCol = "a";
-                break;
-            case 2:
-                letterEndCol = "b";
-                break;
-            case 3:
-                letterEndCol = "c";
-                break;
-            case 4:
-                letterEndCol = "d";
-                break;
-            case 5:
-                letterEndCol = "e";
-                break;
-            case 6:
-                letterEndCol = "f";
-                break;
-            case 7:
-                letterEndCol = "g";
-                break;
-            case 8:
-                letterEndCol = "h";
-                break;
-        }
-        wordMove += letterStartCol + startPos.row + " to " + letterEndCol + endPos.row;
-        return wordMove;
+        return letterStartCol;
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -65,8 +65,8 @@ public class GameIn {
   public String leave() throws Exception {
     var out=new PrintStream(System.out, true, StandardCharsets.UTF_8);
     out.print(SET_BG_COLOR_DARK_GREY);
-    System.out.println("Leaving game");
-    ws.leaveGame(authData.authToken(), authData.username(), gameID);
+    //System.out.println("Leaving game");
+    ws.leaveGame(authData.authToken(), authData.username(), gameID, teamColor);
     out.print(ERASE_SCREEN);
     stage = "loggedIn";
     return stage;

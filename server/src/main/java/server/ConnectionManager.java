@@ -29,8 +29,9 @@ public class ConnectionManager {
     if(connectionMap.containsKey(gameID)){
       Connection connection = new Connection(username, session);
       connectionMap.get(gameID).remove(connection.username);
-    }
-  }
+      connectionMap.get(gameID).remove(connection.session);
+      connectionMap.get(gameID).remove(connection);
+  }}
 
   public void broadcastRootUser(String username, ServerMessage notification, int gameID) throws IOException {
     var removeList = new ArrayList<Connection>();
