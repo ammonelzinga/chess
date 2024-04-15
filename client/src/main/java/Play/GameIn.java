@@ -6,7 +6,6 @@ import chess.ChessMove;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
-import server.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
