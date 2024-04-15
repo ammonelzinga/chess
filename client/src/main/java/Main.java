@@ -13,15 +13,10 @@ public class Main {
         out.print(SET_BG_COLOR_DARK_GREY);
         System.out.println("♕ 240 Chess Client: " + piece);
         System.out.println("Welcome to 240 chess. Type Help to get started");
-        //Server server = new Server();
-        //int port = 8080;
-        //System.out.println("♕ 240 Chess Server: " + piece);
-        //server.run(port);
         ClientSide client = new ClientSide("http://localhost:8080");
         try{client.main(args);}
         catch(Exception e){
             System.out.print(e.getMessage());
         }
-       // server.stop();
     }
 }

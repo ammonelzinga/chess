@@ -1,13 +1,13 @@
 package dataAccessTests;
 import dataAccess.UserDAO;
-import dataAccess.sqlUserDAO;
+import dataAccess.SqlUserDAO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import model.UserData;
 import dataAccess.DataAccessException;
 
 class sqlUserDAOTest {
-  public UserDAO sqlUserDao=new sqlUserDAO();
+  public UserDAO sqlUserDao=new SqlUserDAO();
 
   @Test
   void clearAllUserData() {
@@ -28,7 +28,7 @@ class sqlUserDAOTest {
   @Test
   void createUser() {
     UserData newUser=new UserData("Eeyore", "dismal", "eeyore@fakeemail.com");
-    UserDAO sqlUserDao=new sqlUserDAO();
+    UserDAO sqlUserDao=new SqlUserDAO();
     try {
       sqlUserDao.createUser(newUser);
       UserData sqlUser=sqlUserDao.getUser("Eeyore");
@@ -43,7 +43,7 @@ class sqlUserDAOTest {
   @Test
   void createUserNeg() {
     UserData newUser=new UserData("Piglet", "ohdear", "piglet@fakeemail.com");
-    UserDAO sqlUserDao=new sqlUserDAO();
+    UserDAO sqlUserDao=new SqlUserDAO();
     try {
       sqlUserDao.createUser(newUser);
       Assertions.assertThrows(DataAccessException.class, () -> sqlUserDao.createUser(newUser));

@@ -1,18 +1,14 @@
 package dataAccess;
-import com.google.gson.Gson;
 import model.AuthData;
-import model.UserData;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class sqlAuthDAO implements AuthDAO{
+public class SqlAuthDAO implements AuthDAO{
 
   DatabaseManager dbm = new DatabaseManager();
 
-  public sqlAuthDAO(){
+  public SqlAuthDAO(){
     try{configureAuthTable();}
     catch(DataAccessException e){
       System.out.print(e.getMessage());

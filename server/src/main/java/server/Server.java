@@ -4,14 +4,13 @@ import service.GameService;
 import service.GeneralService;
 import service.UserService;
 import spark.*;
-import com.google.gson.Gson;
 
 
 public class Server {
 
-    UserDAO userDAO = new sqlUserDAO();
-    AuthDAO authDAO = new sqlAuthDAO();
-    GameDAO gameDAO = new sqlGameDAO();
+    UserDAO userDAO = new SqlUserDAO();
+    AuthDAO authDAO = new SqlAuthDAO();
+    GameDAO gameDAO = new SqlGameDAO();
     UserService userService = new UserService(userDAO, authDAO);
     GeneralService generalService = new GeneralService(userDAO, authDAO, gameDAO);
     GameService gameService = new GameService(userDAO, authDAO, gameDAO);
@@ -22,16 +21,10 @@ public class Server {
     DatabaseManager dbm = new DatabaseManager();
 
     public int run(int desiredPort) {
-        /*try{dbm.createDatabase();}
-        catch(Exception e){
-            System.out.print(e.getMessage());
-        }*/
         System.out.print("running server");
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-
-        // Register your endpoints and handle exceptions here.
 
         Spark.webSocket("/connect", webSocketHandler);
 

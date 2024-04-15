@@ -21,10 +21,10 @@ public class LoggedOut {
   String stage;
   boolean continueChess;
   Scanner scanner;
-  public LoggedOut(String URL, String stagee, ServerFacade serverFac, boolean continueChesss, Scanner scannerr,
+  public LoggedOut(String uRL, String stagee, ServerFacade serverFac, boolean continueChesss, Scanner scannerr,
                    HashMap gameNumMap, HashMap gameMapp, DrawChessGame artistt){
     serverFacade = serverFac;
-    url = URL;
+    url = uRL;
     stage = stagee;
     continueChess = continueChesss;
     scanner = scannerr;
@@ -33,7 +33,7 @@ public class LoggedOut {
     artist = artistt;
   }
 
-  public void Help() throws Exception {
+  public void help() throws Exception {
       System.out.println("Register -- to create a new account");
       System.out.println("Login -- to play chess");
       System.out.println("Quit -- to exit chess");
@@ -42,14 +42,13 @@ public class LoggedOut {
       //runLoggedOut();
   }
 
-  public boolean Quit() throws Exception {
+  public boolean quit() throws Exception {
       System.out.print("Good bye");
       continueChess = false;
       return continueChess;
-
   }
 
-  public String Login() throws Exception {
+  public String login() throws Exception {
     String username;
     String password;
     try{System.out.println("Enter your username: ");
@@ -66,17 +65,13 @@ public class LoggedOut {
     System.out.print("Welcome back ");
     System.out.println(authData.username());
     System.out.println("");
-    //helpPost();
-    //listGames(false);
     }
     catch(Exception e){
       System.out.println("Sorry incorrect login information, please try again.");
-      //System.out.print(e.getMessage());
     }
     return stage;
-    //scanner.close();
   }
-  public String Register() throws Exception {
+  public String register() throws Exception {
     String username;
     String password;
     String email;
@@ -97,8 +92,6 @@ public class LoggedOut {
       System.out.print("Hello ");
       System.out.println(authData.username());
       System.out.println("");
-      //helpPost();
-      //listGames(false);
     }
     catch(Exception e){
       System.out.println("Sorry, username already taken, pick a new one.");

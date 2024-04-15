@@ -1,7 +1,7 @@
 package dataAccessTests;
 import chess.ChessGame;
 import dataAccess.GameDAO;
-import dataAccess.sqlGameDAO;
+import dataAccess.SqlGameDAO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import model.GameData;
@@ -10,7 +10,7 @@ import dataAccess.DataAccessException;
 import java.util.HashMap;
 
 class sqlGameDAOTest {
-  GameDAO dao = new sqlGameDAO();
+  GameDAO dao = new SqlGameDAO();
   @Test
   void createGame() {
     GameData game = new GameData(100, null, null, "blueberry", new ChessGame());

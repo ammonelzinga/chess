@@ -1,16 +1,14 @@
 package dataAccess;
-import com.google.gson.Gson;
 import model.UserData;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class sqlUserDAO implements UserDAO{
+public class SqlUserDAO implements UserDAO{
   DatabaseManager dbm = new DatabaseManager();
 
-  public sqlUserDAO(){
+  public SqlUserDAO(){
     try{configureUserTable();}
     catch(DataAccessException e){
       System.out.print(e.getMessage());
@@ -116,14 +114,4 @@ public class sqlUserDAO implements UserDAO{
     }
     return null;
   }
-
-  private UserData readUser(ResultSet rs) throws DataAccessException {
-    try{var username = rs.getString("username");
-    var json = rs.getString("json");
-    var userData = new Gson().fromJson(json, UserData.class);
-    return userData;
-  }
-    catch(SQLException e){
-      throw new DataAccessException(e.getMessage());
-    }}
 }

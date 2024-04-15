@@ -1,23 +1,18 @@
 package dataAccess;
 import model.GameData;
-import java.util.ArrayList;
+
 import java.util.Collection;
 import com.google.gson.Gson;
-import model.AuthData;
-import model.UserData;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import server.JoinGameRecord;
 
-import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
-public class sqlGameDAO implements GameDAO{
+public class SqlGameDAO implements GameDAO{
   DatabaseManager dbm = new DatabaseManager();
 
-  public sqlGameDAO(){
+  public SqlGameDAO(){
     try{configureGameTable();}
     catch(DataAccessException e){
       System.out.print(e.getMessage());
@@ -66,8 +61,6 @@ public class sqlGameDAO implements GameDAO{
           if(resultSet.next()){
             id = resultSet.getString(1);
           }
-          //System.out.println("New Game Primary Key: ");
-          //System.out.print(id);
           int gameID = Integer.parseInt(id);
           return gameID;}
       }}
@@ -86,10 +79,6 @@ public class sqlGameDAO implements GameDAO{
         ps.setInt(1, gameId);
         try(var rs = ps.executeQuery()) {
           while (rs.next()) {
-            /*var gameID = rs.getInt("gameid");
-            var whiteUsername = rs.getString("whiteusername");
-            var blackUsername = rs.getString("blackusername");
-            var gameName = rs.getString("gamename");*/
             var game = rs.getString("game");
             var gameData = new Gson().fromJson(game, GameData.class);
             GameData realGame = new GameData(gameId, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
@@ -97,7 +86,6 @@ public class sqlGameDAO implements GameDAO{
               System.out.print("gameId: ");
               System.out.print(gameData.gameID());
               return realGame;
-              //return gameData;
             }
             else{
               DataAccessException exception = new DataAccessException("Error: bad request");

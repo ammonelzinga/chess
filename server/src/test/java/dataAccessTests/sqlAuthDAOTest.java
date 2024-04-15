@@ -1,12 +1,12 @@
 package dataAccessTests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import dataAccess.sqlAuthDAO;
+import dataAccess.SqlAuthDAO;
 import model.AuthData;
 import dataAccess.DataAccessException;
 
 class sqlAuthDAOTest {
-  sqlAuthDAO dao = new sqlAuthDAO();
+  SqlAuthDAO dao = new SqlAuthDAO();
   @Test
   void createAuth() {
     AuthData auth = new AuthData("123", "one");

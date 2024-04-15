@@ -1,9 +1,7 @@
 package chess;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -45,15 +43,12 @@ public class ChessGame {
         whitePawnAdvance2Now = null;
         blackPawnAdvance2Now = null;
     }
-
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
         return playerTurn;
-
     }
-
     /**
      * Set's which teams turn it is
      *
@@ -62,9 +57,7 @@ public class ChessGame {
     public void setTeamTurn(TeamColor team) {
 
         playerTurn = team;
-
     }
-
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
@@ -72,7 +65,6 @@ public class ChessGame {
         WHITE,
         BLACK
     }
-
     public boolean canCastle (TeamColor color, boolean queenSide){
         boolean canCastle = false;
         if(color == TeamColor.BLACK){

@@ -33,10 +33,10 @@ public class GameIn {
   ChessGame game;
   ChessGame.TeamColor teamColor;
   LoggedIn loggedIn;
-  public GameIn(String URL, String stagee, ServerFacade serverFac, boolean continueChesss, Scanner scannerr,
+  public GameIn(String uRL, String stagee, ServerFacade serverFac, boolean continueChesss, Scanner scannerr,
                 HashMap gameNumMap, HashMap gameMapp, DrawChessGame artistt, LoggedIn loggedInn){
     serverFacade = serverFac;
-    url = URL;
+    url = uRL;
     stage = stagee;
     continueChess = continueChesss;
     scanner = scannerr;

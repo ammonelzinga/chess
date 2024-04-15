@@ -23,9 +23,9 @@ public class ClientSide {
   public String stage;
   public boolean continueChess;
   Scanner scanner;
-  public ClientSide(String URL){
+  public ClientSide(String uRL){
     serverFacade = new ServerFacade();
-    url = URL;
+    url = uRL;
     stage = "loggedOut";
     continueChess = true;
     scanner = new Scanner(System.in);
@@ -84,19 +84,19 @@ public class ClientSide {
     line = line.toLowerCase();
     switch (line) {
       case "login":
-        stage = stageLoggedOut.Login();
+        stage = stageLoggedOut.login();
         updateStageLoggedIn();
         //System.out.print("end login");
         break;
       case "register":
-        stage = stageLoggedOut.Register();
+        stage = stageLoggedOut.register();
         updateStageLoggedIn();
         break;
       case "quit":
-        continueChess = stageLoggedOut.Quit();
+        continueChess = stageLoggedOut.quit();
         break;
       default:
-        stageLoggedOut.Help();
+        stageLoggedOut.help();
         break;
     }
     return;

@@ -1,10 +1,7 @@
 package Play;
-
 import chess.ChessGame;
 import com.google.gson.Gson;
 import model.*;
-
-
 import java.util.*;
 
 public class LoggedIn {
@@ -24,10 +21,10 @@ public class LoggedIn {
   String stage;
   boolean continueChess;
   Scanner scanner;
-  public LoggedIn(String URL, String stagee, ServerFacade serverFac, boolean continueChesss, Scanner scannerr,
+  public LoggedIn(String uRL, String stagee, ServerFacade serverFac, boolean continueChesss, Scanner scannerr,
                   HashMap gameNumMap, HashMap gameMapp, DrawChessGame artistt){
     serverFacade = serverFac;
-    url = URL;
+    url = uRL;
     stage = stagee;
     continueChess = continueChesss;
     scanner = scannerr;
@@ -44,7 +41,6 @@ public class LoggedIn {
     System.out.println("observe -- watch a chess game");
     System.out.println("help -- to view possible commands");
     System.out.println("");
-    //runPostLogin();
   }
 
   public String Logout() throws Exception {
@@ -52,7 +48,6 @@ public class LoggedIn {
     try{serverFacade.run(sessionUrl, "DELETE", true, new Gson().toJson(authData), AuthData.class, true, auth);}
     catch(Exception e){
       System.out.println("Having trouble logging you out, please try again.");
-      //System.out.print(e.getMessage());
     }
     System.out.print("Good bye ");
     System.out.println(authData.username());
@@ -69,11 +64,9 @@ public class LoggedIn {
       stringGameID = scanner.nextLine();
       int gameNum = Integer.parseInt(stringGameID);
       gameID = gameNumberIDMap.get(gameNum);
-      JoinGameRecord JoinGameRecord = new JoinGameRecord(null, gameID);
-      serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
+      JoinGameRecord joinGameRecord = new JoinGameRecord(null, gameID);
+      serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(joinGameRecord), EmptyRecord.class, true, auth);
       System.out.println("You are now an observer for gameID: " + gameID);
-      //ws = new WebSocketFacade(url);
-      //ws.joinGameObserver(authData.authToken(), authData.username(), gameID);
       listGames(false);
       artist.updateGame(gameMap.get(gameID).game());
       System.out.println("Game " + gameMap.get(gameID).gameName());
@@ -106,24 +99,8 @@ public class LoggedIn {
         System.out.println("Sorryyyyyy, color already taken, choose another or become an observer");
         return stage;
       }
-      //if((color.equals("WHITE") && gameMap.get(gameID).whiteUsername() == null)
-        //      || (color.equals("BLACK") && gameMap.get(gameID).blackUsername() == null)) {
-        //System.out.print("trying to update game player, null");
-        //JoinGameRecord JoinGameRecord=new JoinGameRecord(color, gameID);
-        //serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
-      //}
-      //else{
-      //if((color.equals("WHITE") && gameMap.get(gameID).whiteUsername().equals(authData.username()) == false)
-        //    || (color.equals("BLACK") && gameMap.get(gameID).blackUsername().equals(authData.username()) == false)){
-        //System.out.print(gameMap.get(gameID).whiteUsername());
-        //System.out.print(authData.username());
-        //System.out.print(gameMap.get(gameID).whiteUsername().equals(authData.username()));
-        //System.out.print("trying to update game player, not null");
-        JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
-        serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
-  //    }}
-      //JoinGameRecord JoinGameRecord = new JoinGameRecord(color, gameID);
-      //serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(JoinGameRecord), EmptyRecord.class, true, auth);
+        JoinGameRecord joinGameRecord = new JoinGameRecord(color, gameID);
+        serverFacade.run(sessionUrl, "PUT", true, new Gson().toJson(joinGameRecord), EmptyRecord.class, true, auth);
       System.out.println("Game join successful");
       listGames(false);
       game = gameMap.get(gameID).game();
@@ -133,8 +110,6 @@ public class LoggedIn {
       if(color == "BLACK" || color.equals("BLACK")){
         teamColor = ChessGame.TeamColor.BLACK;
       }
-      //ws = new WebSocketFacade(url);
-      //ws.joinGamePlayer(authData.authToken(), authData.username(),gameID, teamColor);
       System.out.println("Game " + gameMap.get(gameID).gameName());
       System.out.println("White played as " + gameMap.get(gameID).whiteUsername());
       System.out.println("Black played as " + gameMap.get(gameID).blackUsername());
@@ -148,7 +123,6 @@ public class LoggedIn {
     catch(Exception e){
       stage = "loggedIn";
       System.out.println("Sorry, color already taken, choose another or become an observer");
-      //System.out.println(e.getMessage());
     }
     return stage;
   }
@@ -167,7 +141,6 @@ public class LoggedIn {
     }
     catch(Exception e){
       System.out.println("Sorry try again");
-      //System.out.print(e.getMessage());
     }
 
   }
@@ -183,26 +156,20 @@ public class LoggedIn {
       if(gameMap!=null){
         gameMap.clear();
       }
-      //System.out.print(mapGameData);
       System.out.println("");
       if(print){System.out.println("Here are the current games: ");}
       System.out.println("");
       for(Object game : mapGameData.values()){
-        //System.out.println("Object....");
-        //System.out.print(game);
-        //System.out.print(game.getClass());
         if(game.getClass() == ArrayList.class){
-          //System.out.println("True");
           var realGameList = ((ArrayList<?>) game);
           for(Object tempGameData : realGameList){
             String newTempGame = new Gson().toJson(tempGameData);
-            GameData GameData = new Gson().fromJson(newTempGame, GameData.class);
+            GameData gameData = new Gson().fromJson(newTempGame, GameData.class);
             if(print){
-              System.out.println(gameCount + ") " + "GameID: " + GameData.gameID() + ", Game Name: " + GameData.gameName()
-                      + ", WhiteUsername: " + GameData.whiteUsername() + ", BlackUsername: " + GameData.blackUsername());}
-            gameNumberIDMap.put(gameCount, GameData.gameID());
-            gameMap.put(GameData.gameID(), GameData);
-            //System.out.print(gameMap);
+              System.out.println(gameCount + ") " + "GameID: " + gameData.gameID() + ", Game Name: " + gameData.gameName()
+                      + ", WhiteUsername: " + gameData.whiteUsername() + ", BlackUsername: " + gameData.blackUsername());}
+            gameNumberIDMap.put(gameCount, gameData.gameID());
+            gameMap.put(gameData.gameID(), gameData);
             gameCount++;
           }
         }
@@ -210,7 +177,6 @@ public class LoggedIn {
     }
     catch(Exception e){
       System.out.println("Having trouble, try again");
-      //System.out.print(e.getMessage());
     }
   }
   public ChessGame.TeamColor getColor(){

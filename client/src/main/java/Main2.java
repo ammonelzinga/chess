@@ -14,15 +14,10 @@ public class Main2 {
     System.out.println("Welcome to 240 chess. Type Help to get started");
     var out=new PrintStream(System.out, true, StandardCharsets.UTF_8);
     out.print(SET_BG_COLOR_DARK_GREY);
-    //Server server = new Server();
-    //int port = 8080;
-    //System.out.println("♕ 240 Chess Server: " + piece);
-    //server.run(port);
     ClientSide client = new ClientSide("http://localhost:8080");
     try{client.main(args);}
     catch(Exception e){
       System.out.print(e.getMessage());
     }
-    // server.stop();
   }
 }
