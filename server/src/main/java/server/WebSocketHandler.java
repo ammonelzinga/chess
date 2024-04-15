@@ -23,6 +23,9 @@ import webSocketMessages.userCommands.UserGameCommand;
 import java.io.IOException;
 import java.util.Timer;
 
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
+
 
 @WebSocket
 public class WebSocketHandler {
@@ -44,7 +47,17 @@ public class WebSocketHandler {
       username = authDAO.getAuth(action.getAuthString()).username();
     switch (action.getCommandType()) {
       case MAKE_MOVE:
-        makeMove(username, action.getGameID(), session, action.getPlayerColor(), action.getMove());
+        ChessGame.TeamColor playerColor = null;
+        GameData tempGameData = gameDAO.getGame(action.getGameID());
+        if(tempGameData.whiteUsername() != null){
+        if(username.equals(tempGameData.whiteUsername())){
+          playerColor = WHITE;
+        }}
+        if(tempGameData.blackUsername() != null){
+        if(username.equals(tempGameData.blackUsername())){
+          playerColor = BLACK;
+        }}
+        makeMove(username, action.getGameID(), session, playerColor, action.getMove());
         break;
       case JOIN_OBSERVER:
         joinGameObserver(username, action.getGameID(), session);
@@ -62,6 +75,16 @@ public class WebSocketHandler {
         leave(username, action.getGameID(), session);
         break;
       case RESIGN:
+        playerColor = null;
+        tempGameData = gameDAO.getGame(action.getGameID());
+        if(tempGameData.whiteUsername() != null){
+          if(username.equals(tempGameData.whiteUsername())){
+            playerColor = WHITE;
+          }}
+        if(tempGameData.blackUsername() != null){
+          if(username.equals(tempGameData.blackUsername())){
+            playerColor = BLACK;
+          }}
         resign(username, action.getGameID(), session, action.getPlayerColor());
         break;
     }}
@@ -85,18 +108,22 @@ public class WebSocketHandler {
     else{return true;}
   }
   private void resign(String username, int gameID, Session session,ChessGame.TeamColor playerColor) throws IOException {
+    if(playerColor == null){
+      sendError(username, gameID, session);
+      return;
+    }
     try {
       GameData gameData=gameDAO.getGame(gameID);
       if(gameData.game().getGameOverStatus()){
         var message = "Error - sorry that is illegal.";
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+        var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message, message);
         connectionManager.broadcastRootUser(username, notification, gameID);
         return;
       }
       String opponentName=gameData.whiteUsername();
-      ChessGame.TeamColor color=ChessGame.TeamColor.WHITE;
-      if (playerColor == ChessGame.TeamColor.WHITE) {
-        color=ChessGame.TeamColor.BLACK;
+      ChessGame.TeamColor color=WHITE;
+      if (playerColor == WHITE) {
+        color=BLACK;
         opponentName=gameData.blackUsername();
       }
       gameData.game().updateGameOver(true);
@@ -105,7 +132,7 @@ public class WebSocketHandler {
         notifyGamePoint(username, gameID, session, playerColor, message);
       gameDAO.updateGame(gameID, gameData);
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      sendError(username, gameID, session);
     }
   }
 
@@ -114,14 +141,17 @@ public class WebSocketHandler {
     connectionManager.broadcast("majolmajol", notification, gameID);
   }
   private void makeMove(String username, int gameID, Session session,ChessGame.TeamColor playerColor, ChessMove move) throws IOException {
+    if(playerColor == null){
+      sendError(username, gameID, session);
+    }
     System.out.print("player colorrrrrrrrrrrrrr make moveeeeeeeeeeeeeee");
     System.out.print(playerColor);
     try{
       GameData gameData = gameDAO.getGame(gameID);
       String opponentName = gameData.whiteUsername();
-      ChessGame.TeamColor color = ChessGame.TeamColor.WHITE;
-      if(playerColor == ChessGame.TeamColor.WHITE){
-        color = ChessGame.TeamColor.BLACK;
+      ChessGame.TeamColor color = WHITE;
+      if(playerColor == WHITE){
+        color = BLACK;
         opponentName = gameData.blackUsername();
       }
       System.out.println(gameData);
@@ -130,7 +160,7 @@ public class WebSocketHandler {
       String message = "game updated";
       var notification = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, message, message);
       connectionManager.broadcast("majolmajol", notification, gameID);
-      makeMoveNotify(username, gameID, session, playerColor, move);
+      makeMoveNotify(username, gameID, session, move);
       if(gameData.game().isInCheckmate(color)){
         String messageTwo = opponentName + " playing as " + color + " is in checkmate! " + username + " playing as " + playerColor
                 + " has won the game!!!";
@@ -147,15 +177,14 @@ public class WebSocketHandler {
     catch(Exception e){
       System.out.println(e.getMessage());
       var message = "Error - sorry that is illegal.";
-      var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+      var notification = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message, message);
       connectionManager.broadcastRootUser(username, notification, gameID);
     }
 
 
   }
-  private void makeMoveNotify(String username, int gameID, Session session, ChessGame.TeamColor playerColor, ChessMove move) throws IOException {
+  private void makeMoveNotify(String username, int gameID, Session session, ChessMove move) throws IOException {
     var message = String.format("%s as ", username);
-    message +=playerColor.toString();
     message += " moved from ";
     message += move.wordsToString();
     var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
@@ -166,10 +195,10 @@ public class WebSocketHandler {
       String color = "";
     System.out.print(username);
     connectionManager.add(username, gameID, session);
-    if(playerColor == ChessGame.TeamColor.WHITE){
+    if(playerColor == WHITE){
       color = "WHITE";
     }
-    if(playerColor == ChessGame.TeamColor.BLACK){
+    if(playerColor == BLACK){
       color = "BLACK";
     }
     System.out.print("HHHHHHHHHHHH");
