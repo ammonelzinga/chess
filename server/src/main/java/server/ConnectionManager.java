@@ -46,6 +46,8 @@ public class ConnectionManager {
         }}
       for (var c : removeList) {
         connectionMap.get(gameID).remove(c.username);
+        connectionMap.get(gameID).remove(c.session);
+        connectionMap.get(gameID).remove(c);
       }}}
 
   public void broadcastRootUserError(String username, ServerMessage notification, int gameID, Session session) throws IOException {
@@ -61,6 +63,8 @@ public class ConnectionManager {
         }}
       for (var c : removeList) {
         connectionMap.get(gameID).remove(c.session);
+        connectionMap.get(gameID).remove(c.session);
+        connectionMap.get(gameID).remove(c);
       }}}
 
   public void broadcast(String excludeUsername, ServerMessage notification, int gameID) throws IOException {
@@ -81,12 +85,15 @@ public class ConnectionManager {
       } else {
         System.out.println("This is not an open session");
         removeList.add(c);
+
       }
     }
 
     // Clean up any connections that were left open.
     for (var c : removeList) {
       connectionMap.get(gameID).remove(c.username);
+      connectionMap.get(gameID).remove(c.session);
+      connectionMap.get(gameID).remove(c);
     }
   }}
 }
