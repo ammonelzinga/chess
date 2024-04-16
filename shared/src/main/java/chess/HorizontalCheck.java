@@ -16,10 +16,7 @@ public class HorizontalCheck {
                     firstDiagonal = false;
                 }
                 else{
-                    if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                            && (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.ROOK)|| (firstDiagonal == true &&
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)){
+                    if (checkHorizPiece(gameBoard, tempRow, tempCol, teamColor, firstDiagonal)){
                         return true;
                     }
                     else{
@@ -36,10 +33,7 @@ public class HorizontalCheck {
                     firstDiagonal = false;
                 }
                 else{
-                    if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                            && (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.ROOK)|| (firstDiagonal == true &&
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)){
+                    if (checkHorizPiece(gameBoard, tempRow, tempCol, teamColor, firstDiagonal)){
                         return true;
                     }
                     else{
@@ -56,10 +50,7 @@ public class HorizontalCheck {
                     firstDiagonal = false;
                 }
                 else{
-                    if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                            && (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.ROOK)|| (firstDiagonal == true &&
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)){
+                    if (checkHorizPiece(gameBoard, tempRow, tempCol, teamColor, firstDiagonal)){
                         return true;
                     }
                     else{
@@ -76,10 +67,7 @@ public class HorizontalCheck {
                     firstDiagonal = false;
                 }
                 else{
-                    if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                            && (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.ROOK)|| (firstDiagonal == true &&
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)){
+                    if (checkHorizPiece(gameBoard, tempRow, tempCol, teamColor, firstDiagonal)){
                         return true;
                     }
                     else{
@@ -88,4 +76,12 @@ public class HorizontalCheck {
         }
 
     }return false;
-}}
+}
+private boolean checkHorizPiece(ChessBoard gameBoard, int tempRow, int tempCol, ChessGame.TeamColor teamColor, boolean firstDiagonal){
+    if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
+            && (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
+            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.ROOK)|| (firstDiagonal == true &&
+            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)){
+        return true;
+}return false;}
+}

@@ -18,11 +18,7 @@ public class DiagonalCheck {
             tempCol++;
             firstDiagonal=false;
           } else {
-            if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                    && ((gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.BISHOP) || (firstDiagonal == true &&
-                    (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.PAWN ||
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)))) {
+            if (checkDiagPieces(gameBoard, tempRow, tempCol, teamColor, firstDiagonal)){
               return true;
             } else {
               break;
@@ -39,11 +35,7 @@ public class DiagonalCheck {
             tempCol--;
             firstDiagonal=false;
           } else {
-            if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                    && ((gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.BISHOP) || (firstDiagonal == true &&
-                    (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.PAWN ||
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)))) {
+            if (checkDiagPieces(gameBoard, tempRow, tempCol, teamColor, firstDiagonal)){
               return true;
             } else {
               break;
@@ -60,11 +52,7 @@ public class DiagonalCheck {
             tempCol++;
             firstDiagonal=false;
           } else {
-            if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                    && ((gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.BISHOP) || (firstDiagonal == true &&
-                    (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.PAWN ||
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)))) {
+            if (checkDiagPieces(gameBoard, tempRow, tempCol, teamColor, firstDiagonal)){
               return true;
             } else {
               break;
@@ -81,14 +69,19 @@ public class DiagonalCheck {
             tempCol--;
             firstDiagonal=false;
           } else {
-            if (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
-                    && ((gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
-                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.BISHOP) || (firstDiagonal == true &&
-                    (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.PAWN ||
-                            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)))) {
+            if (checkDiagPieces(gameBoard, tempRow, tempCol, teamColor, firstDiagonal)){
               return true;
             } else {
               break;}}}}}
     return false;
+  }
+  private boolean checkDiagPieces(ChessBoard gameBoard, int tempRow, int tempCol, ChessGame.TeamColor teamColor, boolean firstDiagonal){
+    if(gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).getTeamColor() != teamColor
+            && ((gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.QUEEN ||
+            gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.BISHOP) || (firstDiagonal == true &&
+            (gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.PAWN ||
+                    gameBoard.getPiece(new ChessPosition(tempRow, tempCol)).pieceType == ChessPiece.PieceType.KING)))){
+      return true;
+    }return false;
   }
 }
