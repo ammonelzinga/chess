@@ -1,6 +1,12 @@
 # chess
 cs 240 chess project
 
+This was a project completed for my CS 240 class.
+
+The project utilized a MySQL database stored locally to my machine, and featured live multiplayer chess playing. 
+
+Once the SQL database is set up, run main on the server class, and then run main2 on the client class.
+
 
 Chess Design:
 
